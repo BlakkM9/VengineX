@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,20 @@ namespace Minetekk
 
         public override void Update(double delta)
         {
+            KeyboardState kbs = Window.KeyboardState.GetSnapshot();
 
+            if (kbs.IsKeyPressed(Keys.F)) {
+                WindowMode[] windowModes = Enum.GetValues<WindowMode>();
+                int index = Array.IndexOf(windowModes, Window.WindowMode);
+                index++;
+
+                if (index >= windowModes.Length)
+                {
+                    index = 0;
+                }
+
+                Window.WindowMode = windowModes[index];
+            }
         }
 
 

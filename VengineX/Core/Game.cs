@@ -24,7 +24,7 @@ namespace VengineX.Core
         /// <summary>
         /// The settings for the game (without keymap).
         /// </summary>
-        public static T Settings { get; private set; }
+        public static T? Settings { get; private set; }
 
 
         /// <summary>
@@ -46,9 +46,24 @@ namespace VengineX.Core
             {
                 Size = new Vector2i(Settings.ResolutionX, Settings.ResolutionY),
                 CurrentMonitor = Monitors.GetMonitors()[Settings.TargetMonitor].Handle,
-                WindowState = WindowState.Fullscreen,
-                WindowBorder = WindowBorder.Fixed
             };
+
+            // WindowMode
+            switch (Settings.WindowMode)
+            {
+                case WindowMode.Fullscreen:
+                    nwSettings.WindowState = WindowState.Fullscreen;
+                    nwSettings.WindowBorder = WindowBorder.Fixed;
+                    break;
+                case WindowMode.Borderless:
+                    nwSettings.WindowState = WindowState.Normal;
+                    nwSettings.WindowBorder = WindowBorder.Hidden;
+                    break;
+                case WindowMode.Windowed:
+                    nwSettings.WindowState = WindowState.Normal;
+                    nwSettings.WindowBorder = WindowBorder.Fixed;
+                    break;
+            }
 
 
             Window = new Window(gwSettings, nwSettings);
@@ -86,7 +101,7 @@ namespace VengineX.Core
             // Initialize systems.
 
             // Set default GL clears.
-            GL.ClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+            GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             GL.ClearDepth(1.0f);
 
             Load();

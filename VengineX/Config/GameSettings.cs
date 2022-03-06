@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VengineX.Core;
 
 namespace VengineX.Config
 {
@@ -67,6 +68,17 @@ namespace VengineX.Config
         /// The monitor the game's window should be displayed on.<br/>
         /// Index of <see cref="Monitors.GetMonitors()"/> (first is always primary).
         /// </summary>
+        public WindowMode WindowMode
+        {
+            get => Enum.Parse<WindowMode>(GetString("Window.WindowMode"));
+            set => Set("Window.WindowMode", value.ToString());
+        }
+
+
+        /// <summary>
+        /// The monitor the game's window should be displayed on.<br/>
+        /// Index of <see cref="Monitors.GetMonitors()"/> (first is always primary).
+        /// </summary>
         public bool DebugMode
         {
             get => GetBool("Debug.Enabled");
@@ -84,12 +96,15 @@ namespace VengineX.Config
             // 0 means unlimited (hardware limited) frequency.
             RenderFrequency = 0;
             UpdateFrequency = 0;
-
             // Primary monitor is always the first one.
             MonitorInfo monitor = Monitors.GetMonitors()[0];
             ResolutionX = monitor.HorizontalResolution;
             ResolutionY = monitor.VerticalResolution;
             TargetMonitor = 0;
+            WindowMode = WindowMode.Borderless;
+
+
+            DebugMode = true;
         }
     }
 }
