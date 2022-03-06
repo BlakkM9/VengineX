@@ -15,9 +15,6 @@ namespace Minetekk
         public override void Load()
         {
             Console.WriteLine("Load");
-
-            Window.CursorGrabbed = true;
-            Window.CursorVisible = true;
         }
 
 

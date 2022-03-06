@@ -19,7 +19,7 @@ namespace VengineX.Config
         };
 
         /// <summary>
-        /// Serializes the settings dictionary (<see cref="GameSettings._sections"/>) to an XML string.
+        /// Serializes the settings dictionary (<see cref="GameSettingsBase._sections"/>) to an XML string.
         /// </summary>
         /// <returns>Resulting XML string.</returns>
         public static string Serialize(Dictionary<string, SettingsSection> settings)
@@ -62,7 +62,7 @@ namespace VengineX.Config
 
 
         /// <summary>
-        /// Deserializes the settings from xml string form to Dictionary, ready to use in <see cref="GameSettings"/>
+        /// Deserializes the settings from xml string form to Dictionary, ready to use in <see cref="GameSettingsBase"/>
         /// </summary>
         public static Dictionary<string, SettingsSection> Deserialize(string xmlString)
         {
@@ -88,6 +88,7 @@ namespace VengineX.Config
                     {
                         "System.Int32" => int.Parse(strValue),
                         "System.Double" => double.Parse(strValue),
+                        "System.Boolean" => bool.Parse(strValue),
                         _ => strValue,
                     };
                 }
