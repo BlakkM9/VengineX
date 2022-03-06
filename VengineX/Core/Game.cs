@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using System;
@@ -23,7 +24,7 @@ namespace VengineX.Core
         /// <summary>
         /// The settings for the game (without keymap).
         /// </summary>
-        public T Settings { get; private set; }
+        public static T Settings { get; private set; }
 
 
         /// <summary>
@@ -44,6 +45,9 @@ namespace VengineX.Core
             NativeWindowSettings nwSettings = new NativeWindowSettings()
             {
                 Size = new Vector2i(Settings.ResolutionX, Settings.ResolutionY),
+                CurrentMonitor = Monitors.GetMonitors()[Settings.TargetMonitor].Handle,
+                WindowState = WindowState.Fullscreen,
+                WindowBorder = WindowBorder.Fixed
             };
 
 
@@ -79,7 +83,11 @@ namespace VengineX.Core
         /// </summary>
         private void Window_Load()
         {
-            // Initialize systems
+            // Initialize systems.
+
+            // Set default GL clears.
+            GL.ClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+            GL.ClearDepth(1.0f);
 
             Load();
         }

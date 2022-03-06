@@ -40,7 +40,10 @@ namespace VengineX.Config
                     xw.WriteStartElement("Setting");
 
                     xw.WriteElementString("key", setting.Key);
-                    xw.WriteElementString("value", setting.Value.ToString());
+                    xw.WriteStartElement("value");
+                    xw.WriteAttributeString("type", setting.Type.ToString());
+                    xw.WriteString(setting.Value.ToString());
+                    xw.WriteEndElement();
 
                     xw.WriteEndElement();
                 }
@@ -66,30 +69,27 @@ namespace VengineX.Config
             Dictionary<string, SettingsSection> settings = new Dictionary<string, SettingsSection>();
 
             XDocument doc = XDocument.Parse(xmlString);
-            foreach (XElement section in doc.Elements("Settings"))
+            foreach (XElement section in doc.Element("Settings").Elements())
             {
                 string sectionName = section.Attribute("name").Value;
                 settings.Add(sectionName, new SettingsSection(sectionName));
 
                 foreach (XElement setting in section.Elements())
                 {
-                    
                     string key = setting.Element("key").Value;
-                    string strValue = setting.Element("value").Value;
+
+                    XElement valueEl = setting.Element("value");
+
+                    string type = valueEl.Attribute("type").Value;
+                    string strValue = valueEl.Value;
 
                     // Cast value to correct type (string if failed to parse as int or double)
-                    if (int.TryParse(strValue, out int iValue))
+                    settings[sectionName][key] = type switch
                     {
-                        settings[sectionName][key] = iValue;
-                    }
-                    else if (double.TryParse(strValue, out double dValue))
-                    {
-                        settings[sectionName][key] = dValue;
-                    }
-                    else
-                    {
-                        settings[sectionName][key] = strValue;
-                    }
+                        "System.Int32" => int.Parse(strValue),
+                        "System.Double" => double.Parse(strValue),
+                        _ => strValue,
+                    };
                 }
             }
 

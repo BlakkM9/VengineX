@@ -78,6 +78,17 @@ namespace VengineX.Config
             set => Set("Window.ResolutionY", value);
         }
 
+
+        /// <summary>
+        /// The monitor the game's window should be displayed on.<br/>
+        /// Index of <see cref="Monitors.GetMonitors()"/> (first is always primary).
+        /// </summary>
+        public int TargetMonitor
+        {
+            get => GetInt("Window.TargetMonitor");
+            set => Set("Window.TargetMonitor", value);
+        }
+
         #endregion
 
 
@@ -113,10 +124,15 @@ namespace VengineX.Config
         /// </summary>
         protected virtual void CreateDefaultSettings()
         {
+            // 0 means unlimited for both.
             RenderFrequency = 0;
             UpdateFrequency = 0;
-            ResolutionX = 0;
-            ResolutionY = 0;
+
+            // Primary monitor is always the first one.
+            MonitorInfo monitor = Monitors.GetMonitors()[0];
+            ResolutionX = monitor.HorizontalResolution;
+            ResolutionY = monitor.VerticalResolution;
+            TargetMonitor = 0;
         }
 
 
@@ -159,7 +175,10 @@ namespace VengineX.Config
         }
 
 
-        private object Get(string key)
+        /// <summary>
+        /// Gets the setting with given key (section.key) without casting.
+        /// </summary>
+        public object Get(string key)
         {
             string[] tokens = key.Split('.');
             return _sections[tokens[0]][tokens[1]];
@@ -197,7 +216,7 @@ namespace VengineX.Config
         /// Sets the setting for given key (section.key) to given value.<br/>
         /// Creates new sections if needed.
         /// </summary>
-        private void Set(string key, object value)
+        public void Set(string key, object value)
         {
             string[] tokens = key.Split('.');
 
@@ -206,7 +225,7 @@ namespace VengineX.Config
                 _sections.Add(tokens[0], new SettingsSection(tokens[0]));
             }
 
-            _sections[tokens[0]].Settings[tokens[1]].Value = value;
+            _sections[tokens[0]][tokens[1]] = value;
         }
 
         #endregion

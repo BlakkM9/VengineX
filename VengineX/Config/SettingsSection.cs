@@ -43,7 +43,7 @@ namespace VengineX.Config
                 }
                 else
                 {
-                    Settings.Add(key, new Setting(key, value));
+                    Settings.Add(key, new Setting(value.GetType(), key, value));
                 }
             }
         }
