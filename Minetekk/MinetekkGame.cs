@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VengineX.Config;
 using VengineX.Core;
+using VengineX.Debugging.Logging;
 
 namespace Minetekk
 {
@@ -15,12 +16,16 @@ namespace Minetekk
     {
         public override void Load()
         {
-            Console.WriteLine("Load");
+            Logger.Log(Severity.Error, Tag.Loading, "Load");
+            Logger.LogRaw(Severity.Fatal, "Loading", "Load");
+            Logger.Log(Severity.Warning, Tag.Loading, "Load");
+            Logger.Log(Severity.Debug, Tag.Loading, "Load");
         }
 
 
         public override void Update(double delta)
         {
+            // TEST
             KeyboardState kbs = Window.KeyboardState.GetSnapshot();
 
             if (kbs.IsKeyPressed(Keys.F)) {
@@ -48,13 +53,13 @@ namespace Minetekk
 
         public override void Resize(int width, int height)
         {
-            Console.WriteLine($"Resize {width}, {height}");
+            Logger.Log($"Resize {width}, {height}");
         }
 
 
         public override void Unload()
         {
-            Console.WriteLine("Unoad");
+            Logger.Log("Unoad");
         }
     }
 }
