@@ -9,6 +9,7 @@
 	<Version>0.0.5-alpha</Version>
     <AssemblyVersion></AssemblyVersion>
     <FileVersion></FileVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +18,12 @@
 
   <ItemGroup>
     <PackageReference Include="OpenTK" Version="4.7.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Graphics\Rendering\Pipeline\" />
+    <Folder Include="_lib\" />
+    <Folder Include="_res\" />
   </ItemGroup>
 
 </Project>
