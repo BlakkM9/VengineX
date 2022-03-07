@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VengineX.Config;
+using VengineX.Debugging.Logging;
 
 namespace VengineX.Core
 {
@@ -28,11 +29,19 @@ namespace VengineX.Core
 
 
         /// <summary>
-        /// Default constructor, initialisating game's window with settings file.<br/>
+        /// Default constructor, intialising game's window with settings file and default logger configuration.<br/>
         /// If no settings are found, creating default settings file.
         /// </summary>
-        public Game()
+        public Game() :this(LoggerConfiguration.DEFAULT) { }
+
+
+        /// <summary>
+        /// Intialising game's window with settings file and given logger configuration.<br/>
+        /// If no settings are found, creating default settings file.
+        /// </summary>
+        public Game(LoggerConfiguration loggerConfiguration)
         {   
+            // Game settings
             Settings = new T();
             Settings.LoadOrDefault();
 
@@ -64,6 +73,10 @@ namespace VengineX.Core
                     nwSettings.WindowBorder = WindowBorder.Fixed;
                     break;
             }
+
+
+            // Logger config
+            Logger.Configuration = loggerConfiguration;
 
 
             Window = new Window(gwSettings, nwSettings);
@@ -99,6 +112,7 @@ namespace VengineX.Core
         private void Window_Load()
         {
             // Initialize systems.
+            Logger.Initialize();
 
             // Set default GL clears.
             GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -132,6 +146,9 @@ namespace VengineX.Core
         private void Window_Unload()
         {
             Unload();
+
+            // Close log file stream.
+            Logger.CloseCurrenLogFileStream();
 
             Window.Dispose();
         }
