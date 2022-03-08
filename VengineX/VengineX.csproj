@@ -4,12 +4,13 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Authors>BlakkM9</Authors>
-	<Version>0.0.5-alpha</Version>
+    <Version>0.0.5-alpha</Version>
     <AssemblyVersion></AssemblyVersion>
     <FileVersion></FileVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,9 +23,12 @@
 
   <ItemGroup>
     <Folder Include="Graphics\Rendering\Pipeline\" />
-    <Folder Include="_build\" />
     <Folder Include="_lib\" />
     <Folder Include="_res\" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy '$(ProjectDir)_lib' '$(TargetDir)lib\' /e /y /f&#xD;&#xA;xcopy '$(ProjectDir)_res' '$(TargetDir)res\' /e /y /f" />
+  </Target>
+	
 </Project>

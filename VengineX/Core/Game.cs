@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VengineX.Config;
 using VengineX.Debugging.Logging;
+using VengineX.Resources;
 
 namespace VengineX.Core
 {
@@ -20,7 +21,7 @@ namespace VengineX.Core
         /// <summary>
         /// The OpenGL window of the game.
         /// </summary>
-        public Window Window { get; private set; }
+        public static Window Window { get; private set; }
 
         /// <summary>
         /// The settings for the game (without keymap).
@@ -141,11 +142,14 @@ namespace VengineX.Core
 
 
         /// <summary>
-        /// EventHandler for <see cref="Window.Unload"/>.
+        /// EventHandler for <see cref="Game.Window.Unload"/>.
         /// </summary>
         private void Window_Unload()
         {
             Unload();
+
+            // Unload all resources
+            ResourceManager.UnloadAllResources();
 
             // Close log file stream.
             Logger.CloseCurrenLogFileStream();

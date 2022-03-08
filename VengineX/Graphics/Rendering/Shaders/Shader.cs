@@ -215,27 +215,23 @@ namespace VengineX.Graphics.Rendering.Shaders
 
         private bool _disposedValue;
 
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
             {
-                if (disposing)
-                {
-                    // TODO: dispose managed state (managed objects)
-                }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
+                GL.DeleteProgram(Handle);
                 _disposedValue = true;
             }
         }
 
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~Shader()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
+
+        ~Shader()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
 
         public void Dispose()
         {
