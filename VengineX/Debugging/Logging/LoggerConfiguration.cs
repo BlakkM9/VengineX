@@ -13,7 +13,7 @@ namespace VengineX.Debugging.Logging
         /// </summary>
         public static readonly LoggerConfiguration DEFAULT = new LoggerConfiguration()
         {
-            LogFolder = "Logs",
+            LogFolder = "log",
             LogToFile = true,
             LogToConsole = true,
             LogTime = true,

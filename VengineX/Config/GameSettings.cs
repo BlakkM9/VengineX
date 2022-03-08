@@ -87,7 +87,7 @@ namespace VengineX.Config
 
 
         /// <summary>
-        /// Fills <see cref="_sections"/> with default settings.<br/>
+        /// Fills <see cref="GameSettingsBase._sections"/> with default settings.<br/>
         /// Override this function if you've overwritten <see cref="GameSettingsBase"/><br/>
         /// and make sure, you're creating all your default settings here.
         /// </summary>

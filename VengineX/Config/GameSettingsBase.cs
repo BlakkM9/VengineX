@@ -57,7 +57,7 @@ namespace VengineX.Config
         /// <summary>
         /// Loads the game's settings from xml.<br/>
         /// If settings file is not found, default file is created.<br/>
-        /// This function is called in <see cref="Game"/>'s constructor.<br/>
+        /// This function is called in <see cref="Game{T}"/>'s constructor.<br/>
         /// </summary>
         public void LoadOrDefault()
         {

@@ -10,9 +10,14 @@ using System.Threading.Tasks;
 
 namespace VengineX.Debugging.Logging
 {
+    /// <summary>
+    /// Static logging class, handles all the logging for the game.
+    /// </summary>
     public static class Logger
     {
-
+        /// <summary>
+        /// Configuration for this logger.
+        /// </summary>
         public static LoggerConfiguration Configuration { get; set; } = LoggerConfiguration.DEFAULT;
 
         private static StreamWriter? _currentLogFileStream;
@@ -40,7 +45,7 @@ namespace VengineX.Debugging.Logging
 
 
         /// <summary>
-        /// Overload for <see cref="Log(Severity, string, string, string, int)"/>, without tag and severity (defaults to info).
+        /// Overload for <see cref="LogRaw(Severity, string, string, string, string, int)"/>, without tag and severity (defaults to info).
         /// </summary>
         public static void Log(string message,
             [CallerMemberName] string memberName = "",
@@ -49,7 +54,7 @@ namespace VengineX.Debugging.Logging
 
 
         /// <summary>
-        /// Overload for <see cref="Log(Severity, string, string, string, int)"/>, without tag.
+        /// Overload for <see cref="LogRaw(Severity, string, string, string, string, int)"/>, without tag.
         /// </summary>
         public static void Log(Severity severity, string message,
             [CallerMemberName] string memberName = "",
@@ -58,7 +63,7 @@ namespace VengineX.Debugging.Logging
 
 
         /// <summary>
-        /// Overload for <see cref="Log(Severity, string, string, string, int)"/>, taking <see cref="Tag"/> instead of string for tag.
+        /// Overload for <see cref="LogRaw(Severity, string, string, string, string, int)"/>, taking <see cref="Tag"/> instead of string for tag.
         /// </summary>
         public static void Log(Severity severity, Tag tag, string message,
             [CallerMemberName] string memberName = "",

@@ -142,7 +142,7 @@ namespace VengineX.Core
 
 
         /// <summary>
-        /// EventHandler for <see cref="Game.Window.Unload"/>.
+        /// EventHandler for <see cref="GameWindow.Unload"/>.
         /// </summary>
         private void Window_Unload()
         {
@@ -158,10 +158,33 @@ namespace VengineX.Core
         }
 
 
+        /// <summary>
+        /// Called before the game's window is displayed for the first time.
+        /// </summary>
         public abstract void Load();
+
+
+        /// <summary>
+        /// Called when it is time to update a frame.
+        /// </summary>
         public abstract void Update(double delta);
+
+
+        /// <summary>
+        /// Called when it is time to render a frame.
+        /// </summary>
         public abstract void Render(double delta);
+
+
+        /// <summary>
+        /// Called when the game's window is resized.
+        /// </summary>
         public abstract void Resize(int width, int height);
+
+
+        /// <summary>
+        /// Called before the game's window is destroyed.
+        /// </summary>
         public abstract void Unload();
     }
 }
