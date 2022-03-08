@@ -1,25 +1,214 @@
-﻿using System;
+﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VengineX.Debugging.Logging;
+using VengineX.Resources;
 
 namespace VengineX.Graphics.Rendering.Shaders
 {
-    public class Shader : IBindable, IDisposable
+    public class Shader : IBindable, IDisposable, ILoadableResource
     {
+        /// <summary>
+        /// OpenGL handle of this shader program.
+        /// </summary>
+        public int Handle { get; private set; }
+
+        /// <summary>
+        /// ResourcePath of this shader program (<see cref="ResourceManager"/> for more details on resource paths.
+        /// </summary>
+        public string? ResourcePath { get; private set; }
 
 
+        /// <summary>
+        /// Loads the shader program (vert and frag) from disc, preprocesses, compiles and links vert and frag.
+        /// </summary>
+        /// <param name="resourcePath"></param>
+        /// <param name="fileType"></param>
+        /// <param name="loadingParameters">Check <see cref="ShaderLoadingParameters"/> for more details.</param>
+        public void Load(string resourcePath, string fileType, ref ILoadingParameters loadingParameters)
+        {
+            ResourcePath = resourcePath;
+            ShaderLoadingParameters parameters = (ShaderLoadingParameters)loadingParameters;
+
+            // Vertex Shader
+            int vertexID = Compile(parameters.VertexPath, ShaderType.VertexShader);
+
+            // Fragment Shader
+            int fragmentID = Compile(parameters.FragmentPath, ShaderType.FragmentShader);
+
+            // Link both
+            Handle = GL.CreateProgram();
+            GL.AttachShader(Handle, vertexID);
+            GL.AttachShader(Handle, fragmentID);
+
+            GL.LinkProgram(Handle);
+            // TODO check for errors when linking aswell
+
+            // Cleanup
+            GL.DetachShader(Handle, vertexID);
+            GL.DetachShader(Handle, fragmentID);
+            GL.DeleteShader(vertexID);
+            GL.DeleteShader(fragmentID);
+        }
+
+
+        /// <summary>
+        /// Compiles a shader and prints compile errors.
+        /// Uses <see cref="ShaderPreprocessor"/> before compilation
+        /// </summary>
+        /// <returns>Shader ID</returns>
+        private static int Compile(string shaderPath, ShaderType shaderType)
+        {
+            int shaderID = GL.CreateShader(shaderType);
+
+            string shaderSource = ShaderPreprocessor.ParseAndPreprocess(shaderPath);
+            GL.ShaderSource(shaderID, shaderSource);
+            GL.CompileShader(shaderID);
+
+            string infoLogVert = GL.GetShaderInfoLog(shaderID);
+            if (infoLogVert != string.Empty)
+            {
+                Logger.Log(Severity.Error, Tag.Shader, "Failed to compile shader " + shaderPath + ": " + infoLogVert);
+                Console.WriteLine(infoLogVert);
+                GL.DeleteShader(shaderID);
+            }
+
+            return shaderID;
+        }
+
+
+        /// <summary>
+        /// Binds this shader program to the current OpenGL renderer state.
+        /// </summary>
         public void Bind()
         {
-            throw new NotImplementedException();
+            GL.UseProgram(Handle);
         }
 
 
+        /// <summary>
+        /// Unbinds this shader program from the current OpenGL renderer state.<br/>
+        /// Binds 0, usually not required.
+        /// </summary>
         public void Unbind()
         {
-            throw new NotImplementedException();
+            GL.UseProgram(0);
         }
+
+
+        #region Uniform access
+
+        public int GetUniformLocation(string uniformName)
+        {
+            int uniformLocation = GL.GetUniformLocation(Handle, uniformName);
+            if (uniformLocation == -1)
+            {
+                Logger.Log(Severity.Error, Tag.Shader, $"Failed to find uniform {uniformName} in shader");
+            }
+
+            return uniformLocation;
+        }
+
+
+        public void SetUniformMat4(int uniformLocation, ref Matrix4 value)
+        {
+            Bind();
+            GL.UniformMatrix4(uniformLocation, false, ref value);
+        }
+
+
+        /// <summary>
+        /// Only use this function if uniforms are only set once.
+        /// It performs a <see cref="GL.GetUniformLocation(int, string)"/> call!<br/>
+        /// Cache the uniform location and use <see cref="SetUniformMat4(int, ref Matrix4)"/> if you're using it more than once!
+        /// </summary>
+        public void SetUniformMat4(string uniformName, ref Matrix4 value)
+        {
+            int uniformLocation = GetUniformLocation(uniformName);
+            if (uniformLocation == -1)
+            {
+                Logger.Log(Severity.Error, Tag.Shader, $"Failed to find uniform {uniformName} in shader");
+            }
+            else
+            {
+                SetUniformMat4(uniformLocation, ref value);
+            }
+        }
+
+
+        public void SetUniform1(int uniformLocation, bool value)
+        {
+            Bind();
+            GL.Uniform1(uniformLocation, value ? 1 : 0);
+        }
+
+
+        public void SetUniform1(string uniformName, bool value)
+        {
+            int uniformLocation = GetUniformLocation(uniformName);
+            if (uniformLocation == -1)
+            {
+                Logger.Log(Severity.Error, Tag.Shader, $"Failed to find uniform {uniformName} in shader");
+            }
+            else
+            {
+                SetUniform1(uniformLocation, value);
+            }
+        }
+
+
+        public void SetUniform1(int uniformLocation, int value)
+        {
+            Bind();
+            GL.Uniform1(uniformLocation, value);
+        }
+
+
+        /// <summary>
+        /// Only use this function if uniforms are only set once.<br/>
+        /// It performs a <see cref="GL.GetUniformLocation(int, string)"/> call!<br/>
+        /// Cache the uniform location and use <see cref="SetUniform1(int, int)"/> if you're using it more than once!
+        /// </summary>
+        public void SetUniform1(string uniformName, int value)
+        {
+
+            int uniformLocation = GetUniformLocation(uniformName);
+            if (uniformLocation == -1)
+            {
+                Logger.Log(Severity.Error, Tag.Shader, $"Failed to find uniform {uniformName} in shader");
+            }
+            else
+            {
+                SetUniform1(uniformLocation, value);
+            }
+        }
+
+
+        public void SetUniform1(int uniformLocation, float value)
+        {
+            Bind();
+            GL.Uniform1(uniformLocation, value);
+        }
+
+
+        public void SetUniformVec3(int uniformLoaction, ref Vector3 value)
+        {
+            Bind();
+            GL.Uniform3(uniformLoaction, value);
+        }
+
+
+        public void SetUniformVec4(int uniformLoaction, ref Vector4 value)
+        {
+            Bind();
+            GL.Uniform4(uniformLoaction, value);
+        }
+
+        #endregion
 
 
         #region IDisposable

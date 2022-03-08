@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <Folder Include="Graphics\Rendering\Pipeline\" />
+    <Folder Include="_build\" />
     <Folder Include="_lib\" />
     <Folder Include="_res\" />
   </ItemGroup>
