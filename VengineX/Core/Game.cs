@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VengineX.Config;
 using VengineX.Debugging.Logging;
+using VengineX.Interop;
 using VengineX.Resources;
 
 namespace VengineX.Core
@@ -22,6 +23,7 @@ namespace VengineX.Core
         /// The OpenGL window of the game.
         /// </summary>
         public static Window Window { get; private set; }
+
 
         /// <summary>
         /// The settings for the game (without keymap).
@@ -42,10 +44,19 @@ namespace VengineX.Core
         /// </summary>
         public Game(LoggerConfiguration loggerConfiguration)
         {
-            // Game settings
+            // Game settings.
             Settings = new T();
             Settings.LoadOrDefault();
 
+
+            // Show console when in debugging mode and overwrite close handler.
+            if (Settings.DebugMode)
+            {
+                ConsoleUtils.ShowConsoleWindow();
+            }
+
+
+            // Create settings for game and native window.
             GameWindowSettings gwSettings = new GameWindowSettings()
             {
                 RenderFrequency = Settings.RenderFrequency,
@@ -58,7 +69,8 @@ namespace VengineX.Core
                 CurrentMonitor = Monitors.GetMonitors()[Settings.TargetMonitor].Handle,
             };
 
-            // WindowMode
+
+            // Configure WindowMode.
             switch (Settings.WindowMode)
             {
                 case WindowMode.Fullscreen:
@@ -76,10 +88,11 @@ namespace VengineX.Core
             }
 
 
-            // Logger config
+            // Set logger configuration.
             Logger.Configuration = loggerConfiguration;
 
 
+            // Create window and add event hooks.
             Window = new Window(gwSettings, nwSettings);
             RegisterWindowHooks();
         }
@@ -88,10 +101,7 @@ namespace VengineX.Core
         /// <summary>
         /// Opens the window and starts the game logic.
         /// </summary>
-        public void Start()
-        {
-            Window.Run();
-        }
+        public void Start() => Window.Run();
 
 
         /// <summary>
@@ -156,14 +166,20 @@ namespace VengineX.Core
         {
             Unload();
 
+            Window.Dispose();
+
             // Unload all resources
             ResourceManager.UnloadAllResources();
 
             // Close log file stream.
             Logger.CloseCurrenLogFileStream();
-
-            Window.Dispose();
         }
+
+
+        /// <summary>
+        /// <see cref="GameWindow.Close()"/> shortcut.
+        /// </summary>
+        public static void Exit() => Window.Close();
 
 
         /// <summary>
