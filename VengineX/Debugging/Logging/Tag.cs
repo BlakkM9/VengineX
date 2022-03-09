@@ -16,5 +16,6 @@ namespace VengineX.Debugging.Logging
         Texturing,
         Misc,
         Input,
+        Unloading,
     }
 }

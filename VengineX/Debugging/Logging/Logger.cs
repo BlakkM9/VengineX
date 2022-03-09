@@ -161,7 +161,7 @@ namespace VengineX.Debugging.Logging
                 Severity.Error =>   "[ ERROR ] ",
                 Severity.Warning => "[ WARNING ] ",
                 Severity.Info =>    "[ INFO ] ",
-                Severity.Debug =>   "[ Debug ] ",
+                Severity.Debug =>   "[ DEBUG ] ",
                 _ => throw new ArgumentException($"Severity {severity} is unknown to logger.")
             };
         }
