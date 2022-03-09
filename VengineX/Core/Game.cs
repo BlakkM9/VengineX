@@ -63,10 +63,10 @@ namespace VengineX.Core
             {
                 case WindowMode.Fullscreen:
                     nwSettings.WindowState = WindowState.Fullscreen;
-                    nwSettings.WindowBorder = WindowBorder.Fixed;
+                    nwSettings.WindowBorder = WindowBorder.Hidden;
                     break;
                 case WindowMode.Borderless:
-                    nwSettings.WindowState = WindowState.Normal;
+                    nwSettings.WindowState = WindowState.Maximized;
                     nwSettings.WindowBorder = WindowBorder.Hidden;
                     break;
                 case WindowMode.Windowed:
