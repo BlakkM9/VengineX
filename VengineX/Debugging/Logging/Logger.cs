@@ -61,6 +61,13 @@ namespace VengineX.Debugging.Logging
             [CallerLineNumber] int sourceLineNumber = 0)
             => LogRaw(severity, string.Empty, message, DetermineCallerName(), memberName, sourceLineNumber);
 
+        /// <summary>
+        /// Overload for <see cref="LogRaw(Severity, string, string, string, string, int)"/>, using <see cref="Severity.Info"/>.
+        /// </summary>
+        public static void Log(Tag tag, string message,
+            [CallerMemberName] string memberName = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+            => LogRaw(Severity.Info, tag.ToString(), message, DetermineCallerName(), memberName, sourceLineNumber);
 
         /// <summary>
         /// Overload for <see cref="LogRaw(Severity, string, string, string, string, int)"/>, taking <see cref="Tag"/> instead of string for tag.
