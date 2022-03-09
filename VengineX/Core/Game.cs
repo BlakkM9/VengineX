@@ -33,7 +33,7 @@ namespace VengineX.Core
         /// Default constructor, intialising game's window with settings file and default logger configuration.<br/>
         /// If no settings are found, creating default settings file.
         /// </summary>
-        public Game() :this(LoggerConfiguration.DEFAULT) { }
+        public Game() : this(LoggerConfiguration.DEFAULT) { }
 
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace VengineX.Core
         /// If no settings are found, creating default settings file.
         /// </summary>
         public Game(LoggerConfiguration loggerConfiguration)
-        {   
+        {
             // Game settings
             Settings = new T();
             Settings.LoadOrDefault();
@@ -126,13 +126,21 @@ namespace VengineX.Core
         /// <summary>
         /// EventHandler for <see cref="GameWindow.UpdateFrame"/>.
         /// </summary>
-        private void Window_UpdateFrame(FrameEventArgs args) => Update(args.Time);
+        private void Window_UpdateFrame(FrameEventArgs args) 
+        {
+            Time.Update(args.Time);
+            Update(args.Time);
+        }
 
 
         /// <summary>
         /// EventHandler for <see cref="GameWindow.RenderFrame"/>.
         /// </summary>
-        private void Window_RenderFrame(FrameEventArgs args) => Render(args.Time);
+        private void Window_RenderFrame(FrameEventArgs args)
+        {
+            Time.Render(args.Time);
+            Render(args.Time);
+        }
 
 
         /// <summary>
