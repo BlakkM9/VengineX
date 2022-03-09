@@ -79,25 +79,6 @@ namespace VengineX.Graphics.Rendering.Shaders
         }
 
 
-        /// <summary>
-        /// Binds this shader program to the current OpenGL renderer state.
-        /// </summary>
-        public void Bind()
-        {
-            GL.UseProgram(Handle);
-        }
-
-
-        /// <summary>
-        /// Unbinds this shader program from the current OpenGL renderer state.<br/>
-        /// Binds 0, usually not required.
-        /// </summary>
-        public void Unbind()
-        {
-            GL.UseProgram(0);
-        }
-
-
         #region Uniform access
 
         public int GetUniformLocation(string uniformName)
@@ -204,6 +185,48 @@ namespace VengineX.Graphics.Rendering.Shaders
         {
             Bind();
             GL.Uniform4(uniformLoaction, value);
+        }
+
+
+        /// <summary>
+        /// Only use this function if uniforms are only set once.<br/>
+        /// It performs a <see cref="GL.GetUniformLocation(int, string)"/> call!<br/>
+        /// Cache the uniform location and use <see cref="SetUniformVec4(int, ref Vector4)"/> if you're using it more than once!
+        /// </summary>
+        public void SetUniformVec4(string uniformName, ref Vector4 value)
+        {
+            int uniformLocation = GetUniformLocation(uniformName);
+            if (uniformLocation == -1)
+            {
+                Logger.Log(Severity.Error, Tag.Shader, $"Failed to find uniform {uniformName} in shader");
+            }
+            else
+            {
+                SetUniformVec4(uniformLocation, ref value);
+            }
+        }
+
+        #endregion
+
+
+        #region IBindable
+
+        /// <summary>
+        /// Binds this shader program to the current OpenGL renderer state.
+        /// </summary>
+        public void Bind()
+        {
+            GL.UseProgram(Handle);
+        }
+
+
+        /// <summary>
+        /// Unbinds this shader program from the current OpenGL renderer state.<br/>
+        /// Binds 0, usually not required.
+        /// </summary>
+        public void Unbind()
+        {
+            GL.UseProgram(0);
         }
 
         #endregion
