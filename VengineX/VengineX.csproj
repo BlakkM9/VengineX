@@ -22,9 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Graphics\Rendering\Pipeline\" />
     <Folder Include="_lib\" />
-    <Folder Include="_res\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
