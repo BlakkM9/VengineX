@@ -221,7 +221,6 @@ namespace VengineX.Debugging.Logging
             };
 
             Console.WriteLine(message);
-
             Console.ForegroundColor = ConsoleColor.White;
         }
 
@@ -259,6 +258,13 @@ namespace VengineX.Debugging.Logging
         /// Closes the current log file stream.<br/>
         /// This should be called whenever the game is closed.
         /// </summary>
-        public static void CloseCurrenLogFileStream() => _currentLogFileStream?.Close();
+        public static void CloseCurrenLogFileStream()
+        {
+            if (_currentLogFileStream != null)
+            {
+                Log(Severity.Info, Tag.Unloading, "Closing LogFile Stream");
+                _currentLogFileStream.Close();
+            }
+        }
     }
 }
