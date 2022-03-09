@@ -20,16 +20,14 @@ namespace VengineX.Graphics.Rendering.Shaders
         /// <summary>
         /// ResourcePath of this shader program (<see cref="ResourceManager"/> for more details on resource paths.
         /// </summary>
-        public string? ResourcePath { get; private set; }
+        public string ResourcePath { get; set; }
 
 
         /// <summary>
-        /// Loads the shader program (vert and frag) from disc, preprocesses, compiles and links vert and frag.
+        /// Loads the shader program (vert and frag) from disc, preprocesses, compiles and links vert and frag.<br/>
+        /// see: <seealso cref="ShaderLoadingParameters"/> and <seealso cref="ILoadableResource.Load(string, ref ILoadingParameters)"/>.
         /// </summary>
-        /// <param name="resourcePath"></param>
-        /// <param name="fileType"></param>
-        /// <param name="loadingParameters">Check <see cref="ShaderLoadingParameters"/> for more details.</param>
-        public void Load(string resourcePath, string fileType, ref ILoadingParameters loadingParameters)
+        public void Load(string resourcePath, ref ILoadingParameters loadingParameters)
         {
             ResourcePath = resourcePath;
             ShaderLoadingParameters parameters = (ShaderLoadingParameters)loadingParameters;

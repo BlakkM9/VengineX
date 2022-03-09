@@ -4,6 +4,9 @@ using VengineX.Debugging.Logging;
 
 namespace VengineX.Resources
 {
+    /// <summary>
+    /// Caches and manages all the resources for the game.
+    /// </summary>
     public static class ResourceManager 
     {
 
@@ -42,17 +45,16 @@ namespace VengineX.Resources
         /// Loads a resource into resource cache.
         /// </summary>
         /// <param name="resourcePath">Path to the resource (not file path but a path that is used as a key)</param>
-        /// <param name="fileType"><see cref="ILoadableResource.Load(string, string, ref ILoadingParameters)"/></param>
         /// <param name="loadingParameters"><see cref="ILoadingParameters"/></param>
         /// <returns>Loaded resource</returns>
-        public static T? LoadResource<T>(string resourcePath, string fileType, ILoadingParameters loadingParameters) where T : ILoadableResource, IDisposable, new()
+        public static T LoadResource<T>(string resourcePath, ILoadingParameters loadingParameters) where T : ILoadableResource, IDisposable, new()
         {
 
             // Instantiate resource
             T resource = new();
 
             // Load resource
-            resource.Load(resourcePath, fileType, ref loadingParameters);
+            resource.Load(resourcePath, ref loadingParameters);
             Type type = typeof(T);
 
             // Add to resource dictionary
@@ -76,7 +78,13 @@ namespace VengineX.Resources
         }
 
 
-        public static T? GetResource<T>(string resourcePath) where T : IDisposable, new()
+        /// <summary>
+        /// Gets the resource at given resource path.
+        /// </summary>
+        /// <typeparam name="T">Type of the requested resource.</typeparam>
+        /// <param name="resourcePath">ResourcePath to the requrested resource.</param>
+        /// <returns>Requested resource. Fatal error if resource not found.</returns>
+        public static T GetResource<T>(string resourcePath) where T : IDisposable, new()
         {
             Type type = typeof(T);
 
@@ -92,6 +100,12 @@ namespace VengineX.Resources
             return default;
         }
 
+
+        /// <summary>
+        /// Unloads (disposes) the resource of given type at given resource path (if existing).
+        /// </summary>
+        /// <typeparam name="T">Type of the resource to unload.</typeparam>
+        /// <param name="resourcePath">ResourcePath of the resource.</param>
         public static void UnloadResource<T>(string resourcePath) where T : IDisposable, new()
         {
             Type type = typeof(T);
@@ -108,13 +122,31 @@ namespace VengineX.Resources
             Logger.Log(Severity.Fatal, Tag.Loading, "Failed to unload resource from cache: " + resourcePath + " (" + type.Name + ")");
         }
 
+
+        /// <summary>
+        /// Overload of <see cref="UnloadResource{T}(string)"/> for easier use with <see cref="ILoadableResource"/>s.<br/>
+        /// Simply takes the resource itself as parameter.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Type of the resource.<br/>
+        /// Usually not required as it is determined by the type of <paramref name="resource"/> passed.
+        /// </typeparam>
+        /// <param name="resource">Resource to unload.</param>
+        public static void UnloadResource<T>(T resource) where T : IDisposable, ILoadableResource, new()
+        {
+            UnloadResource<T>(resource.ResourcePath);
+        }
+
+
+        /// <summary>
+        /// Unloads all resources that are currently cached inside the resource manager.
+        /// </summary>
         public static void UnloadAllResources()
         {
             foreach (KeyValuePair<Type, Dictionary<string, IDisposable>> outerEntry in _resourceMap)
             {
                 foreach (KeyValuePair<string, IDisposable> innerEntry in outerEntry.Value)
                 {
-                    // We can safely cast to IDisposable because we made sure it implements it
                     innerEntry.Value.Dispose();
                 }
             }
