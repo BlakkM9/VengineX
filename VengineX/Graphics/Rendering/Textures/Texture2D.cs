@@ -58,29 +58,29 @@ namespace VengineX.Graphics.Rendering.Textures
             GL.TexImage2D(
                 TextureTarget,
                 0,
-                parameters.pixelInternalFormat,
+                parameters.PixelInternalFormat,
                 width,
                 height,
                 0,
-                parameters.pixelFormat,
-                parameters.pixelType,
+                parameters.PixelFormat,
+                parameters.PixelType,
                 IntPtr.Zero
             );
 
 
             // Set parameters
             // Min/Mag
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)parameters.minFilter);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)parameters.magFilter);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)parameters.MinFilter);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)parameters.MagFilter);
 
 
             // WrapS/WrapT
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)parameters.wrapModeS);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)parameters.wrapModeT);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)parameters.WrapModeS);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)parameters.WrapModeT);
 
 
             // Mipmaps
-            if (parameters.generateMipmaps)
+            if (parameters.GenerateMipmaps)
             {
                 GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
             }
@@ -108,23 +108,23 @@ namespace VengineX.Graphics.Rendering.Textures
             StbiWrapper.SetFlipVerticallyOnLoad(true);
             Image image;
             // Use loading function from parameters
-            switch (parameters.loadingFunction)
+            switch (parameters.LoadingFunction)
             {
                 case LoadingFunction.Load:
-                    image = StbiWrapper.Load(parameters.filePath, parameters.pixelInternalFormat.ChannelCount());
+                    image = StbiWrapper.Load(parameters.FilePath, parameters.PixelInternalFormat.ChannelCount());
                     break;
                 case LoadingFunction.Load16:
-                    image = StbiWrapper.Load16(parameters.filePath, parameters.pixelInternalFormat.ChannelCount());
+                    image = StbiWrapper.Load16(parameters.FilePath, parameters.PixelInternalFormat.ChannelCount());
                     break;
                 case LoadingFunction.LoadF:
-                    image = StbiWrapper.LoadF(parameters.filePath, parameters.pixelInternalFormat.ChannelCount());
+                    image = StbiWrapper.LoadF(parameters.FilePath, parameters.PixelInternalFormat.ChannelCount());
                     break;
                 default:
-                    image = StbiWrapper.Load(parameters.filePath, parameters.pixelInternalFormat.ChannelCount());
+                    image = StbiWrapper.Load(parameters.FilePath, parameters.PixelInternalFormat.ChannelCount());
                     Logger.Log(
                         Severity.Error,
                         Tag.Loading,
-                        "Unknown stbi loading function: " + parameters.loadingFunction + ", assuming load!");
+                        "Unknown stbi loading function: " + parameters.LoadingFunction + ", assuming load!");
                     break;
             }
 
@@ -133,12 +133,12 @@ namespace VengineX.Graphics.Rendering.Textures
             GL.TexImage2D(
                 TextureTarget,
                 0,
-                parameters.pixelInternalFormat,
+                parameters.PixelInternalFormat,
                 image.Width,
                 image.Height,
                 0,
-                parameters.pixelFormat,
-                parameters.pixelType,
+                parameters.PixelFormat,
+                parameters.PixelType,
                 image.Data);
 
 
@@ -148,17 +148,17 @@ namespace VengineX.Graphics.Rendering.Textures
 
             // Set parameters
             // Min/Mag
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)parameters.minFilter);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)parameters.magFilter);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)parameters.MinFilter);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)parameters.MagFilter);
 
 
             // WrapS/WrapT
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)parameters.wrapModeS);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)parameters.wrapModeT);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)parameters.WrapModeS);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)parameters.WrapModeT);
 
 
             // Mipmaps
-            if (parameters.generateMipmaps)
+            if (parameters.GenerateMipmaps)
             {
                 GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
             }

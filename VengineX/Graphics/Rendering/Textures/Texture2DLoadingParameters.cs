@@ -17,15 +17,15 @@ namespace VengineX.Graphics.Rendering.Textures
         /// <summary>
         /// Path to the texture.
         /// </summary>
-        public string filePath;
-        public PixelInternalFormat pixelInternalFormat;
-        public PixelFormat pixelFormat;
-        public PixelType pixelType;
-        public TextureMinFilter minFilter;
-        public TextureMagFilter magFilter;
-        public TextureWrapMode wrapModeS;
-        public TextureWrapMode wrapModeT;
-        public LoadingFunction loadingFunction;
-        public bool generateMipmaps;
+        public string FilePath { get; set; }
+        public PixelInternalFormat PixelInternalFormat { get; set; }
+        public PixelFormat PixelFormat { get; set; }
+        public PixelType PixelType { get; set; }
+        public TextureMinFilter MinFilter { get; set; }
+        public TextureMagFilter MagFilter { get; set; }
+        public TextureWrapMode WrapModeS { get; set; }
+        public TextureWrapMode WrapModeT { get; set; }
+        public LoadingFunction LoadingFunction { get; set; }
+        public bool GenerateMipmaps { get; set; }
     }
 }

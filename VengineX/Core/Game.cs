@@ -28,7 +28,7 @@ namespace VengineX.Core
         /// <summary>
         /// The settings for the game (without keymap).
         /// </summary>
-        public static T? Settings { get; private set; }
+        public static T Settings { get; private set; }
 
 
         /// <summary>
