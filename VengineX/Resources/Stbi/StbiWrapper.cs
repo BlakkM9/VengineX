@@ -18,15 +18,10 @@ namespace VengineX.Resources.Stbi {
         }
 
 
-        private const string dllFilePath = "_lib/stbilib.dll";
+        private const string dllFilePath = "lib/stbilib.dll";
 
 
         #region stbilib.dll imports
-
-        // Temporary test function
-        [DllImport(dllFilePath, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private unsafe extern static byte* test(ref byte str);
-
 
         // Loading images
         // RGB(A)8
@@ -50,18 +45,19 @@ namespace VengineX.Resources.Stbi {
 
         [DllImport(dllFilePath, CallingConvention = CallingConvention.Cdecl)]
         private extern static void set_flip_vertically_on_load(int flag_true_if_should_flip);
+
         #endregion
 
 
         #region C# Wrapping functions
-
 
         /// <summary>
         /// Wrapper function for stbi_load.
         /// </summary>
         /// <param name="path">Path to image.</param>
         /// <param name="desiredChannels">Amount of desired channels.</param>
-        public unsafe static StbiImage Load(string path, int desiredChannels) {
+        public unsafe static Image Load(string path, int desiredChannels)
+        {
             int width = 0;
             int height = 0;
             int channels = 0;
@@ -69,7 +65,7 @@ namespace VengineX.Resources.Stbi {
             byte[] pathBytes = Encoding.ASCII.GetBytes(path);
 
             byte* imageData = load(ref pathBytes[0], ref width, ref height, ref channels, desiredChannels);
-            return new StbiImage(imageData, width, height, desiredChannels, 1);
+            return new Image(imageData, width, height, desiredChannels, 1);
         }
 
 
@@ -78,7 +74,7 @@ namespace VengineX.Resources.Stbi {
         /// </summary>
         /// <param name="path">Path to image.</param>
         /// <param name="desiredChannels">Amount of desired channels.</param>
-        public unsafe static StbiImage Load16(string path, int desiredChannels)
+        public unsafe static Image Load16(string path, int desiredChannels)
         {
             int width = 0;
             int height = 0;
@@ -87,7 +83,7 @@ namespace VengineX.Resources.Stbi {
             byte[] pathBytes = Encoding.ASCII.GetBytes(path);
 
             byte* imageData = (byte*)load_16(ref pathBytes[0], ref width, ref height, ref channels, desiredChannels);
-            return new StbiImage(imageData, width, height, desiredChannels, 2);
+            return new Image(imageData, width, height, desiredChannels, 2);
         }
 
 
@@ -97,7 +93,7 @@ namespace VengineX.Resources.Stbi {
         /// </summary>
         /// <param name="path">Path to image.</param>
         /// <param name="desiredChannels">Amount of desired channels.</param>
-        public unsafe static StbiImage LoadF(string path, int desiredChannels)
+        public unsafe static Image LoadF(string path, int desiredChannels)
         {
             int width = 0;
             int height = 0;
@@ -106,7 +102,7 @@ namespace VengineX.Resources.Stbi {
             byte[] pathBytes = Encoding.ASCII.GetBytes(path);
 
             byte* imageData = (byte*)loadf(ref pathBytes[0], ref width, ref height, ref channels, desiredChannels);
-            return new StbiImage(imageData, width, height, desiredChannels, 4); ;
+            return new Image(imageData, width, height, desiredChannels, 4); ;
         }
 
 
@@ -114,16 +110,13 @@ namespace VengineX.Resources.Stbi {
         /// Wrapper function for 
         /// </summary>
         /// <param name="imageData"></param>
-        public unsafe static void ImageFree(byte* imageData)
-        {
-            image_free(imageData);
-        }
+        public unsafe static void ImageFree(byte* imageData) => image_free(imageData);
 
 
-        public static void SetFlipVerticallyOnLoad(bool flip)
-        {
-            set_flip_vertically_on_load(flip ? 1 : 0);
-        }
+        /// <summary>
+        /// Flips images vertically on load. State is kept.
+        /// </summary>
+        public static void SetFlipVerticallyOnLoad(bool flip) => set_flip_vertically_on_load(flip ? 1 : 0);
 
         #endregion
     }

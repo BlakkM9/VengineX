@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace VengineX.Resources.Stbi
 {
-    public class StbiImage : IDisposable
+    /// <summary>
+    /// Class for images loaded with <see cref="StbiWrapper"/>.
+    /// </summary>
+    public class Image : IDisposable
     {
         /// <summary>
         /// Width of the image in pixels.
@@ -53,7 +56,7 @@ namespace VengineX.Resources.Stbi
         private unsafe readonly byte* _data;
 
 
-        public unsafe StbiImage(byte* data, int width, int height, int channels, int bytesPerPixel)
+        public unsafe Image(byte* data, int width, int height, int channels, int bytesPerPixel)
         {
             _data = data;
             Width = width;
@@ -68,7 +71,7 @@ namespace VengineX.Resources.Stbi
 
         protected bool _disposedValue = false;
 
-        ~StbiImage()
+        ~Image()
         {
             Dispose();
         }
