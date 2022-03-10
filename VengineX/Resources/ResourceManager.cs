@@ -18,7 +18,7 @@ namespace VengineX.Resources
         /// </summary>
         /// <param name="resourcePath">Path to the resource (not file path but a path that is used as a key)</param>
         /// <param name="resource">Resource to put in cache</param>
-        public static void CacheResource<T>(string resourcePath, T resource) where T : IDisposable
+        public static void CacheResource<T>(string resourcePath, T resource) where T : IDisposable, IResource
         {
             Type type = typeof(T);
 
@@ -32,6 +32,8 @@ namespace VengineX.Resources
             // Add resource to correct dict
             if (_resourceMap[type].TryAdd(resourcePath, resource))
             {
+                // Save resource path in resource.
+                resource.ResourcePath = resourcePath;
                 Logger.Log(Severity.Info, Tag.Loading, "Cached " + resourcePath + " (" + type.Name + ")");
             }
             else
@@ -47,7 +49,7 @@ namespace VengineX.Resources
         /// <param name="resourcePath">Path to the resource (not file path but a path that is used as a key)</param>
         /// <param name="loadingParameters"><see cref="ILoadingParameters"/></param>
         /// <returns>Loaded resource</returns>
-        public static T LoadResource<T>(string resourcePath, ILoadingParameters loadingParameters) where T : ILoadableResource, IDisposable, new()
+        public static T LoadResource<T>(string resourcePath, ILoadingParameters loadingParameters) where T : ILoadableResource, IDisposable, IResource, new()
         {
 
             // Instantiate resource
@@ -67,6 +69,8 @@ namespace VengineX.Resources
             // Add resource to correct dict
             if (_resourceMap[type].TryAdd(resourcePath, resource))
             {
+                // Save resource path in resource.
+                resource.ResourcePath = resourcePath;
                 Logger.Log(Severity.Info, Tag.Loading, "Loaded " + resourcePath + " (" + type.Name + ")");
                 return resource;
             }
@@ -84,7 +88,7 @@ namespace VengineX.Resources
         /// <typeparam name="T">Type of the requested resource.</typeparam>
         /// <param name="resourcePath">ResourcePath to the requrested resource.</param>
         /// <returns>Requested resource. Fatal error if resource not found.</returns>
-        public static T GetResource<T>(string resourcePath) where T : IDisposable, new()
+        public static T GetResource<T>(string resourcePath) where T : IDisposable, IResource, new()
         {
             Type type = typeof(T);
 
@@ -106,7 +110,7 @@ namespace VengineX.Resources
         /// </summary>
         /// <typeparam name="T">Type of the resource to unload.</typeparam>
         /// <param name="resourcePath">ResourcePath of the resource.</param>
-        public static void UnloadResource<T>(string resourcePath) where T : IDisposable, new()
+        public static void UnloadResource<T>(string resourcePath) where T : IDisposable, IResource, new()
         {
             Type type = typeof(T);
 
@@ -132,7 +136,7 @@ namespace VengineX.Resources
         /// Usually not required as it is determined by the type of <paramref name="resource"/> passed.
         /// </typeparam>
         /// <param name="resource">Resource to unload.</param>
-        public static void UnloadResource<T>(T resource) where T : IDisposable, ILoadableResource, new()
+        public static void UnloadResource<T>(T resource) where T : IDisposable, ILoadableResource, IResource, new()
         {
             UnloadResource<T>(resource.ResourcePath);
         }

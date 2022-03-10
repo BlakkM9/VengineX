@@ -3,17 +3,12 @@
 namespace VengineX.Resources {
 
     /// <summary>
-    /// Interface that represents a resource that can be loaded from files.
-    /// Implement this if you want to load something with the <see cref="ResourceManager"/> (aswell as <see cref="IDisposable"/>)
+    /// Interface that represents a resource that can be loaded from file.<br/>
+    /// Implement this if you want to load something with the <see cref="ResourceManager"/><br/>
+    /// (aswell as <see cref="IDisposable"/> and <see cref="IResource"/>)
     /// </summary>
-    public interface ILoadableResource {
-
-        /// <summary>
-        /// The resource path for this loadable resource (needs to be set in <see cref="Load(string, ref ILoadingParameters)"/>)
-        /// </summary>
-        public string ResourcePath { get; set; }
-
-
+    public interface ILoadableResource
+    {    
         /// <summary>
         /// Used to load this resource by <see cref="ResourceManager"/>.
         /// </summary>

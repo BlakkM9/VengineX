@@ -10,17 +10,18 @@ using VengineX.Resources;
 
 namespace VengineX.Graphics.Rendering.Shaders
 {
-    public class Shader : IBindable, IDisposable, ILoadableResource
+    public class Shader : IBindable, IDisposable, ILoadableResource, IResource
     {
         /// <summary>
         /// OpenGL handle of this shader program.
         /// </summary>
         public int Handle { get; private set; }
 
+
         /// <summary>
         /// ResourcePath of this shader program (<see cref="ResourceManager"/> for more details on resource paths.
         /// </summary>
-        public string ResourcePath { get; set; }
+        public string ResourcePath { get; set; } = "";
 
 
         /// <summary>
@@ -29,7 +30,6 @@ namespace VengineX.Graphics.Rendering.Shaders
         /// </summary>
         public void Load(string resourcePath, ref ILoadingParameters loadingParameters)
         {
-            ResourcePath = resourcePath;
             ShaderLoadingParameters parameters = (ShaderLoadingParameters)loadingParameters;
 
             // Vertex Shader
