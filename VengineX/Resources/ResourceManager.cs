@@ -49,14 +49,14 @@ namespace VengineX.Resources
         /// <param name="resourcePath">Path to the resource (not file path but a path that is used as a key)</param>
         /// <param name="loadingParameters"><see cref="ILoadingParameters"/></param>
         /// <returns>Loaded resource</returns>
-        public static T LoadResource<T>(string resourcePath, ILoadingParameters loadingParameters) where T : ILoadableResource, IDisposable, IResource, new()
+        public static T LoadResource<T>(string resourcePath, ILoadingParameters loadingParameters)
+            where T : ILoadableResource, IDisposable, IResource, new()
         {
-
             // Instantiate resource
             T resource = new();
 
             // Load resource
-            resource.Load(resourcePath, ref loadingParameters);
+            resource.Load(ref loadingParameters);
             Type type = typeof(T);
 
             // Add to resource dictionary

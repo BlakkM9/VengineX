@@ -17,6 +17,6 @@ namespace VengineX.Resources {
         /// This acts as a key within the resource manager internal dictionary.
         /// </param>
         /// <param name="loadingParameters">Parameters for loading this resource.</param>
-        public void Load(string resourcePath, ref ILoadingParameters loadingParameters);
+        public void Load(ref ILoadingParameters loadingParameters);
     }
 }

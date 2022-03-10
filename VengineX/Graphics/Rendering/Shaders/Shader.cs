@@ -26,9 +26,9 @@ namespace VengineX.Graphics.Rendering.Shaders
 
         /// <summary>
         /// Loads the shader program (vert and frag) from disc, preprocesses, compiles and links vert and frag.<br/>
-        /// see: <seealso cref="ShaderLoadingParameters"/> and <seealso cref="ILoadableResource.Load(string, ref ILoadingParameters)"/>.
+        /// <param name="loadingParameters">need to be <see cref="ShaderLoadingParameters"/></param>
         /// </summary>
-        public void Load(string resourcePath, ref ILoadingParameters loadingParameters)
+        public void Load(ref ILoadingParameters loadingParameters)
         {
             ShaderLoadingParameters parameters = (ShaderLoadingParameters)loadingParameters;
 
