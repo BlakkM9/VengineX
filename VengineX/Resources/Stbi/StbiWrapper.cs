@@ -5,19 +5,26 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VengineX.Resources.Stbi {
+namespace VengineX.Resources.Stbi
+{
+    /// <summary>
+    /// Enum for different available loading functions of images.<br/>
+    /// Used for texture loading parameters.
+    /// </summary>
+    public enum LoadingFunction
+    {
+        Load,
+        Load16,
+        LoadF,
+    }
+
 
     // TODO implement error handling (somehow)
-    public static class StbiWrapper {
-
-        public enum LoadingFunction
-        {
-            Load,
-            Load16,
-            LoadF,
-        }
-
-
+    /// <summary>
+    /// Wrapper for stb_image
+    /// </summary>
+    public static class StbiWrapper
+    {
         private const string dllFilePath = "lib/stbilib.dll";
 
 
