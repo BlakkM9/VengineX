@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VengineX.Graphics.Rendering.Pipeline
+namespace VengineX.Graphics.Rendering.Pipelines
 {
     /// <summary>
     /// Base class for rendering pipelines.
