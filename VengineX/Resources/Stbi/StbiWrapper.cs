@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using VengineX.Debugging.Logging;
 
 namespace VengineX.Resources.Stbi
 {
@@ -19,7 +20,6 @@ namespace VengineX.Resources.Stbi
     }
 
 
-    // TODO implement error handling (somehow)
     /// <summary>
     /// Wrapper for stb_image
     /// </summary>
@@ -72,6 +72,12 @@ namespace VengineX.Resources.Stbi
             byte[] pathBytes = Encoding.ASCII.GetBytes(path);
 
             byte* imageData = load(ref pathBytes[0], ref width, ref height, ref channels, desiredChannels);
+
+            if (imageData == null)
+            {
+                Logger.Log(Severity.Error, Tag.Loading, "Failed to load texture from " + path);
+            }
+
             return new Image(imageData, width, height, desiredChannels, 1);
         }
 
@@ -90,6 +96,12 @@ namespace VengineX.Resources.Stbi
             byte[] pathBytes = Encoding.ASCII.GetBytes(path);
 
             byte* imageData = (byte*)load_16(ref pathBytes[0], ref width, ref height, ref channels, desiredChannels);
+
+            if (imageData == null)
+            {
+                Logger.Log(Severity.Error, Tag.Loading, "Failed to load texture from " + path);
+            }
+
             return new Image(imageData, width, height, desiredChannels, 2);
         }
 
@@ -109,6 +121,12 @@ namespace VengineX.Resources.Stbi
             byte[] pathBytes = Encoding.ASCII.GetBytes(path);
 
             byte* imageData = (byte*)loadf(ref pathBytes[0], ref width, ref height, ref channels, desiredChannels);
+
+            if (imageData == null)
+            {
+                Logger.Log(Severity.Error, Tag.Loading, "Failed to load texture from " + path);
+            }
+
             return new Image(imageData, width, height, desiredChannels, 4); ;
         }
 
