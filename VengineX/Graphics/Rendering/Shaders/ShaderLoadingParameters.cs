@@ -15,20 +15,11 @@ namespace VengineX.Graphics.Rendering.Shaders
         /// <summary>
         /// Path to the vertex shader source file.
         /// </summary>
-        public string VertexPath { get; }
+        public string VertexPath { get; set; }
 
         /// <summary>
         /// Path to the fragment shader source file.
         /// </summary>
-        public string FragmentPath { get; }
-
-
-        /// <param name="vertexPath">Path to the vertex shader source file.</param>
-        /// <param name="fragmentPath">Path to the fragment shader source file.</param>
-        public ShaderLoadingParameters(string vertexPath, string fragmentPath)
-        {
-            VertexPath = vertexPath;
-            FragmentPath = fragmentPath;
-        }
+        public string FragmentPath { get; set; }
     }
 }
