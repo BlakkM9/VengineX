@@ -133,9 +133,6 @@ namespace VengineX.Graphics.Rendering
                 GL.VertexAttribPointer(location, fieldCount, type, normalized, stride, offset);
                 GL.EnableVertexAttribArray(location);
 
-                Console.WriteLine($"GL.VertexAttribPointer({location}, {fieldCount}, {type}, {normalized}, {stride}, {offset});");
-                Console.WriteLine($"GL.EnableVertexAttribArray({location});");
-
                 location++;
                 offset += fieldSize;
             }
