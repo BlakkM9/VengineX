@@ -21,7 +21,10 @@ namespace VengineX.Graphics.Rendering
     /// </typeparam>
     public class Mesh<T> : IDisposable, IRenderable
     {
-        public static readonly Type[] AllowedVertexFieldTypes =
+        /// <summary>
+        /// Array holding all currently allowed types for vertex attributes within the provided vertex struct typeparam/>
+        /// </summary>
+        public static readonly Type[] ALLOWED_VERTEX_FIELD_TYPES =
         {
             typeof(float),
             typeof(Vector2),
@@ -119,7 +122,7 @@ namespace VengineX.Graphics.Rendering
 
             foreach (FieldInfo field in vertexType.GetFields())
             {
-                if (!AllowedVertexFieldTypes.Contains(field.FieldType))
+                if (!ALLOWED_VERTEX_FIELD_TYPES.Contains(field.FieldType))
                 {
                     Logger.Log(Severity.Fatal, "Mesh Vertex fields do currently not support " + field.FieldType.FullName + "!");
                 }
