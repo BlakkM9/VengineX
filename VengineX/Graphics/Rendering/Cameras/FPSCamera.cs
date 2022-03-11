@@ -22,8 +22,8 @@ namespace VengineX.Graphics.Rendering.Cameras
         protected Vector3 lookAt;
 
 
-        public FPSCamera(float fov, float viewportWidth, float viewportHeight, float nearPlane, float farPlane)
-            : base(fov, viewportWidth, viewportHeight, nearPlane, farPlane)
+        public FPSCamera(Vector3 position, float fov, float viewportWidth, float viewportHeight, float nearPlane, float farPlane)
+            : base(position, fov, viewportWidth, viewportHeight, nearPlane, farPlane)
         {
 
             Sensitivity = 0.05f;

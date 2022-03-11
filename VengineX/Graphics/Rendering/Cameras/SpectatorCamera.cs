@@ -9,8 +9,8 @@ namespace VengineX.Graphics.Rendering.Cameras
 {
     public class SpectatorCamera : FPSCamera
     {
-        public SpectatorCamera(float fov, float viewportWidth, float viewportHeight, float nearPlane, float farPlane)
-            : base(fov, viewportWidth, viewportHeight, nearPlane, farPlane) { }
+        public SpectatorCamera(Vector3 position, float fov, float viewportWidth, float viewportHeight, float nearPlane, float farPlane)
+            : base(position, fov, viewportWidth, viewportHeight, nearPlane, farPlane) { }
 
         public override void Move(Vector3 direction, double delta)
         {

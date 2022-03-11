@@ -55,11 +55,9 @@ namespace VengineX.Graphics.Rendering.Cameras
         {
             Position = position;
             _viewMatrix = Matrix4.Identity;
-            Update();
-            //_viewportWidth = viewportWidth;
-            //_viewportHeight = viewportHeight;
-
             Frustum = new Frustum();
+
+            Update();
         }
 
         /// <summary>

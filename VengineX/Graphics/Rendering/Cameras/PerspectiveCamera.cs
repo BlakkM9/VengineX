@@ -11,10 +11,9 @@ namespace VengineX.Graphics.Rendering.Cameras
         /// Creates a camera with perspective projection matrix.
         /// </summary>
         /// <param name="fov">Field of view in radians.</param>
-        public PerspectiveCamera(float fov, float viewportWidth, float viewportHeight, float nearPlane, float farPlane)
-            : base(viewportWidth, viewportHeight)
+        public PerspectiveCamera(Vector3 position, float fov, float viewportWidth, float viewportHeight, float nearPlane, float farPlane)
+            :base(position)
         {
-
             ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(fov / 2.0f, viewportWidth / viewportHeight, nearPlane, farPlane);
         }
     }
