@@ -12,16 +12,54 @@ namespace VengineX.Graphics.Rendering.Textures
     /// </summary>
     public struct Texture2DParameters
     {
+        /// <summary>
+        /// Width of the texture to create.
+        /// </summary>
         public int Width { get; set; }
+
+        /// <summary>
+        /// Height of the texture to create.
+        /// </summary>
         public int Height { get; set; }
-        public TextureTarget TextureTarget { get; set; }
+
+        /// <summary>
+        /// Internal pixel format.
+        /// </summary>
         public PixelInternalFormat PixelInternalFormat { get; set; }
+
+        /// <summary>
+        /// Pixel format.
+        /// </summary>
         public PixelFormat PixelFormat { get; set; }
+
+        /// <summary>
+        /// Pixel type.
+        /// </summary>
         public PixelType PixelType { get; set; }
+
+        /// <summary>
+        /// Minifing filter.
+        /// </summary>
         public TextureMinFilter MinFilter { get; set; }
+
+        /// <summary>
+        /// Magnifiyng filter.
+        /// </summary>
         public TextureMagFilter MagFilter { get; set; }
+
+        /// <summary>
+        /// Wrap mode in x dir.
+        /// </summary>
         public TextureWrapMode WrapModeS { get; set; }
+
+        /// <summary>
+        /// Wrap mode in y dir.
+        /// </summary>
         public TextureWrapMode WrapModeT { get; set; }
+
+        /// <summary>
+        /// Should mipmaps be generated for this texture?
+        /// </summary>
         public bool GenerateMipmaps { get; set; }
     }
 }
