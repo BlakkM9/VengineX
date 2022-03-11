@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VengineX.Graphics
+namespace VengineX.Graphics.Rendering
 {
     /// <summary>
     /// Interface for everything that can be rendered.<br/>
@@ -12,6 +12,6 @@ namespace VengineX.Graphics
     /// </summary>
     public interface IRenderable
     {
-
+        public void Render();
     }
 }
