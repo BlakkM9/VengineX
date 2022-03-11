@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VengineX.Resources;
-using VengineX.Resources.Stbi;
+using VengineX.Wrappers.Stbi;
 
 namespace VengineX.Graphics.Rendering.Textures
 {
@@ -18,14 +18,15 @@ namespace VengineX.Graphics.Rendering.Textures
         /// Path to the texture.
         /// </summary>
         public string FilePath { get; set; }
-        public PixelInternalFormat PixelInternalFormat { get; set; }
-        public PixelFormat PixelFormat { get; set; }
-        public PixelType PixelType { get; set; }
-        public TextureMinFilter MinFilter { get; set; }
-        public TextureMagFilter MagFilter { get; set; }
-        public TextureWrapMode WrapModeS { get; set; }
-        public TextureWrapMode WrapModeT { get; set; }
+
+        /// <summary>
+        /// The stbi_image loading function to use for loading this image.
+        /// </summary>
         public LoadingFunction LoadingFunction { get; set; }
-        public bool GenerateMipmaps { get; set; }
+
+        /// <summary>
+        /// Parameters for creating the texture with OpenGL.
+        /// </summary>
+        public Texture2DParameters TextureParameters { get; set; }
     }
 }

@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using VengineX.Debugging.Logging;
 using VengineX.Resources;
-using VengineX.Resources.Stbi;
 using VengineX.Utils.Extensions;
+using VengineX.Wrappers.Stbi;
 
 namespace VengineX.Graphics.Rendering.Textures
 {
@@ -21,46 +21,27 @@ namespace VengineX.Graphics.Rendering.Textures
         /// </summary>
         public string ResourcePath { get; set; } = "";
 
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        public override int Handle { get; protected set; }
-
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        public override TextureTarget TextureTarget { get; protected set; }
-
 
         /// <summary>
         /// Creates a empty texture 2d object for being loaded via <see cref="ResourceManager"/>
         /// </summary>
-        public Texture2D()
-        {
-            TextureTarget = TextureTarget.Texture2D;
-        }
+        public Texture2D() : base(TextureTarget.Texture2D) { }
 
 
         /// <summary>
-        /// Create a new texture that can be used as render target
+        /// Create a new empty texture.
         /// </summary>
-        /// <param name="width">Width of the texture</param>
-        /// <param name="height">Height of the texture</param>
-        /// <param name="parameters">Settings of the texture</param>
-        public Texture2D(int width, int height, ref Texture2DLoadingParameters parameters)
+        /// <param name="parameters">Parameters for creating the texture.</param>
+        public Texture2D(ref Texture2DParameters parameters) : base(TextureTarget.Texture2D)
         {
-            TextureTarget = TextureTarget.Texture2D;
-
-            Handle = GL.GenTexture();
-
             GL.BindTexture(TextureTarget, Handle);
 
             GL.TexImage2D(
                 TextureTarget,
                 0,
                 parameters.PixelInternalFormat,
-                width,
-                height,
+                parameters.Width,
+                parameters.Height,
                 0,
                 parameters.PixelFormat,
                 parameters.PixelType,
@@ -88,16 +69,12 @@ namespace VengineX.Graphics.Rendering.Textures
 
 
         /// <summary>
-        /// Load a Texture2D from file (with given loading parameters).
+        /// Load a Texture2D from file (with given loading parameters; height and width are ignored and taken from actual image).
         /// </summary>
         public void Load(ref ILoadingParameters loadingParameters)
         {
             // Extract specific parameters
             Texture2DLoadingParameters parameters = (Texture2DLoadingParameters)loadingParameters;
-
-            // Generate texture
-            Handle = GL.GenTexture();
-
 
             // Bind the handle
             GL.ActiveTexture(TextureUnit.Texture0);
@@ -111,16 +88,16 @@ namespace VengineX.Graphics.Rendering.Textures
             switch (parameters.LoadingFunction)
             {
                 case LoadingFunction.Load:
-                    image = StbiWrapper.Load(parameters.FilePath, parameters.PixelInternalFormat.ChannelCount());
+                    image = StbiWrapper.Load(parameters.FilePath, parameters.TextureParameters.PixelInternalFormat.ChannelCount());
                     break;
                 case LoadingFunction.Load16:
-                    image = StbiWrapper.Load16(parameters.FilePath, parameters.PixelInternalFormat.ChannelCount());
+                    image = StbiWrapper.Load16(parameters.FilePath, parameters.TextureParameters.PixelInternalFormat.ChannelCount());
                     break;
                 case LoadingFunction.LoadF:
-                    image = StbiWrapper.LoadF(parameters.FilePath, parameters.PixelInternalFormat.ChannelCount());
+                    image = StbiWrapper.LoadF(parameters.FilePath, parameters.TextureParameters.PixelInternalFormat.ChannelCount());
                     break;
                 default:
-                    image = StbiWrapper.Load(parameters.FilePath, parameters.PixelInternalFormat.ChannelCount());
+                    image = StbiWrapper.Load(parameters.FilePath, parameters.TextureParameters.PixelInternalFormat.ChannelCount());
                     Logger.Log(
                         Severity.Error,
                         Tag.Loading,
@@ -133,12 +110,12 @@ namespace VengineX.Graphics.Rendering.Textures
             GL.TexImage2D(
                 TextureTarget,
                 0,
-                parameters.PixelInternalFormat,
+                parameters.TextureParameters.PixelInternalFormat,
                 image.Width,
                 image.Height,
                 0,
-                parameters.PixelFormat,
-                parameters.PixelType,
+                parameters.TextureParameters.PixelFormat,
+                parameters.TextureParameters.PixelType,
                 image.Data);
 
 
@@ -148,17 +125,17 @@ namespace VengineX.Graphics.Rendering.Textures
 
             // Set parameters
             // Min/Mag
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)parameters.MinFilter);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)parameters.MagFilter);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)parameters.TextureParameters.MinFilter);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)parameters.TextureParameters.MagFilter);
 
 
             // WrapS/WrapT
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)parameters.WrapModeS);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)parameters.WrapModeT);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)parameters.TextureParameters.WrapModeS);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)parameters.TextureParameters.WrapModeT);
 
 
             // Mipmaps
-            if (parameters.GenerateMipmaps)
+            if (parameters.TextureParameters.GenerateMipmaps)
             {
                 GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
             }
