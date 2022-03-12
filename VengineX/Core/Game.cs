@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VengineX.Config;
 using VengineX.Debugging.Logging;
+using VengineX.Input;
 using VengineX.Resources;
 using VengineX.Utils;
 
@@ -24,12 +25,15 @@ namespace VengineX.Core
         /// </summary>
         public static Window Window { get; private set; }
 
-
         /// <summary>
         /// The settings for the game (without keymap).
         /// </summary>
         public static T Settings { get; private set; }
 
+        /// <summary>
+        /// The <see cref="InputManager"/> for this game.
+        /// </summary>
+        public static InputManager Input { get; private set;}
 
         /// <summary>
         /// Default constructor, intialising game's window with settings file and default logger configuration.<br/>
@@ -139,6 +143,7 @@ namespace VengineX.Core
         private void Window_UpdateFrame(FrameEventArgs args) 
         {
             Time.Update(args.Time);
+            Input.Update(Window);
             Update(args.Time);
         }
 

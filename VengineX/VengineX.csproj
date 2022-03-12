@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <Folder Include="_lib\" />
-    <Folder Include="_res\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
