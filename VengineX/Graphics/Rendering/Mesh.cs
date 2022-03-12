@@ -20,7 +20,7 @@ namespace VengineX.Graphics.Rendering
     /// VertexAttribPointers are determined automatically via reflection.<br/>
     /// Vertex is a struct holding <see cref="float"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, or <see cref="Vector4"/> <b>fields</b>.
     /// </typeparam>
-    public class Mesh<T> : IDisposable, IRenderable
+    public class Mesh<T> : IDisposable, IRenderable where T : struct
     {
         /// <summary>
         /// Array holding all currently allowed types for vertex attributes within the provided vertex struct typeparam/>
@@ -69,7 +69,7 @@ namespace VengineX.Graphics.Rendering
         /// <summary>
         /// Array holding all vertices of this mesh.
         /// </summary>
-        public PBRVertex[] Vertices { get; private set; }
+        public T[] Vertices { get; private set; }
 
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace VengineX.Graphics.Rendering
         public uint[] Indices { get; private set; }
 
 
-        public Mesh(Vector3 position, PBRVertex[] vertices, uint[] indices)
+        public Mesh(Vector3 position, T[] vertices, uint[] indices)
         {
             _modelMatrix = Matrix4.Identity;
 
@@ -95,7 +95,7 @@ namespace VengineX.Graphics.Rendering
             // Create VertexBufferObject
             _vbo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf(typeof(PBRVertex)), Vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf(typeof(T)), Vertices, BufferUsageHint.StaticDraw);
 
             // Create VertexArrayObject
             _vao = GL.GenVertexArray();
