@@ -1,9 +1,11 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VengineX.Graphics.Rendering.Vertices;
 
 namespace VengineX.Graphics.Rendering.UnitModels
 {
@@ -11,38 +13,44 @@ namespace VengineX.Graphics.Rendering.UnitModels
     public class Quad : IDisposable
     {
 
-        private static readonly float[] vertices = new float[] {
-            // position             // uvs
-            -1.0f,  1.0f, 0.0f,     0.0f, 1.0f,
-            -1.0f, -1.0f, 0.0f,     0.0f, 0.0f,
-             1.0f,  1.0f, 0.0f,     1.0f, 1.0f,
-             1.0f, -1.0f, 0.0f,     1.0f, 0.0f,
+        private static readonly UIVertex[] vertices = new UIVertex[] {
+            new UIVertex()
+            {
+                position = new Vector3(-1, 1, 0),
+                uv = new Vector2(0, 1)
+            },
+            new UIVertex()
+            {
+                position = new Vector3(-1, -1, 0),
+                uv = new Vector2(0, 0)
+            },
+            new UIVertex()
+            {
+                position = new Vector3(1, 1, 0),
+                uv = new Vector2(1, 1)
+            },
+            new UIVertex()
+            {
+                position = new Vector3(1, -1, 0),
+                uv = new Vector2(1, 0)
+            }
         };
 
-        private int _vao;
-        private int _vbo;
+        private static readonly uint[] indices = new uint[] {
+            0, 1, 2,
+            2, 1, 3,
+        };
+
+        private readonly Mesh<UIVertex> _mesh;
 
         public Quad()
         {
-            _vao = GL.GenVertexArray();
-            _vbo = GL.GenBuffer();
-
-            GL.BindVertexArray(_vao);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
-            GL.EnableVertexAttribArray(0);
-
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
-            GL.EnableVertexAttribArray(1);
+            _mesh = new Mesh<UIVertex>(Vector3.Zero, vertices, indices);
         }
 
         public void Render()
         {
-            GL.BindVertexArray(_vao);
-            GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
-            GL.BindVertexArray(0);
+            _mesh.Render();
         }
 
 
@@ -56,20 +64,18 @@ namespace VengineX.Graphics.Rendering.UnitModels
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects)
+                    _mesh.Dispose();
                 }
 
-                GL.DeleteBuffer(_vao);
-                GL.DeleteBuffer(_vbo);
                 _disposedValue = true;
             }
         }
 
-        ~Quad()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: false);
-        }
+        //~Quad()
+        //{
+        //    // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //    Dispose(disposing: false);
+        //}
 
         public void Dispose()
         {
