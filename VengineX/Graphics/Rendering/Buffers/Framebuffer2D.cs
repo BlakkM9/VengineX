@@ -17,15 +17,27 @@ namespace VengineX.Graphics.Rendering.Buffers
     {
 
         private int _fbo;
-        private int _rbo;
+        private int _rbo = 0;
 
         /// <summary>
         /// Output texture of this framebuffer.
         /// </summary>
-        public Texture2D OutputTexture { get; private set; } 
+        public Texture2D OutputTexture { get; private set; }
 
 
-        public Framebuffer2D(int width, int height)
+        /// <summary>
+        /// Creates a new framebuffer with a 2D output texture <see cref="FramebufferAttachment.ColorAttachment0"/>.
+        /// </summary>
+        /// <param name="width">Width of the framebuffers output texture.</param>
+        /// <param name="height">Height of the framebuffers output texture.</param>
+        /// <param name="internalFormat">Internal pixel format of the framebuffers output texture.</param>
+        /// <param name="pixelFormat">Pixel format of the framebuffers output texture.</param>
+        /// <param name="attachDepthAndStenchil">Wether or not to attach an Renderbuffer to save stencil and depth aswell.</param>
+        public Framebuffer2D(
+            int width, int height,
+            PixelInternalFormat internalFormat,
+            PixelFormat pixelFormat,
+            bool attachDepthAndStenchil)
         {
             // Create frame buffer
             _fbo = GL.GenFramebuffer();
@@ -36,8 +48,8 @@ namespace VengineX.Graphics.Rendering.Buffers
             {
                 Width = width,
                 Height = height,
-                PixelInternalFormat = PixelInternalFormat.Rgb,
-                PixelFormat = PixelFormat.Rgb,
+                PixelInternalFormat = internalFormat,
+                PixelFormat = pixelFormat,
                 PixelType = PixelType.UnsignedByte,
                 MinFilter = TextureMinFilter.Linear,
                 MagFilter = TextureMagFilter.Linear,
@@ -59,25 +71,28 @@ namespace VengineX.Graphics.Rendering.Buffers
                 0);
 
 
-            // Create render buffer
-            _rbo = GL.GenRenderbuffer();
-            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, _fbo);
+            // Create and attach renderbuffer for depth and stencil.
+            if (attachDepthAndStenchil)
+            {
+                // Create render buffer
+                _rbo = GL.GenRenderbuffer();
+                GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, _fbo);
 
-            GL.RenderbufferStorage(
-                RenderbufferTarget.Renderbuffer,
-                RenderbufferStorage.Depth24Stencil8,
-                width,
-                height);
+                GL.RenderbufferStorage(
+                    RenderbufferTarget.Renderbuffer,
+                    RenderbufferStorage.Depth24Stencil8,
+                    width,
+                    height);
 
-            // Unbind RBO
-            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
+                // Unbind RBO
+                GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
 
-            // Attach rbo depth and stencil to fbo
-            GL.FramebufferRenderbuffer(
-                FramebufferTarget.Framebuffer,
-                FramebufferAttachment.DepthStencilAttachment,
-                RenderbufferTarget.Renderbuffer, _rbo);
-
+                // Attach rbo depth and stencil to fbo
+                GL.FramebufferRenderbuffer(
+                    FramebufferTarget.Framebuffer,
+                    FramebufferAttachment.DepthStencilAttachment,
+                    RenderbufferTarget.Renderbuffer, _rbo);
+            }
 
 
             // Check for completion
@@ -127,6 +142,10 @@ namespace VengineX.Graphics.Rendering.Buffers
                 }
 
                 GL.DeleteFramebuffer(_fbo);
+                if (_rbo != 0)
+                {
+                    GL.DeleteRenderbuffer(_rbo);
+                }
                 _disposedValue = true;
             }
         }
