@@ -6,10 +6,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VengineX.Graphics.Rendering
+namespace VengineX.Graphics.Rendering.Vertices
 {
+    /// <summary>
+    /// Basic vertex for meshes that use a pbr or comparable shader.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct Vertex
+    public struct PBRVertex
     {
         public Vector3 position;
         public Vector3 normal;

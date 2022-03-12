@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using VengineX.Debugging.Logging;
+using VengineX.Graphics.Rendering.Vertices;
 
 namespace VengineX.Graphics.Rendering
 {
@@ -68,7 +69,7 @@ namespace VengineX.Graphics.Rendering
         /// <summary>
         /// Array holding all vertices of this mesh.
         /// </summary>
-        public Vertex[] Vertices { get; private set; }
+        public PBRVertex[] Vertices { get; private set; }
 
 
         /// <summary>
@@ -77,7 +78,7 @@ namespace VengineX.Graphics.Rendering
         public uint[] Indices { get; private set; }
 
 
-        public Mesh(Vector3 position, Vertex[] vertices, uint[] indices)
+        public Mesh(Vector3 position, PBRVertex[] vertices, uint[] indices)
         {
             _modelMatrix = Matrix4.Identity;
 
@@ -94,7 +95,7 @@ namespace VengineX.Graphics.Rendering
             // Create VertexBufferObject
             _vbo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf(typeof(Vertex)), Vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf(typeof(PBRVertex)), Vertices, BufferUsageHint.StaticDraw);
 
             // Create VertexArrayObject
             _vao = GL.GenVertexArray();
