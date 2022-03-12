@@ -52,7 +52,6 @@ namespace VengineX.Core
             Settings = new T();
             Settings.LoadOrDefault();
 
-
             // Show console when in debugging mode and overwrite close handler.
             if (Settings.DebugMode)
             {
@@ -99,6 +98,9 @@ namespace VengineX.Core
             // Create window and add event hooks.
             Window = new Window(gwSettings, nwSettings);
             RegisterWindowHooks();
+
+            // Create input manager
+            Input = new InputManager(Window);
         }
 
 
@@ -143,7 +145,7 @@ namespace VengineX.Core
         private void Window_UpdateFrame(FrameEventArgs args) 
         {
             Time.Update(args.Time);
-            Input.Update(Window);
+            Input.Update();
             Update(args.Time);
         }
 

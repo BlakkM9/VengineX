@@ -10,6 +10,8 @@ namespace VengineX.Input
 {
     public class InputManager
     {
+        private readonly Core.Window _window;
+
         /// <summary>
         /// The current <see cref="OpenTK.Windowing.GraphicsLibraryFramework.MouseState"/> in the current frame.
         /// </summary>
@@ -20,16 +22,23 @@ namespace VengineX.Input
         /// </summary>
         public KeyboardState KeyboardState { get; private set; }
 
+        /// <summary>
+        /// Creates a new InputManager for given window.
+        /// </summary>
+        /// <param name="window"></param>
+        public InputManager(Core.Window window)
+        {
+            _window = window;
+        }
 
         /// <summary>
         /// Updates <see cref="MouseState"/> and <see cref="KeyboardState"/>.<br/>
         /// Called at the beginning of every frame update from <see cref="Game{T}"/>.
         /// </summary>
-        /// <param name="window">The window to take the input state snapshot from.</param>
-        internal void Update(Core.Window window)
+        internal void Update()
         {
-            MouseState = window.MouseState.GetSnapshot();
-            KeyboardState = window.KeyboardState.GetSnapshot();
+            MouseState = _window.MouseState.GetSnapshot();
+            KeyboardState = _window.KeyboardState.GetSnapshot();
         }
     }
 }
