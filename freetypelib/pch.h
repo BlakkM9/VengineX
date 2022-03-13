@@ -29,11 +29,11 @@ extern "C" __declspec(dllexport) bool Init_FreeType() {
     return (bool)FT_Init_FreeType(&library);
 }
 
-extern "C" __declspec(dllexport) bool Free_FreeType() {
+extern "C" __declspec(dllexport) bool Done_FreeType() {
     return (bool)FT_Done_FreeType(library);
 }
 
-extern "C" __declspec(dllexport) Glyph * Load_Glyphs(char const* filename, unsigned char from, unsigned char to, int size) {
+extern "C" __declspec(dllexport) Glyph* Load_Glyphs(char const* filename, unsigned char from, unsigned char to, int size) {
     if (to <= from) return nullptr;
 
     Glyph* outputGlpyhs = new Glyph[to - from];
