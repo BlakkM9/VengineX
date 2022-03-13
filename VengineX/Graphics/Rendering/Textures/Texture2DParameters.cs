@@ -61,5 +61,11 @@ namespace VengineX.Graphics.Rendering.Textures
         /// Should mipmaps be generated for this texture?
         /// </summary>
         public bool GenerateMipmaps { get; set; }
+
+        /// <summary>
+        /// Optional pixel data for the texture.<br/>
+        /// Default is IntPtr.Zero.
+        /// </summary>
+        public IntPtr PixelData { get; set; }
     }
 }
