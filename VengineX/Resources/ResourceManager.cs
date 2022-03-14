@@ -119,6 +119,7 @@ namespace VengineX.Resources
                 if (_resourceMap[type].TryGetValue(resourcePath, out var resource))
                 {
                     resource.Dispose();
+                    _resourceMap[type].Remove(resourcePath);
                     return;
                 }
             }
@@ -151,6 +152,7 @@ namespace VengineX.Resources
             {
                 foreach (KeyValuePair<string, IDisposable> innerEntry in outerEntry.Value)
                 {
+                    Logger.Log($"Unloading resource that was not disposed in UnloadAllResources: {innerEntry.Key} ({outerEntry.Key.Name})");
                     innerEntry.Value.Dispose();
                 }
             }
