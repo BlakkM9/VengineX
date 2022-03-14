@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VengineX.Debugging.Logging;
 using VengineX.Graphics.Rendering.Vertices;
+using VengineX.Utils;
 
 namespace VengineX.Graphics.Rendering
 {
@@ -20,7 +21,7 @@ namespace VengineX.Graphics.Rendering
     /// VertexAttribPointers are determined automatically via reflection.<br/>
     /// Vertex is a struct holding <see cref="float"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, or <see cref="Vector4"/> <b>fields</b>.
     /// </typeparam>
-    public class Mesh<T> : IDisposable, IRenderable where T : struct
+    public class Mesh<T> : IDisposable, IRenderable where T : unmanaged
     {
         /// <summary>
         /// Array holding all currently allowed types for vertex attributes within the provided vertex struct typeparam/>
@@ -46,6 +47,7 @@ namespace VengineX.Graphics.Rendering
         }
         private Matrix4 _modelMatrix;
 
+        public BufferUsageHint BufferUsage { get; }
 
         /// <summary>
         /// Position of this mesh.<br/>
@@ -66,36 +68,49 @@ namespace VengineX.Graphics.Rendering
         private Vector3 _position;
 
 
-        /// <summary>
-        /// Array holding all vertices of this mesh.
-        /// </summary>
-        public T[] Vertices { get; private set; }
+        ///// <summary>
+        ///// Array holding all vertices of this mesh.
+        ///// </summary>
+        //public T[] Vertices { get; private set; }
 
 
-        /// <summary>
-        /// Array holding all indices of this mesh.
-        /// </summary>
-        public uint[] Indices { get; private set; }
+        ///// <summary>
+        ///// Array holding all indices of this mesh.
+        ///// </summary>
+        //public uint[] Indices { get; private set; }
 
 
-        public Mesh(Vector3 position, T[] vertices, uint[] indices)
+        private int _numIndices;
+
+
+        public Mesh(Vector3 position, BufferUsageHint bufferUsage, T[] vertices, uint[] indices)
         {
             _modelMatrix = Matrix4.Identity;
-
             Position = position;
-            Vertices = vertices;
-            Indices = indices;
+            BufferUsage = bufferUsage;
 
-            SetupMesh();
+            SetupMesh(vertices, indices);
         }
 
 
-        private void SetupMesh()
+        public Mesh(Vector3 position, BufferUsageHint bufferUsage, UnmanagedArray<T> vertices, UnmanagedArray<uint> indices)
         {
+            _modelMatrix = Matrix4.Identity;
+            Position = position;
+            BufferUsage = bufferUsage;
+
+            SetupMesh(vertices, indices);
+        }
+
+
+        private void SetupMesh(T[] vertices, uint[] indices)
+        {
+            _numIndices = indices.Length;
+
             // Create VertexBufferObject
             _vbo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf(typeof(T)), Vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf(typeof(T)), vertices, BufferUsage);
 
             // Create VertexArrayObject
             _vao = GL.GenVertexArray();
@@ -105,8 +120,30 @@ namespace VengineX.Graphics.Rendering
             // ebo is a property of vao so vao needs to be binded when we bind ebo
             _ebo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsage);
 
+            SetupAttribPointers();
+        }
+
+
+        private void SetupMesh(UnmanagedArray<T> vertices, UnmanagedArray<uint> indices)
+        {
+            _numIndices = indices.Length;
+
+            // Create VertexBufferObject
+            _vbo = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf(typeof(T)), vertices.Pointer, BufferUsage);
+
+            // Create VertexArrayObject
+            _vao = GL.GenVertexArray();
+            GL.BindVertexArray(_vao);
+
+            // Create ElementBufferObject
+            // ebo is a property of vao so vao needs to be binded when we bind ebo
+            _ebo = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices.Pointer, BufferUsage);
 
             SetupAttribPointers();
         }
@@ -150,8 +187,38 @@ namespace VengineX.Graphics.Rendering
         public void Render()
         {
             GL.BindVertexArray(_vao);
-            GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
+            GL.DrawElements(PrimitiveType.Triangles, _numIndices, DrawElementsType.UnsignedInt, 0);
             GL.BindVertexArray(0);
+        }
+
+
+        /// <summary>
+        /// Updates the vertices and indices for this mesh
+        /// </summary>
+        public void UpdateVertices(T[] vertices, uint[] indices)
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf(typeof(T)), vertices, BufferUsage);
+
+            GL.BindVertexArray(_vao);
+
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsage);
+        }
+
+
+        /// <summary>
+        /// Updates the vertices and indices for this mesh
+        /// </summary>
+        public void UpdateVertices(ref UnmanagedArray<T> vertices, ref UnmanagedArray<uint> indices)
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf(typeof(T)), vertices.Pointer, BufferUsage);
+
+            GL.BindVertexArray(_vao);
+
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices.Pointer, BufferUsage);
         }
 
 
@@ -170,8 +237,8 @@ namespace VengineX.Graphics.Rendering
                     GL.DeleteBuffer(_ebo);
                 }
 
-                Vertices = null;
-                Indices = null;
+                //Vertices = null;
+                //Indices = null;
                 _disposedValue = true;
             }
         }
