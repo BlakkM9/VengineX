@@ -10,16 +10,17 @@ using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Vertices;
 using VengineX.Resources;
 using VengineX.UI.Fonts;
+using VengineX.Utils;
 using VengineX.Wrappers.FreeType;
 
 namespace VengineX.UI.Elements
 {
     /// <summary>
-    /// A label with text.
+    /// Label with text.
     /// </summary>
-    public class Text : UIElement
+    public class Label : UIElement, IDisposable
     {
-        public static Shader BitmapFontShader { get; private set; } = null;
+        public static Shader BitmapFontShader { get; private set; }
         public static int ProjectionMatrixLocation { get; private set; }
         public static int ModelMatrixLocation { get; private set; }
         public static int ViewMatrixLocation { get; private set; }
@@ -28,11 +29,26 @@ namespace VengineX.UI.Elements
         public Vector4 Color { get => _color; set => _color = value; }
         protected Vector4 _color;
 
+        public string Text
+        {
+            get => _text;
+            set
+            {
+                _text = value;
+                _font.CreateMeshData(_text, out UnmanagedArray<UIVertex> vertices, out UnmanagedArray<uint> indices);
+                _textMesh.UpdateVertices(ref vertices, ref indices);
+                vertices.Free();
+                indices.Free();
+                Width = _font.CalculateWidth(_text);
+            }
+        }
+        protected string _text;
+
+
         private Mesh<UIVertex> _textMesh;
         private BitmapFont _font;
 
-
-        public Text(BitmapFont font, string text, float x, float y, float size, Vector4 color)
+        public Label(BitmapFont font, string text, float x, float y, float size, Vector4 color)
             : base(x, y, font.CalculateWidth(text), size)
         {
             // Lazy shader initialization
@@ -42,10 +58,15 @@ namespace VengineX.UI.Elements
                 ProjectionMatrixLocation = BitmapFontShader.GetUniformLocation("P");
                 ModelMatrixLocation = BitmapFontShader.GetUniformLocation("M");
                 ViewMatrixLocation = BitmapFontShader.GetUniformLocation("V");
+                ColorLocation = BitmapFontShader.GetUniformLocation("uColor");
             }
 
             _font = font;
-            _textMesh = font.CreateMesh(text);
+            _text = text;
+            _font.CreateMeshData(_text, out UnmanagedArray<UIVertex> vertices, out UnmanagedArray<uint> indices);
+            _textMesh = new Mesh<UIVertex>(Vector3.Zero, BufferUsageHint.StaticDraw, vertices, indices);
+            vertices.Free();
+            indices.Free();
             _color = color;
 
             CalculateModelMatrix();
@@ -83,6 +104,39 @@ namespace VengineX.UI.Elements
                 ModelMatrix *= Matrix4.CreateScale(Height / _font.Size, Height / _font.Size, 0);
                 ModelMatrix *= Matrix4.CreateTranslation(X, -(Y + Height), 0);
             }
+        }
+
+
+        private bool _disposedValue;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                    _textMesh?.Dispose();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                _disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~Text()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
