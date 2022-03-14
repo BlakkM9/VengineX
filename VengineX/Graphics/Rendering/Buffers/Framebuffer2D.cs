@@ -48,7 +48,54 @@ namespace VengineX.Graphics.Rendering.Buffers
             _fbo = GL.GenFramebuffer();
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, _fbo);
 
+
             // Create output texture
+            CreateOutputTexture(width, height, internalFormat, pixelFormat);
+
+
+            // Bind output texture to framebuffer
+            GL.FramebufferTexture2D(
+                FramebufferTarget.Framebuffer,
+                FramebufferAttachment.ColorAttachment0,
+                TextureTarget.Texture2D,
+                OutputTexture.Handle,
+                0);
+
+
+            
+            if (attachDepthAndStenchil)
+            {
+                // Create and attach renderbuffer for depth and stencil.
+                CreateAndAttachRenderbuffer(width, height);
+            }
+
+
+            // Check for completion
+            if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
+            {
+                Logger.Log(Severity.Error, "Failed to create framebuffer!");
+            }
+            else
+            {
+                Logger.Log(Severity.Info, $"Created framebuffer with size {width}x{height}");
+            }
+
+
+            // Unbind framebuffer.
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+        }
+
+
+        /// <summary>
+        /// Creates the output texture for this framebuffer.<br/>
+        /// For parameters see docs of <see cref="Framebuffer2D(int, int, PixelInternalFormat, PixelFormat, bool)"/>.
+        /// </summary>
+        protected virtual void CreateOutputTexture(
+            int width,
+            int height,
+            PixelInternalFormat internalFormat,
+            PixelFormat pixelFormat)
+        {
             Texture2DParameters parameters = new Texture2DParameters()
             {
                 Width = width,
@@ -65,53 +112,29 @@ namespace VengineX.Graphics.Rendering.Buffers
 
             OutputTexture = new Texture2D(ref parameters);
             OutputTexture.Bind();
+        }
 
 
-            // Bind output texture to framebuffer
-            GL.FramebufferTexture2D(
+        protected virtual void CreateAndAttachRenderbuffer(int width, int height)
+        {
+            // Create render buffer
+            _rbo = GL.GenRenderbuffer();
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, _fbo);
+
+            GL.RenderbufferStorage(
+                RenderbufferTarget.Renderbuffer,
+                RenderbufferStorage.Depth24Stencil8,
+                width,
+                height);
+
+            // Unbind RBO
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
+
+            // Attach rbo depth and stencil to fbo
+            GL.FramebufferRenderbuffer(
                 FramebufferTarget.Framebuffer,
-                FramebufferAttachment.ColorAttachment0,
-                TextureTarget.Texture2D,
-                OutputTexture.Handle,
-                0);
-
-
-            // Create and attach renderbuffer for depth and stencil.
-            if (attachDepthAndStenchil)
-            {
-                // Create render buffer
-                _rbo = GL.GenRenderbuffer();
-                GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, _fbo);
-
-                GL.RenderbufferStorage(
-                    RenderbufferTarget.Renderbuffer,
-                    RenderbufferStorage.Depth24Stencil8,
-                    width,
-                    height);
-
-                // Unbind RBO
-                GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
-
-                // Attach rbo depth and stencil to fbo
-                GL.FramebufferRenderbuffer(
-                    FramebufferTarget.Framebuffer,
-                    FramebufferAttachment.DepthStencilAttachment,
-                    RenderbufferTarget.Renderbuffer, _rbo);
-            }
-
-
-            // Check for completion
-            if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
-            {
-                Logger.Log(Severity.Error, "Failed to create framebuffer!");
-            }
-            else
-            {
-                Logger.Log(Severity.Info, $"Created framebuffer with size {width}x{height}");
-            }
-
-            // Unbind framebuffer.
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+                FramebufferAttachment.DepthStencilAttachment,
+                RenderbufferTarget.Renderbuffer, _rbo);
         }
 
 
