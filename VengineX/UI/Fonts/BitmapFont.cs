@@ -243,12 +243,12 @@ namespace VengineX.UI.Fonts
 
 
         /// <summary>
-        /// Creates a mesh for the given text.
+        /// Creates indices and vertices for the given text.
         /// </summary>
-        public Mesh<UIVertex> CreateMesh(string text)
+        public void CreateMeshData(string text, out UnmanagedArray<UIVertex> vertices, out UnmanagedArray<uint> indices)
         {
-            UIVertex[] vertices = new UIVertex[text.Length * 4];
-            uint[] indices = new uint[text.Length * 6];
+            vertices = new UnmanagedArray<UIVertex>(text.Length * 4);
+            indices = new UnmanagedArray<uint>(text.Length * 6);
 
             uint x = 0;
             uint vertIndex = 0;
@@ -264,6 +264,7 @@ namespace VengineX.UI.Fonts
 
                 float w = ch.Size.X;
                 float h = ch.Size.Y;
+
 
                 // Vertices
                 vertices[vertIndex + 0] = new UIVertex()
@@ -287,10 +288,6 @@ namespace VengineX.UI.Fonts
                     uv = ch.UVs[3],
                 };
 
-                Console.WriteLine(vertices[vertIndex + 0].position + ", " + vertices[vertIndex + 0].uv);
-                Console.WriteLine(vertices[vertIndex + 1].position + ", " + vertices[vertIndex + 1].uv);
-                Console.WriteLine(vertices[vertIndex + 2].position + ", " + vertices[vertIndex + 2].uv);
-                Console.WriteLine(vertices[vertIndex + 3].position + ", " + vertices[vertIndex + 3].uv);
 
                 // Indices
                 indices[indIndex + 0] = vertIndex + 0;
@@ -306,8 +303,6 @@ namespace VengineX.UI.Fonts
 
                 x += ch.Advance >> 6;
             }
-
-            return new Mesh<UIVertex>(Vector3.Zero, vertices, indices);
         }
 
 
@@ -319,7 +314,7 @@ namespace VengineX.UI.Fonts
             float width = 0;
             foreach (char c in text)
             {
-                width += _characters[(byte)c].Advance;
+                width += _characters[(byte)c].Advance >> 6;
 
             }
             return width;
