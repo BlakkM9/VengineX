@@ -41,13 +41,24 @@ namespace VengineX.Graphics.Rendering.UnitModels
             2, 1, 3,
         };
 
+        // TODO this could be reused and only created once.
+        /// <summary>
+        /// Mesh for the unit quad.
+        /// </summary>
         private readonly Mesh<UIVertex> _mesh;
 
+
+        /// <summary>
+        /// Creates a new unit quad.
+        /// </summary>
         public Quad()
         {
             _mesh = new Mesh<UIVertex>(Vector3.Zero, vertices, indices);
         }
 
+        /// <summary>
+        /// Renders the unitquad.
+        /// </summary>
         public void Render()
         {
             _mesh.Render();
