@@ -47,6 +47,9 @@ namespace VengineX.Graphics.Rendering
         }
         private Matrix4 _modelMatrix;
 
+        /// <summary>
+        /// The buffer usage hint for this mesh.
+        /// </summary>
         public BufferUsageHint BufferUsage { get; }
 
         /// <summary>
@@ -79,7 +82,9 @@ namespace VengineX.Graphics.Rendering
         ///// </summary>
         //public uint[] Indices { get; private set; }
 
-
+        /// <summary>
+        /// Amount of indices in this mesh.
+        /// </summary>
         private int _numIndices;
 
 
@@ -197,6 +202,8 @@ namespace VengineX.Graphics.Rendering
         /// </summary>
         public void UpdateVertices(T[] vertices, uint[] indices)
         {
+            _numIndices = indices.Length;
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
             GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf(typeof(T)), vertices, BufferUsage);
 
@@ -212,6 +219,8 @@ namespace VengineX.Graphics.Rendering
         /// </summary>
         public void UpdateVertices(ref UnmanagedArray<T> vertices, ref UnmanagedArray<uint> indices)
         {
+            _numIndices = indices.Length;
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
             GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf(typeof(T)), vertices.Pointer, BufferUsage);
 
