@@ -24,6 +24,11 @@ namespace VengineX.Graphics.Rendering.Buffers
         /// </summary>
         public Texture2D OutputTexture { get; private set; }
 
+        /// <summary>
+        /// Wether or not the output texture is detached from this framebuffer.<br/>
+        /// If the texture is detached it will no longer be disposed if the framebuffer is disposed.
+        /// </summary>
+        public bool IsTextureDetached { get; private set; } = false;
 
         /// <summary>
         /// Creates a new framebuffer with a 2D output texture <see cref="FramebufferAttachment.ColorAttachment0"/>.
@@ -111,10 +116,25 @@ namespace VengineX.Graphics.Rendering.Buffers
 
 
         /// <summary>
+        /// Detaches the output texture of this framebuffer.<br/>
+        /// A detached texture will no longer be disposed when the framebuffer is disposed.
+        /// </summary>
+        /// <returns>Detached Texture2D</returns>
+        public Texture2D DetachTexture()
+        {
+            IsTextureDetached = true;
+            return OutputTexture;
+        }
+
+
+        #region IBindable
+
+        /// <summary>
         /// Binds this framebuffer to the current renderer state.
         /// </summary>
         public void Bind()
         {
+            GL.Viewport(0, 0, OutputTexture.Width, OutputTexture.Height);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, _fbo);
         }
 
@@ -124,8 +144,13 @@ namespace VengineX.Graphics.Rendering.Buffers
         /// </summary>
         public void Unbind()
         {
+            int[] data = new int[4];
+            GL.GetInteger(GetPName.Viewport, data);
+            GL.Viewport(data[0], data[1], data[2], data[3]);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
+
+        #endregion
 
 
         #region IDisposable
@@ -138,7 +163,7 @@ namespace VengineX.Graphics.Rendering.Buffers
             {
                 if (disposing)
                 {
-                    OutputTexture.Dispose();
+                    if (!IsTextureDetached) { OutputTexture.Dispose(); }
                 }
 
                 GL.DeleteFramebuffer(_fbo);
