@@ -41,6 +41,11 @@ namespace VengineX.Core
         public static InputManager Input { get; private set;}
 
         /// <summary>
+        /// The <see cref="ScreenManager"/> for this game.
+        /// </summary>
+        public static ScreenManager ScreenManager { get; private set; }
+
+        /// <summary>
         /// Default constructor, intialising game's window with settings file and default logger configuration.<br/>
         /// If no settings are found, creating default settings file.
         /// </summary>
@@ -103,6 +108,9 @@ namespace VengineX.Core
             // Create window and add event hooks.
             Window = new Window(gwSettings, nwSettings);
             RegisterWindowHooks();
+
+            // Create screen manager
+            ScreenManager = new ScreenManager();
 
             // Create input manager
             Input = new InputManager(Window);

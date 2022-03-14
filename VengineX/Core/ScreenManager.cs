@@ -6,12 +6,22 @@ using System.Threading.Tasks;
 
 namespace VengineX.Core
 {
-    public static class ScreenManager
+    public class ScreenManager
     {
 
         /// <summary>
         /// Screen that is currently active
         /// </summary>
-        public static IScreen? CurrentScreen { get; set; }
+        public IScreen? CurrentScreen
+        {
+            get => _currentScreen;
+            set
+            {
+                CurrentScreen?.Unload();
+                _currentScreen = value;
+                CurrentScreen?.Load();
+            }
+        }
+        protected IScreen? _currentScreen;
     }
 }
