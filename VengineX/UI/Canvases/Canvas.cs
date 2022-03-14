@@ -21,13 +21,6 @@ namespace VengineX.UI.Canvases
     /// </summary>
     public class Canvas : UIElement, IDisposable
     {
-        // TEST ONLY!
-        public Shader ImageShader { get; }
-        public int colorLocation;
-        public int pLoc;
-        public int mLoc;
-        public int vLoc;
-
         /// <summary>
         /// The input manager that controls all the UI elements within this canvas.
         /// </summary>
@@ -44,6 +37,12 @@ namespace VengineX.UI.Canvases
         /// </summary>
         public ref Matrix4 ProjectionMatrix { get => ref _projectionMatrix; }
         private Matrix4 _projectionMatrix;
+
+        /// <summary>
+        /// The view matrix of this canvas. I don't think this is actually needed.
+        /// </summary>
+        public ref Matrix4 ViewMatrix { get => ref _viewMatrix; }
+        private Matrix4 _viewMatrix = Matrix4.Identity;
 
         /// <summary>
         /// Width of the canvas.
@@ -74,17 +73,6 @@ namespace VengineX.UI.Canvases
             ParentElement = this;
 
             Quad = new Quad();
-
-            // TEST LOAD UI SHADER
-            ImageShader = ResourceManager.GetResource<Shader>("shader.image");
-            colorLocation = ImageShader.GetUniformLocation("uTint");
-            pLoc = ImageShader.GetUniformLocation("P");
-            mLoc = ImageShader.GetUniformLocation("M");
-            vLoc = ImageShader.GetUniformLocation("V");
-
-            ImageShader.SetUniformMat4(pLoc, ref ProjectionMatrix);
-            Matrix4 v = Matrix4.Identity;
-            ImageShader.SetUniformMat4(vLoc, ref v);
         }
 
 
@@ -118,6 +106,13 @@ namespace VengineX.UI.Canvases
             _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, 0, Height, -1.0f, 1.0f);
         }
 
+
+        protected override void CalculateModelMatrix()
+        {
+            //throw new NotImplementedException();
+        }
+
+
         #region IDisposable
 
         private bool _disposedValue;
@@ -129,7 +124,6 @@ namespace VengineX.UI.Canvases
                 if (disposing)
                 {
                     Quad.Dispose();
-                    ResourceManager.UnloadResource(ImageShader);
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
