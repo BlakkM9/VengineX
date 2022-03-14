@@ -21,6 +21,15 @@ namespace VengineX.Graphics.Rendering.Textures
         /// </summary>
         public string ResourcePath { get; set; } = "";
 
+        /// <summary>
+        /// Width of this texture (in pixels).
+        /// </summary>
+        public int Width { get; private set; }
+
+        /// <summary>
+        /// Height of this texture (in pixels).
+        /// </summary>
+        public int Height { get; private set; }
 
         /// <summary>
         /// Creates a empty texture 2d object for being loaded via <see cref="ResourceManager"/>
@@ -34,6 +43,10 @@ namespace VengineX.Graphics.Rendering.Textures
         /// <param name="parameters">Parameters for creating the texture.</param>
         public Texture2D(ref Texture2DParameters parameters) : base(TextureTarget.Texture2D)
         {
+            // Update textures size properties
+            Width = parameters.Width;
+            Height = parameters.Height;
+
             GL.BindTexture(TextureTarget, Handle);
 
             GL.TexImage2D(
@@ -45,9 +58,8 @@ namespace VengineX.Graphics.Rendering.Textures
                 0,
                 parameters.PixelFormat,
                 parameters.PixelType,
-                IntPtr.Zero
+                parameters.PixelData
             );
-
 
             // Set parameters
             // Min/Mag
@@ -105,6 +117,10 @@ namespace VengineX.Graphics.Rendering.Textures
                     break;
             }
 
+
+            // Update textures size properties
+            Width = image.Width;
+            Height = image.Height;
 
             // Generate texture
             GL.TexImage2D(
