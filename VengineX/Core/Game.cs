@@ -9,9 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using VengineX.Config;
 using VengineX.Debugging.Logging;
+using VengineX.Graphics.Rendering.Shaders;
+using VengineX.Graphics.Rendering.Textures;
 using VengineX.Input;
 using VengineX.Resources;
+using VengineX.UI.Fonts;
 using VengineX.Utils;
+using VengineX.Wrappers.FreeType;
+using VengineX.Wrappers.Stbi;
 
 namespace VengineX.Core
 {
@@ -130,6 +135,10 @@ namespace VengineX.Core
         {
             // Initialize systems.
             Logger.Initialize();
+            FreeTypeWrapper.InitFreeType();
+
+            // Load base resources.
+            LoadBaseResources();
 
             // Set default GL clears.
             GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -175,11 +184,68 @@ namespace VengineX.Core
 
             Window.Dispose();
 
-            // Unload all resources
+            // Unload systems.
+            FreeTypeWrapper.DoneFreeType();
+
+            // Unload all resources.
             ResourceManager.UnloadAllResources();
 
             // Close log file stream.
             Logger.CloseCurrenLogFileStream();
+        }
+
+
+        /// <summary>
+        /// Loads all the base resources that should be loaded before startup.<br/>
+        /// This also includes shaders for the ui/loading bitmap fonts etc.<br/>
+        /// Override this if you don't need all these resources but be sure that they<br/>
+        /// are not used internally by the engine, proceed with caution.<br/><br/>
+        /// All these resources are not explicitly disposed but disposed via <see cref="ResourceManager.UnloadAllResources"/><br/>
+        /// when the engine is shutting down.
+        /// </summary>
+        protected virtual void LoadBaseResources()
+        {
+            // Texture2D
+            // Logo
+            ResourceManager.LoadResource<Texture2D>(
+                "texture2d.logo",
+                new Texture2DLoadingParameters()
+                {
+                    FilePath = "res/textures/VengineX.png",
+                    LoadingFunction = LoadingFunction.Load,
+                    TextureParameters = new Texture2DParameters()
+                    {
+                        PixelInternalFormat = PixelInternalFormat.Rgba8,
+                        PixelFormat = PixelFormat.Rgba,
+                        PixelType = PixelType.UnsignedByte,
+                        MinFilter = TextureMinFilter.Linear,
+                        MagFilter = TextureMagFilter.Linear,
+                        WrapModeS = TextureWrapMode.Repeat,
+                        WrapModeT = TextureWrapMode.Repeat,
+                        GenerateMipmaps = false
+                    },
+                });
+
+            // Fonts
+            // FreeSans
+            ResourceManager.LoadResource<BitmapFont>(
+                "font.freesans",
+                new BitmapFontLoadingParameters()
+                {
+                    FontPath = "res/fonts/FreeSans.ttf",
+                    Size = 30,
+                    FromCharCode = 32,
+                    ToCharCode = 126
+                });
+
+            // Shaders
+            // UI shader
+            ResourceManager.LoadResource<Shader>("shader.ui", new ShaderLoadingParameters()
+            {
+                VertexPath = "res/shaders/ui.vs.glsl",
+                FragmentPath = "res/shaders/ui.fs.glsl"
+            });
+
         }
 
 
