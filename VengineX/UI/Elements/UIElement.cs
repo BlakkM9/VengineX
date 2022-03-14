@@ -111,11 +111,7 @@ namespace VengineX.UI.Elements
             set
             { 
                 _rect = value;
-                
-                // Update model matrix
-                _modelMatrix = Matrix4.Identity;
-                _modelMatrix *= Matrix4.CreateScale(Width / 2f, Height / 2f, 0);
-                _modelMatrix *= Matrix4.CreateTranslation(Width / 2f + X, -(Height / 2f + Y), 0);
+                CalculateModelMatrix();
             }
         }
         private RectangleF _rect;
@@ -193,6 +189,13 @@ namespace VengineX.UI.Elements
                 child.Update();
             }
         }
+
+
+        /// <summary>
+        /// Calculates the ModelMatrix based on width, height, x, and y.<br/>
+        /// Called when automatically when any of these properties change.
+        /// </summary>
+        protected abstract void CalculateModelMatrix();
 
 
         /// <summary>
