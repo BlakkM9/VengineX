@@ -25,12 +25,12 @@ struct Glyph {
 
 FT_Library library;
 
-extern "C" __declspec(dllexport) bool Init_FreeType() {
-    return (bool)FT_Init_FreeType(&library);
+extern "C" __declspec(dllexport) int Init_FreeType() {
+    return FT_Init_FreeType(&library);
 }
 
-extern "C" __declspec(dllexport) bool Done_FreeType() {
-    return (bool)FT_Done_FreeType(library);
+extern "C" __declspec(dllexport) int Done_FreeType() {
+    return FT_Done_FreeType(library);
 }
 
 extern "C" __declspec(dllexport) Glyph* Load_Glyphs(char const* filename, unsigned char from, unsigned char to, int size) {
@@ -83,7 +83,7 @@ extern "C" __declspec(dllexport) Glyph* Load_Glyphs(char const* filename, unsign
     return outputGlpyhs;
 }
 
-extern "C" __declspec(dllexport) bool Free_Glyphs(Glyph* glyphsToFree, int length) {
+extern "C" __declspec(dllexport) int Free_Glyphs(Glyph* glyphsToFree, int length) {
     // Delete bitmaps
     for (int i = 0; i < length; i++) {
         delete[] glyphsToFree[i].bitmapData;
@@ -92,7 +92,7 @@ extern "C" __declspec(dllexport) bool Free_Glyphs(Glyph* glyphsToFree, int lengt
     // Delete glyphs
     delete[] glyphsToFree;
 
-    return true;
+    return 0;
 }
 
 #endif //PCH_H
