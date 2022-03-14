@@ -13,6 +13,11 @@ namespace VengineX.Input
         private readonly Core.Window _window;
 
         /// <summary>
+        /// Is the cursor currently grabbed (and invisible)?
+        /// </summary>
+        public bool MouseCatched { get => _window.CursorGrabbed; }
+
+        /// <summary>
         /// The current <see cref="OpenTK.Windowing.GraphicsLibraryFramework.MouseState"/> in the current frame.
         /// </summary>
         public MouseState MouseState { get; private set; }

@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 
 namespace VengineX.Wrappers.FreeType
 {
+    /// <summary>
+    /// Glyph that is returned from freetype when loading a font.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public unsafe struct Glyph
+    public unsafe struct FreeTypeGlyph
     {
         public byte charCode;
         public int width;
