@@ -54,7 +54,7 @@ namespace VengineX.UI.Elements
             // Lazy shader initialization
             if (BitmapFontShader == null)
             {
-                BitmapFontShader = ResourceManager.GetResource<Shader>("shader.bmpfont");
+                BitmapFontShader = ResourceManager.GetResource<Shader>("shader.ui.bmpfont");
                 ProjectionMatrixLocation = BitmapFontShader.GetUniformLocation("P");
                 ModelMatrixLocation = BitmapFontShader.GetUniformLocation("M");
                 ViewMatrixLocation = BitmapFontShader.GetUniformLocation("V");

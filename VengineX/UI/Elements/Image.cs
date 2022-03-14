@@ -34,7 +34,7 @@ namespace VengineX.UI.Elements
             // Lazy shader initialization
             if (ImageShader == null)
             {
-                ImageShader = ResourceManager.GetResource<Shader>("shader.image");
+                ImageShader = ResourceManager.GetResource<Shader>("shader.ui.image");
                 ProjectionMatrixLocation = ImageShader.GetUniformLocation("P");
                 ModelMatrixLocation = ImageShader.GetUniformLocation("M");
                 ViewMatrixLocation = ImageShader.GetUniformLocation("V");

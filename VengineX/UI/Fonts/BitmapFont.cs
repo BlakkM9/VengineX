@@ -158,7 +158,7 @@ namespace VengineX.UI.Fonts
 
             // Get shader, create quad and uniforms required for rendering
             Quad quad = new Quad();
-            Shader imageShader = ResourceManager.GetResource<Shader>("shader.image");
+            Shader imageShader = ResourceManager.GetResource<Shader>("shader.ui.image");
             Matrix4 proj = Matrix4.CreateOrthographicOffCenter(0, textureSize, -textureSize, 0, -1.0f, 1.0f);
             Matrix4 view = Matrix4.Identity;
             Vector4 color = Vector4.One;

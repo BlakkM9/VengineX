@@ -207,17 +207,17 @@ namespace VengineX.Core
         {
             // Shaders
             // UI image shader (needed for loading bmp font and UI.Elements.Image)
-            ResourceManager.LoadResource<Shader>("shader.image", new ShaderLoadingParameters()
+            ResourceManager.LoadResource<Shader>("shader.ui.image", new ShaderLoadingParameters()
             {
-                VertexPath = "res/shaders/ui.vs.glsl",
-                FragmentPath = "res/shaders/image.fs.glsl"
+                VertexPath = "res/shaders/ui/ui.vs.glsl",
+                FragmentPath = "res/shaders/ui/image.fs.glsl"
             });
 
             // Bitmap fonts shader
-            ResourceManager.LoadResource<Shader>("shader.bmpfont", new ShaderLoadingParameters()
+            ResourceManager.LoadResource<Shader>("shader.ui.bmpfont", new ShaderLoadingParameters()
             {
-                VertexPath = "res/shaders/ui.vs.glsl",
-                FragmentPath = "res/shaders/bmpfont.fs.glsl"
+                VertexPath = "res/shaders/ui/ui.vs.glsl",
+                FragmentPath = "res/shaders/ui/bmpfont.fs.glsl"
             });
 
 
@@ -242,10 +242,10 @@ namespace VengineX.Core
 
 
             // Fonts
-            // FreeSans
-            ResourceManager.LoadResource<BitmapFont>("font.freesans", new BitmapFontLoadingParameters()
+            // OpenSans
+            ResourceManager.LoadResource<BitmapFont>("font.opensans", new BitmapFontLoadingParameters()
             {
-                FontPath = "res/fonts/FreeSans.ttf",
+                FontPath = "res/fonts/OpenSans.ttf",
                 Size = 50,
                 FromCharCode = 32,
                 ToCharCode = 126
