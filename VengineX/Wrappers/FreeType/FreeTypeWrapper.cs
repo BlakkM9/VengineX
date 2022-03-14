@@ -16,11 +16,11 @@ namespace VengineX.Wrappers.FreeType
 
 
         [DllImport(dllFilePath, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private unsafe extern static bool Init_FreeType();
+        private unsafe extern static int Init_FreeType();
 
 
         [DllImport(dllFilePath, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private unsafe extern static bool Done_FreeType();
+        private unsafe extern static int Done_FreeType();
 
 
         [DllImport(dllFilePath, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -28,7 +28,7 @@ namespace VengineX.Wrappers.FreeType
 
 
         [DllImport(dllFilePath, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private unsafe extern static bool Free_Glyphs(FreeTypeGlyph* glyphsToFree, int length);
+        private unsafe extern static int Free_Glyphs(FreeTypeGlyph* glyphsToFree, int length);
 
 
         /// <summary>
@@ -38,14 +38,15 @@ namespace VengineX.Wrappers.FreeType
         {
             if (!Initialized)
             {
-                if (Init_FreeType())
+                int errCode = Init_FreeType();
+                if (errCode == 0)
                 {
                     Initialized = true;
                     Logger.Log(Severity.Info, Tag.Initialization, "FreeType initialized.");
                 }
                 else
                 {
-                    Logger.Log(Severity.Error, Tag.Initialization, "Failed to initialize FreeType");
+                    Logger.Log(Severity.Error, Tag.Initialization, $"Failed to initialize FreeType with error code {errCode}");
                 }
             }
             else
@@ -54,7 +55,9 @@ namespace VengineX.Wrappers.FreeType
             }
         }
 
-
+        /// <summary>
+        /// Is FreeType Initialized?
+        /// </summary>
         public static bool Initialized { get; private set; } = false;
 
 
@@ -109,7 +112,7 @@ namespace VengineX.Wrappers.FreeType
         /// <param name="length">Lenght of the unmanaged array.</param>
         public static unsafe void FreeGlyphs(FreeTypeGlyph* glyphsToFree, int length)
         {
-            Free_Glyphs(glyphsToFree, length);
+            _ = Free_Glyphs(glyphsToFree, length);
         }
 
 
@@ -121,7 +124,7 @@ namespace VengineX.Wrappers.FreeType
         {
             if (Initialized)
             {
-                Done_FreeType();
+                _ = Done_FreeType();
                 Initialized = false;
             }
         }
