@@ -240,7 +240,7 @@ namespace VengineX.Core
 
             // Shaders
             // UI shader
-            ResourceManager.LoadResource<Shader>("shader.ui", new ShaderLoadingParameters()
+            ResourceManager.LoadResource<Shader>("shader.image", new ShaderLoadingParameters()
             {
                 VertexPath = "res/shaders/ui.vs.glsl",
                 FragmentPath = "res/shaders/ui.fs.glsl"

@@ -30,12 +30,12 @@ namespace VengineX.UI.Elements
 
         public override void Render()
         {
-            ParentCanvas.UIShader.Bind();
+            ParentCanvas.ImageShader.Bind();
 
             _texture.Bind();
 
-            ParentCanvas.UIShader.SetUniformMat4(ParentCanvas.mLoc, ref ModelMatrix);
-            ParentCanvas.UIShader.SetUniformVec4(ParentCanvas.colorLocation, ref _tint);
+            ParentCanvas.ImageShader.SetUniformMat4(ParentCanvas.mLoc, ref ModelMatrix);
+            ParentCanvas.ImageShader.SetUniformVec4(ParentCanvas.colorLocation, ref _tint);
 
             ParentCanvas.Quad.Render();
         }

@@ -22,7 +22,7 @@ namespace VengineX.UI.Canvases
     public class Canvas : UIElement, IDisposable
     {
         // TEST ONLY!
-        public Shader UIShader { get; }
+        public Shader ImageShader { get; }
         public int colorLocation;
         public int pLoc;
         public int mLoc;
@@ -76,15 +76,15 @@ namespace VengineX.UI.Canvases
             Quad = new Quad();
 
             // TEST LOAD UI SHADER
-            UIShader = ResourceManager.GetResource<Shader>("shader.ui");
-            colorLocation = UIShader.GetUniformLocation("uTint");
-            pLoc = UIShader.GetUniformLocation("P");
-            mLoc = UIShader.GetUniformLocation("M");
-            vLoc = UIShader.GetUniformLocation("V");
+            ImageShader = ResourceManager.GetResource<Shader>("shader.image");
+            colorLocation = ImageShader.GetUniformLocation("uTint");
+            pLoc = ImageShader.GetUniformLocation("P");
+            mLoc = ImageShader.GetUniformLocation("M");
+            vLoc = ImageShader.GetUniformLocation("V");
 
-            UIShader.SetUniformMat4(pLoc, ref ProjectionMatrix);
+            ImageShader.SetUniformMat4(pLoc, ref ProjectionMatrix);
             Matrix4 v = Matrix4.Identity;
-            UIShader.SetUniformMat4(vLoc, ref v);
+            ImageShader.SetUniformMat4(vLoc, ref v);
         }
 
 
@@ -129,7 +129,7 @@ namespace VengineX.UI.Canvases
                 if (disposing)
                 {
                     Quad.Dispose();
-                    ResourceManager.UnloadResource(UIShader);
+                    ResourceManager.UnloadResource(ImageShader);
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
