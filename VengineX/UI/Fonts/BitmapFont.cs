@@ -1,13 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VengineX.Debugging.Logging;
-using VengineX.Graphics.Rendering;
 using VengineX.Graphics.Rendering.Buffers;
 using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Textures;
@@ -39,8 +31,6 @@ namespace VengineX.UI.Fonts
         /// The size (height) of the font in pixels.
         /// </summary>
         public float Size { get; private set; }
-
-        public Dictionary<byte, Texture2D?> textures;
 
 
         private readonly Dictionary<byte, Character> _characters;
@@ -77,18 +67,17 @@ namespace VengineX.UI.Fonts
                 int length = parameters.ToCharCode - parameters.FromCharCode;
 
                 // Create a texture2d for each character (if bitmap data is null, texture will be null aswell)
-                //Dictionary<byte, Texture2D?> textures = CreateTextures(glyphs, length);
-                textures = CreateTextures(glyphs, length);
+                Dictionary<byte, Texture2D?> textures = CreateTextures(glyphs, length);
 
                 // Render all the textures into a combined texture2d atlas.
                 CreateAtlas(glyphs, length, parameters.Size, textures);
 
 
-                //// Dispose temporary textures
-                //foreach (Texture2D? texture in textures.Values)
-                //{
-                //    texture?.Dispose();
-                //}
+                // Dispose temporary textures
+                foreach (Texture2D? texture in textures.Values)
+                {
+                    texture?.Dispose();
+                }
 
                 // Free glyphs
                 FreeTypeWrapper.FreeGlyphs(glyphs, length);
@@ -210,6 +199,7 @@ namespace VengineX.UI.Fonts
                 // Create Character and add to dict.
                 _characters.Add(glyph.charCode, new Character()
                 {
+                    HasTexture = textures[glyph.charCode] != null,
                     Size = new Vector2i(glyph.width, glyph.height),
                     Bearing = new Vector2i(glyph.left, glyph.top),
                     Advance = glyph.advance,
@@ -247,8 +237,18 @@ namespace VengineX.UI.Fonts
         /// </summary>
         public void CreateMeshData(string text, out UnmanagedArray<UIVertex> vertices, out UnmanagedArray<uint> indices)
         {
-            vertices = new UnmanagedArray<UIVertex>(text.Length * 4);
-            indices = new UnmanagedArray<uint>(text.Length * 6);
+
+
+            // Calculate quad count
+            int quads = 0;
+            foreach (char c in text)
+            {
+                Character ch = _characters[(byte)c];
+                if (ch.HasTexture) { quads++; }
+            }
+
+            vertices = new UnmanagedArray<UIVertex>(quads * 4);
+            indices = new UnmanagedArray<uint>(quads * 6);
 
             uint x = 0;
             uint vertIndex = 0;
@@ -258,48 +258,52 @@ namespace VengineX.UI.Fonts
             {
                 Character ch = _characters[(byte)c];
 
-                // Dimensions
-                float xPos = x + ch.Bearing.X;
-                float yPos = -(ch.Size.Y - ch.Bearing.Y);
-
-                float w = ch.Size.X;
-                float h = ch.Size.Y;
-
-
-                // Vertices
-                vertices[vertIndex + 0] = new UIVertex()
+                // Ignore non texture chars
+                if (ch.HasTexture)
                 {
-                    position = new Vector3(xPos, yPos, 0),
-                    uv = ch.UVs[0],
-                };
-                vertices[vertIndex + 1] = new UIVertex()
-                {
-                    position = new Vector3(xPos + w, yPos, 0),
-                    uv = ch.UVs[1],
-                };
-                vertices[vertIndex + 2] = new UIVertex()
-                {
-                    position = new Vector3(xPos, yPos + h, 0),
-                    uv = ch.UVs[2],
-                };
-                vertices[vertIndex + 3] = new UIVertex()
-                {
-                    position = new Vector3(xPos + w, yPos + h, 0),
-                    uv = ch.UVs[3],
-                };
+                    // Dimensions
+                    float xPos = x + ch.Bearing.X;
+                    float yPos = -(ch.Size.Y - ch.Bearing.Y);
+
+                    float w = ch.Size.X;
+                    float h = ch.Size.Y;
 
 
-                // Indices
-                indices[indIndex + 0] = vertIndex + 0;
-                indices[indIndex + 1] = vertIndex + 1;
-                indices[indIndex + 2] = vertIndex + 2;
+                    // Vertices
+                    vertices[vertIndex + 0] = new UIVertex()
+                    {
+                        position = new Vector3(xPos, yPos, 0),
+                        uv = ch.UVs[0],
+                    };
+                    vertices[vertIndex + 1] = new UIVertex()
+                    {
+                        position = new Vector3(xPos + w, yPos, 0),
+                        uv = ch.UVs[1],
+                    };
+                    vertices[vertIndex + 2] = new UIVertex()
+                    {
+                        position = new Vector3(xPos, yPos + h, 0),
+                        uv = ch.UVs[2],
+                    };
+                    vertices[vertIndex + 3] = new UIVertex()
+                    {
+                        position = new Vector3(xPos + w, yPos + h, 0),
+                        uv = ch.UVs[3],
+                    };
 
-                indices[indIndex + 3] = vertIndex + 2;
-                indices[indIndex + 4] = vertIndex + 1;
-                indices[indIndex + 5] = vertIndex + 3;
 
-                vertIndex += 4;
-                indIndex += 6;
+                    // Indices
+                    indices[indIndex + 0] = vertIndex + 0;
+                    indices[indIndex + 1] = vertIndex + 1;
+                    indices[indIndex + 2] = vertIndex + 2;
+
+                    indices[indIndex + 3] = vertIndex + 2;
+                    indices[indIndex + 4] = vertIndex + 1;
+                    indices[indIndex + 5] = vertIndex + 3;
+
+                    vertIndex += 4;
+                    indIndex += 6;
+                }
 
                 x += ch.Advance >> 6;
             }
@@ -315,7 +319,6 @@ namespace VengineX.UI.Fonts
             foreach (char c in text)
             {
                 width += _characters[(byte)c].Advance >> 6;
-
             }
             return width;
         }
@@ -335,12 +338,6 @@ namespace VengineX.UI.Fonts
                 if (disposing)
                 {
                     TextureAtlas.Dispose();
-
-                    // Dispose temporary textures
-                    foreach (Texture2D? texture in textures.Values)
-                    {
-                        texture?.Dispose();
-                    }
                 }
 
                 // Dispose unmanaged
