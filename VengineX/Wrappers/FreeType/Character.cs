@@ -10,15 +10,9 @@ namespace VengineX.Wrappers.FreeType
 {
     public struct Character
     {
-        //public Texture2D texture;
-        public Vector2i size;
-        public Vector2i bearing;
-        public uint advance;
-
-
-        //public void Dispose()
-        //{
-        //    ((IDisposable)texture).Dispose();
-        //}
+        public Vector2i Size { get; set; }
+        public Vector2i Bearing { get; set; }
+        public uint Advance { get; set; }
+        public Vector2[] UVs { get; set; }
     }
 }
