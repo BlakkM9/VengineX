@@ -205,47 +205,51 @@ namespace VengineX.Core
         /// </summary>
         protected virtual void LoadBaseResources()
         {
-            // Texture2D
-            // Logo
-            ResourceManager.LoadResource<Texture2D>(
-                "texture2d.logo",
-                new Texture2DLoadingParameters()
-                {
-                    FilePath = "res/textures/VengineX.png",
-                    LoadingFunction = LoadingFunction.Load,
-                    TextureParameters = new Texture2DParameters()
-                    {
-                        PixelInternalFormat = PixelInternalFormat.Rgba8,
-                        PixelFormat = PixelFormat.Rgba,
-                        PixelType = PixelType.UnsignedByte,
-                        MinFilter = TextureMinFilter.Linear,
-                        MagFilter = TextureMagFilter.Linear,
-                        WrapModeS = TextureWrapMode.Repeat,
-                        WrapModeT = TextureWrapMode.Repeat,
-                        GenerateMipmaps = false
-                    },
-                });
-
-            // Fonts
-            // FreeSans
-            ResourceManager.LoadResource<BitmapFont>(
-                "font.freesans",
-                new BitmapFontLoadingParameters()
-                {
-                    FontPath = "res/fonts/FreeSans.ttf",
-                    Size = 30,
-                    FromCharCode = 32,
-                    ToCharCode = 126
-                });
-
             // Shaders
-            // UI shader
+            // UI image shader (needed for loading bmp font and UI.Elements.Image)
             ResourceManager.LoadResource<Shader>("shader.image", new ShaderLoadingParameters()
             {
                 VertexPath = "res/shaders/ui.vs.glsl",
-                FragmentPath = "res/shaders/ui.fs.glsl"
+                FragmentPath = "res/shaders/image.fs.glsl"
             });
 
+            // Bitmap fonts shader
+            ResourceManager.LoadResource<Shader>("shader.bmpfont", new ShaderLoadingParameters()
+            {
+                VertexPath = "res/shaders/ui.vs.glsl",
+                FragmentPath = "res/shaders/bmpfont.fs.glsl"
+            });
+
+
+            // Texture2D
+            // Logo
+            ResourceManager.LoadResource<Texture2D>("texture2d.logo", new Texture2DLoadingParameters()
+            {
+                FilePath = "res/textures/VengineX.png",
+                LoadingFunction = LoadingFunction.Load,
+                TextureParameters = new Texture2DParameters()
+                {
+                    PixelInternalFormat = PixelInternalFormat.Rgba8,
+                    PixelFormat = PixelFormat.Rgba,
+                    PixelType = PixelType.UnsignedByte,
+                    MinFilter = TextureMinFilter.Linear,
+                    MagFilter = TextureMagFilter.Linear,
+                    WrapModeS = TextureWrapMode.Repeat,
+                    WrapModeT = TextureWrapMode.Repeat,
+                    GenerateMipmaps = false
+                },
+            });
+
+
+            // Fonts
+            // FreeSans
+            ResourceManager.LoadResource<BitmapFont>("font.freesans", new BitmapFontLoadingParameters()
+            {
+                FontPath = "res/fonts/FreeSans.ttf",
+                Size = 50,
+                FromCharCode = 32,
+                ToCharCode = 126
+            });
         }
 
 
