@@ -64,7 +64,7 @@ namespace VengineX.UI.Elements
             _font = font;
             _text = text;
             _font.CreateMeshData(_text, out UnmanagedArray<UIVertex> vertices, out UnmanagedArray<uint> indices);
-            _textMesh = new Mesh<UIVertex>(Vector3.Zero, BufferUsageHint.StaticDraw, vertices, indices);
+            _textMesh = new Mesh<UIVertex>(Vector3.Zero, BufferUsageHint.DynamicDraw, vertices, indices);
             vertices.Free();
             indices.Free();
             _color = color;
