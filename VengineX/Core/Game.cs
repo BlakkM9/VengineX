@@ -255,8 +255,18 @@ namespace VengineX.Core
             {
                 FontPath = "res/fonts/OpenSans.ttf",
                 Size = 50,
-                FromCharCode = 32,
-                ToCharCode = 126
+                Ranges = new CharacterRange[]
+                {
+                    CharacterRange.BasicLatin,
+                    CharacterRange.Latin1Supplement,
+                    CharacterRange.LatinExtendedA,
+                    CharacterRange.LatinExtendedB,
+
+                    CharacterRange.Cyrillic,
+                    CharacterRange.CyrillicSupplementary,
+
+                    //CharacterRange.CJKUnifiedIdeographs
+                }
             });
         }
 

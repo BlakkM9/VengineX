@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using VengineX.Debugging.Logging;
 using VengineX.Graphics.Rendering.Buffers;
 using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Textures;
@@ -33,14 +34,14 @@ namespace VengineX.UI.Fonts
         public float Size { get; private set; }
 
 
-        private readonly Dictionary<byte, Character> _characters;
+        private readonly Dictionary<char, Character> _characters;
 
         /// <summary>
         /// Creates an empty BitmapFont object (for <see cref="ResourceManager"/>).
         /// </summary>
         public BitmapFont()
         {
-            _characters = new Dictionary<byte, Character>();
+            _characters = new Dictionary<char, Character>();
         }
 
 
@@ -58,16 +59,18 @@ namespace VengineX.UI.Fonts
                 // Load glyphs
                 FreeTypeGlyph* glyphs = FreeTypeWrapper.LoadGlyphs(
                     parameters.FontPath,
-                    parameters.FromCharCode,
-                    parameters.ToCharCode,
+                    parameters.Ranges,
                     parameters.Size);
 
-
-
-                int length = parameters.ToCharCode - parameters.FromCharCode;
+                int length = 0;
+                foreach (CharacterRange range in parameters.Ranges)
+                {
+                    length += range.to - range.from;
+                }
+                Logger.Log("Total of " + length + " characters loaded");
 
                 // Create a texture2d for each character (if bitmap data is null, texture will be null aswell)
-                Dictionary<byte, Texture2D?> textures = CreateTextures(glyphs, length);
+                Dictionary<char, Texture2D?> textures = CreateTextures(glyphs, length);
 
                 // Render all the textures into a combined texture2d atlas.
                 CreateAtlas(glyphs, length, parameters.Size, textures);
@@ -100,9 +103,9 @@ namespace VengineX.UI.Fonts
         /// Creates <see cref="Texture2D"/>s of an unmanaged array holding <see cref="FreeTypeGlyph"/>s.<br/>
         /// If the bitmap data of any glyph is null, the texture will be null aswell.
         /// </summary>
-        private static unsafe Dictionary<byte, Texture2D?> CreateTextures(FreeTypeGlyph* glyphs, int length)
+        private static unsafe Dictionary<char, Texture2D?> CreateTextures(FreeTypeGlyph* glyphs, int length)
         {
-            Dictionary<byte, Texture2D?> textures = new Dictionary<byte, Texture2D?>();
+            Dictionary<char, Texture2D?> textures = new Dictionary<char, Texture2D?>();
 
             Texture2DParameters t2params = new Texture2DParameters()
             {
@@ -136,7 +139,7 @@ namespace VengineX.UI.Fonts
         }
 
 
-        private unsafe void CreateAtlas(FreeTypeGlyph* glyphs, int length, int size, Dictionary<byte, Texture2D?> textures)
+        private unsafe void CreateAtlas(FreeTypeGlyph* glyphs, int length, int size, Dictionary<char, Texture2D?> textures)
         {
             // Calculate the needed size of the atlas (squared and PoT) to fit all glyphs.
             int textureSize = MathUtils.CeilPoT(MathHelper.Sqrt((double)length * size * size));
@@ -243,7 +246,7 @@ namespace VengineX.UI.Fonts
             int quads = 0;
             foreach (char c in text)
             {
-                Character ch = _characters[(byte)c];
+                Character ch = _characters[c];
                 if (ch.HasTexture) { quads++; }
             }
 
@@ -256,7 +259,7 @@ namespace VengineX.UI.Fonts
 
             foreach (char c in text)
             {
-                Character ch = _characters[(byte)c];
+                Character ch = _characters[c];
 
                 // Ignore non texture chars
                 if (ch.HasTexture)
@@ -318,7 +321,7 @@ namespace VengineX.UI.Fonts
             float width = 0;
             foreach (char c in text)
             {
-                width += _characters[(byte)c].Advance >> 6;
+                width += _characters[c].Advance >> 6;
             }
             return width;
         }

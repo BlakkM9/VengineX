@@ -13,7 +13,7 @@ namespace VengineX.Wrappers.FreeType
     [StructLayout(LayoutKind.Sequential)]
     public unsafe struct FreeTypeGlyph
     {
-        public byte charCode;
+        public char charCode;
         public int width;
         public int height;
         public int left;

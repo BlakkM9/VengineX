@@ -24,7 +24,7 @@ namespace VengineX.Wrappers.FreeType
 
 
         [DllImport(dllFilePath, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private unsafe extern static FreeTypeGlyph* Load_Glyphs(ref byte str, byte from, byte to, int fontSize);
+        private unsafe extern static FreeTypeGlyph* Load_Glyphs(ref byte str, ref CharacterRange ranges, int rangesCount, int fontSize);
 
 
         [DllImport(dllFilePath, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -64,12 +64,11 @@ namespace VengineX.Wrappers.FreeType
         /// <summary>
         /// Loads glyphs from a true type font using free type font.
         /// </summary>
-        /// <param name="filePath">Path to ttf file</param>
-        /// <param name="fromCharCode">Start of range to load (char codes)</param>
-        /// <param name="toCharCode">End of range to load (char code)</param>
-        /// <param name="size">Font size</param>
+        /// <param name="filePath">Path to font file.</param>
+        /// <param name="characterRanges">Ranges of characters to load.</param>
+        /// <param name="size">Font size in px.</param>
         /// <returns>Unamanged array holding all loaded glyphs. Dont release it, use <see cref="FreeGlyphs(FreeTypeGlyph*, int)"/> instead!</returns>
-        public static unsafe FreeTypeGlyph* LoadGlyphs(string filePath, byte fromCharCode, byte toCharCode, int size)
+        public static unsafe FreeTypeGlyph* LoadGlyphs(string filePath, CharacterRange[] characterRanges, int size)
         {
             if (!Initialized)
             {
@@ -78,26 +77,9 @@ namespace VengineX.Wrappers.FreeType
 
             // Convert file path to c string
             byte[] bytes = Encoding.ASCII.GetBytes(filePath);
-            //int length = (toCharCode - fromCharCode);
 
             // Load glyphs with free type
-            FreeTypeGlyph* glyphs = Load_Glyphs(ref bytes[0], fromCharCode, toCharCode, size);
-
-
-            //// TODO TEST log glyphs
-            //for (int i = 0; i < length; i++) {
-            //    Console.Write($"{(char)glyphs[i].charCode} ({glyphs[i].charCode})={(IntPtr)glyphs[i].bitmapData}, ");
-            //Console.WriteLine($"charCode:   {glyphs[i].charCode}");
-            //Console.WriteLine($"char:       {(char)glyphs[i].charCode}");
-            //Console.WriteLine($"width:      {glyphs[i].width}");
-            //Console.WriteLine($"height:     {glyphs[i].height}");
-            //Console.WriteLine($"left:       {glyphs[i].left}");
-            //Console.WriteLine($"top:        {glyphs[i].top}");
-            //Console.WriteLine($"advance:    {glyphs[i].advance}");
-            //Console.WriteLine($"data:       {(IntPtr)glyphs[i].bitmapData:X}\n");
-            //}
-            //Console.WriteLine();
-
+            FreeTypeGlyph* glyphs = Load_Glyphs(ref bytes[0], ref characterRanges[0], characterRanges.Length, size);
 
             return glyphs;
         }

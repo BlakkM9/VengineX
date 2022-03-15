@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VengineX.Resources;
+using VengineX.Wrappers.FreeType;
 
 namespace VengineX.UI.Fonts
 {
@@ -13,8 +14,7 @@ namespace VengineX.UI.Fonts
     public struct BitmapFontLoadingParameters : ILoadingParameters
     {
         public string FontPath { get; set; }
-        public byte FromCharCode { get; set; }
-        public byte ToCharCode { get; set; }
+        public CharacterRange[] Ranges { get; set; }
         public int Size { get; set; }
     }
 }
