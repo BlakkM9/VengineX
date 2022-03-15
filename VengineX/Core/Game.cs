@@ -254,7 +254,7 @@ namespace VengineX.Core
             ResourceManager.LoadResource<BitmapFont>("font.opensans", new BitmapFontLoadingParameters()
             {
                 FontPath = "res/fonts/OpenSans.ttf",
-                Size = 32,
+                Size = 50,
                 Ranges = new CharacterRange[]
                 {
                     CharacterRange.BasicLatin,

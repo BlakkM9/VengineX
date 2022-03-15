@@ -116,12 +116,21 @@ extern "C" __declspec(dllexport) Glyph* Load_Glyphs(char const* filename, Charac
                 // Propably the line that causes bitmap corruption?!
                 // Copy bitmap data
                 int bitmapSize = face->glyph->bitmap.width * face->glyph->bitmap.rows;
-                outputGlpyhs[index].bitmapData = new unsigned char[bitmapSize];
 
-                for (int i = 0; i < bitmapSize; i++)
+                if (bitmapSize > 0)
                 {
-                    outputGlpyhs[index].bitmapData[i] = face->glyph->bitmap.buffer[i];
+                    outputGlpyhs[index].bitmapData = new unsigned char[bitmapSize];
+
+                    for (int i = 0; i < bitmapSize; i++)
+                    {
+                        outputGlpyhs[index].bitmapData[i] = face->glyph->bitmap.buffer[i];
+                    }
                 }
+                else
+                {
+                    outputGlpyhs[index].bitmapData = nullptr;
+                }
+
 
                 index++;
             }
