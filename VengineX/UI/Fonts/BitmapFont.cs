@@ -209,6 +209,8 @@ namespace VengineX.UI.Fonts
                     UVs = uvs,
                 });
 
+                // Don't update to next pos if no texture was rendered in that position.
+                if (!_characters[glyph.charCode].HasTexture) { continue; }
 
                 // Calculate next x and y.
                 rowSpaceUsed += size;

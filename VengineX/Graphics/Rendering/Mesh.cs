@@ -193,6 +193,7 @@ namespace VengineX.Graphics.Rendering
         {
             GL.BindVertexArray(_vao);
             GL.DrawElements(PrimitiveType.Triangles, _numIndices, DrawElementsType.UnsignedInt, 0);
+            //GL.MultiDrawElements(PrimitiveType.Triangles, new int[] { _numIndices }, DrawElementsType.UnsignedInt, new int[] { 0 }, 1);
             GL.BindVertexArray(0);
         }
 
