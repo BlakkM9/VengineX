@@ -28,6 +28,21 @@ namespace VengineX.Input
         public KeyboardState KeyboardState { get; private set; }
 
         /// <summary>
+        /// Was any mouse button down the last update?
+        /// </summary>
+        public bool WasAnyMouseButtonDown { get; private set; }
+
+        /// <summary>
+        /// Was any mouse button pressed this frame?
+        /// </summary>
+        public bool AnyMouseButtonPressed { get; private set; }
+
+        /// <summary>
+        /// Was any mouse button released this frame?
+        /// </summary>
+        public bool AnyMouseButtonReleased { get; private set; }
+
+        /// <summary>
         /// Creates a new InputManager for given window.
         /// </summary>
         /// <param name="window"></param>
@@ -42,8 +57,29 @@ namespace VengineX.Input
         /// </summary>
         internal void Update()
         {
+            if (MouseState != null)
+            {
+                WasAnyMouseButtonDown = MouseState.IsAnyButtonDown;
+            }
+
             MouseState = _window.MouseState.GetSnapshot();
             KeyboardState = _window.KeyboardState.GetSnapshot();
+
+            if (MouseState.IsAnyButtonDown && !WasAnyMouseButtonDown)
+            {
+                AnyMouseButtonPressed = true;
+                AnyMouseButtonReleased = false;
+            }
+            else if (!MouseState.IsAnyButtonDown && WasAnyMouseButtonDown)
+            {
+                AnyMouseButtonReleased = true;
+                AnyMouseButtonPressed = false;
+            }
+            else
+            {
+                AnyMouseButtonPressed = false;
+                AnyMouseButtonReleased = false;
+            }
         }
     }
 }

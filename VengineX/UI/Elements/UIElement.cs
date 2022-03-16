@@ -17,7 +17,7 @@ namespace VengineX.UI.Elements
     /// </summary>
     public abstract class UIElement : IRenderable
     {
-        #region Input
+        #region Events
 
         /// <summary>
         /// Handler for all mouse events.
@@ -44,6 +44,8 @@ namespace VengineX.UI.Elements
         /// </summary>
         public event MouseEventHandler? MouseButtonReleased;
 
+        public event MouseEventHandler? MouseButtonClicked;
+
         /// <summary>
         /// Wether or not the mouse cursor is currently over this UI element.
         /// </summary>
@@ -53,6 +55,9 @@ namespace VengineX.UI.Elements
         /// Wether or not any mouse button is down on this element.
         /// </summary>
         public bool IsMouseDown { get; protected set; }
+
+
+        protected bool _clickStartedInside;
 
         #endregion
 
@@ -169,27 +174,46 @@ namespace VengineX.UI.Elements
                 else if (!Rect.Contains(ms.X, ms.Y) && IsMouseOver)
                 {
                     IsMouseOver = false;
+                    IsMouseDown = false;
                     MouseLeft?.Invoke(this, ms);
                 }
 
-                // Mouse down / up
+
+                // Mouse down / up / pressed / released / clicked
                 if (IsMouseOver)
                 {
+                    if (ParentCanvas.Input.AnyMouseButtonPressed)
+                    {
+                        _clickStartedInside = true;
+                        MouseButtonPressed?.Invoke(this, ms);
+                    }
+                    else if (ParentCanvas.Input.AnyMouseButtonReleased)
+                    {
+                        MouseButtonReleased?.Invoke(this, ms);
 
+                        if (_clickStartedInside)
+                        {
+                            MouseButtonClicked?.Invoke(this, ms);
+                        }
+                    }
 
                     if (ms.IsAnyButtonDown && !IsMouseDown)
                     {
-                        Console.WriteLine("MB Pressed");
                         IsMouseDown = true;
-                        MouseButtonPressed?.Invoke(this, ms);
                     }
                     else if (!ms.IsAnyButtonDown && IsMouseDown)
                     {
-                        Console.WriteLine("MB Released");
                         IsMouseDown = false;
-                        MouseButtonReleased?.Invoke(this, ms);
                     }
                 }
+                else
+                {
+                    if (ParentCanvas.Input.AnyMouseButtonReleased)
+                    {
+                        _clickStartedInside = false;
+                    }
+                }
+
 
                 // Update children
                 foreach (UIElement child in Children)
