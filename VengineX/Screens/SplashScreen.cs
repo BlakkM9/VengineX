@@ -9,6 +9,7 @@ using VengineX.Core;
 using VengineX.Graphics.Rendering.Pipelines;
 using VengineX.Graphics.Rendering.Textures;
 using VengineX.Resources;
+using VengineX.Tweening;
 using VengineX.UI;
 using VengineX.Wrappers.Stbi;
 using Image = VengineX.UI.Elements.Image;
@@ -30,9 +31,8 @@ namespace VengineX.Screens
         /// </summary>
         public event Action? Finished;
 
-        private bool _splashScreenFinished = false;
-        private Texture2D? _logo;
-        private Image? _logoImage;
+        private Texture2D _logo;
+        private Image _logoImage;
 
 
         /// <summary>
@@ -75,43 +75,42 @@ namespace VengineX.Screens
                 VerticalOrientation.Center);
 
             _logoImage.Width = _logoImage.Height;
-            startSize = _logoImage.Width;
             _logoImage.VerticalOrientation = VerticalOrientation.Center;
             _logoImage.UpdateLayout();
 
             // Clear color
             _pipeline.ClearColor = Vector4.Zero;
+
+
+            // Create logo animation
+            float startSize = _logoImage.Width;
+            float sizeChange = 20;
+            float aChange = 1;
+            Tween inAnim = new Tween(1.5f,
+                EasingFunction.EaseOutCubic,
+                (t) =>
+                {
+                    _logoImage.Color = new Vector4(1, 1, 1, t * aChange);
+                    _logoImage.Width = startSize + t * sizeChange;
+                    _logoImage.Height = startSize + t * sizeChange;
+                    _logoImage.UpdateLayout();
+                });
+            Tween outAnim = new Tween(0.5f, EasingFunction.EaseInSine, (t) =>
+            {
+                _logoImage.Color = new Vector4(1, 1, 1, 1 - t * aChange);
+            });
+
+
+            Sequence splashSequence = new Sequence(inAnim, outAnim);
+            splashSequence.Finished += (_) => Finished?.Invoke();
+            splashSequence.Start();
         }
 
-
-        float animTime = 5.0f;
-        float currentTime = 0;
-        float startSize;
-        float sizeChange = 15;
-        float aChange = 1;
 
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public void Update(double delta)
-        {
-            if (currentTime < animTime)
-            {
-                currentTime += (float)Time.DeltaUpdate;
-
-                float t = currentTime / animTime;
-
-                _logoImage.Color = new Vector4(1, 1, 1, t * aChange);
-                _logoImage.Width = startSize + t * sizeChange;
-                _logoImage.Height = startSize + t * sizeChange;
-                _logoImage.UpdateLayout();
-            }
-            else if (!_splashScreenFinished)
-            {
-                _splashScreenFinished = true;
-                Finished?.Invoke();
-            }
-        }
+        public void Update(double delta) { }
 
 
         /// <summary>
@@ -126,10 +125,7 @@ namespace VengineX.Screens
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public void Resize(int width, int height)
-        {
-            //throw new NotImplementedException();
-        }
+        public void Resize(int width, int height) { }
 
 
         /// <summary>

@@ -13,6 +13,7 @@ using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Textures;
 using VengineX.Input;
 using VengineX.Resources;
+using VengineX.Tweening;
 using VengineX.UI.Fonts;
 using VengineX.Utils;
 using VengineX.Wrappers.FreeType;
@@ -163,6 +164,7 @@ namespace VengineX.Core
         {
             Time.Update(args.Time);
             Input.Update();
+            TweenManager.Update();
             Update(args.Time);
         }
 
