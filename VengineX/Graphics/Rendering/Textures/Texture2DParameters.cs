@@ -25,7 +25,7 @@ namespace VengineX.Graphics.Rendering.Textures
         /// <summary>
         /// Internal pixel format.
         /// </summary>
-        public SizedInternalFormat InternalFormat { get; set; }
+        public PixelInternalFormat PixelInternalFormat { get; set; }
 
         /// <summary>
         /// Pixel format.
