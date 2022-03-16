@@ -17,7 +17,8 @@ namespace VengineX.Graphics.Rendering.Textures
         /// <summary>
         /// Handle for the texture in VRAM.
         /// </summary>
-        public int Handle { get; }
+        public uint Handle { get => _handle; }
+        protected uint _handle;
 
         /// <summary>
         /// TextureTarget of this texture.
@@ -32,17 +33,7 @@ namespace VengineX.Graphics.Rendering.Textures
         public Texture(TextureTarget target)
         {
             TextureTarget = target;
-            Handle = GL.GenTexture();
-        }
-
-
-        /// <summary>
-        /// Binds this texture to given texture unit.
-        /// </summary>
-        public void Bind(TextureUnit unit)
-        {
-            GL.ActiveTexture(unit);
-            GL.BindTexture(TextureTarget, Handle);
+            GL.CreateTextures(target, 1, out _handle);
         }
 
 
@@ -51,7 +42,10 @@ namespace VengineX.Graphics.Rendering.Textures
         /// <paramref name="unit"/> needs to be between 0 and 31.
         /// </summary>
         /// <param name="unit">Unit to bind to.</param>
-        public void Bind(int unit) => Bind(TextureUnit.Texture0 + unit);
+        public void Bind(uint unit)
+        {
+            GL.BindTextureUnit(unit, Handle);
+        }
 
 
         #region IBindable
@@ -60,7 +54,7 @@ namespace VengineX.Graphics.Rendering.Textures
         /// Binds to texture unit 0. Not to be used, only because implementing IBindable.<br/>
         /// Use <see cref="Bind(TextureUnit)"/> if you want to bind to another texture unit.
         /// </summary>
-        public void Bind() => Bind(TextureUnit.Texture0);
+        public void Bind() => Bind(0);
 
 
         /// <summary>

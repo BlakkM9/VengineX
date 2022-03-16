@@ -55,7 +55,7 @@ namespace VengineX.Graphics.Rendering
 
             for (int i = 0; i < Textures.Length; i++)
             {
-                Textures[i]?.Bind(i);
+                Textures[i]?.Bind((uint)i);
             }
         }
 

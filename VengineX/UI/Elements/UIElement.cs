@@ -17,7 +17,7 @@ namespace VengineX.UI.Elements
     /// </summary>
     public abstract class UIElement : IRenderable
     {
-        #region Input
+        #region Events
 
         /// <summary>
         /// Handler for all mouse events.
@@ -45,12 +45,12 @@ namespace VengineX.UI.Elements
         public event MouseEventHandler? MouseButtonReleased;
 
         /// <summary>
-        /// Wether or not the mouse cursor is currently over this UI element.
+        /// Is the mouse cursor is currently over this UI element?
         /// </summary>
         public bool IsMouseOver { get; protected set; }
 
         /// <summary>
-        /// Wether or not any mouse button is down on this element.
+        /// Is any mouse button is down on this element?
         /// </summary>
         public bool IsMouseDown { get; protected set; }
 
@@ -175,8 +175,6 @@ namespace VengineX.UI.Elements
                 // Mouse down / up
                 if (IsMouseOver)
                 {
-
-
                     if (ms.IsAnyButtonDown && !IsMouseDown)
                     {
                         Console.WriteLine("MB Pressed");

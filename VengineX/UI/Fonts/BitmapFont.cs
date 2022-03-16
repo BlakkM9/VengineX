@@ -109,7 +109,7 @@ namespace VengineX.UI.Fonts
 
             Texture2DParameters t2params = new Texture2DParameters()
             {
-                PixelInternalFormat = PixelInternalFormat.R8,
+                InternalFormat = SizedInternalFormat.R8,
                 PixelFormat = PixelFormat.Red,
                 PixelType = PixelType.UnsignedByte,
                 MinFilter = TextureMinFilter.Linear,
@@ -145,7 +145,7 @@ namespace VengineX.UI.Fonts
             int textureSize = MathUtils.CeilPoT(MathHelper.Sqrt((double)length * size * size));
 
             // Create framebuffer to render to.
-            Framebuffer2D fb = new Framebuffer2D(textureSize, textureSize, PixelInternalFormat.R8, PixelFormat.Red, false);
+            Framebuffer2D fb = new Framebuffer2D(textureSize, textureSize, SizedInternalFormat.R8, PixelFormat.Red, false);
             TextureAtlas = fb.DetachTexture();
 
             // Get shader, create quad and uniforms required for rendering
@@ -248,14 +248,14 @@ namespace VengineX.UI.Fonts
             int quads = 0;
             foreach (char c in text)
             {
-                Character ch = _characters[c];
-                if (ch.HasTexture) { quads++; }
+                if (_characters[c].HasTexture) { quads++; }
             }
 
             vertices = new UnmanagedArray<UIVertex>(quads * 4);
             indices = new UnmanagedArray<uint>(quads * 6);
 
             uint x = 0;
+            uint y = 0;
             uint vertIndex = 0;
             uint indIndex = 0;
 
@@ -268,7 +268,7 @@ namespace VengineX.UI.Fonts
                 {
                     // Dimensions
                     float xPos = x + ch.Bearing.X;
-                    float yPos = -(ch.Size.Y - ch.Bearing.Y);
+                    float yPos = y - (ch.Size.Y - ch.Bearing.Y);
 
                     float w = ch.Size.X;
                     float h = ch.Size.Y;

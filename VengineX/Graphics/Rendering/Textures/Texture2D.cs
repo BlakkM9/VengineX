@@ -47,35 +47,26 @@ namespace VengineX.Graphics.Rendering.Textures
             Width = parameters.Width;
             Height = parameters.Height;
 
-            GL.BindTexture(TextureTarget, Handle);
-
-            GL.TexImage2D(
-                TextureTarget,
-                0,
-                parameters.PixelInternalFormat,
-                parameters.Width,
-                parameters.Height,
-                0,
+            GL.TextureStorage2D(Handle, 0, parameters.InternalFormat, Width, Height);
+            GL.TextureSubImage2D(
+                Handle, 0, 0, 0,
+                Width, Height,
                 parameters.PixelFormat,
                 parameters.PixelType,
-                parameters.PixelData
-            );
+                parameters.PixelData);
 
             // Set parameters
             // Min/Mag
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)parameters.MinFilter);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)parameters.MagFilter);
-
+            GL.TextureParameter(Handle, TextureParameterName.TextureMinFilter, (int)parameters.MinFilter);
+            GL.TextureParameter(Handle, TextureParameterName.TextureMagFilter, (int)parameters.MagFilter);
 
             // WrapS/WrapT
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)parameters.WrapModeS);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)parameters.WrapModeT);
+            GL.TextureParameter(Handle, TextureParameterName.TextureWrapS, (int)parameters.WrapModeS);
+            GL.TextureParameter(Handle, TextureParameterName.TextureWrapT, (int)parameters.WrapModeT);
 
-
-            // Mipmaps
             if (parameters.GenerateMipmaps)
             {
-                GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+                GL.GenerateTextureMipmap(Handle);
             }
         }
 
@@ -88,11 +79,6 @@ namespace VengineX.Graphics.Rendering.Textures
             // Extract specific parameters
             Texture2DLoadingParameters parameters = (Texture2DLoadingParameters)loadingParameters;
 
-            // Bind the handle
-            GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget, Handle);
-
-
             // Load image and extract pixel data
             StbiWrapper.SetFlipVerticallyOnLoad(true);
             Image image;
@@ -100,16 +86,16 @@ namespace VengineX.Graphics.Rendering.Textures
             switch (parameters.LoadingFunction)
             {
                 case LoadingFunction.Load:
-                    image = StbiWrapper.Load(parameters.FilePath, parameters.TextureParameters.PixelInternalFormat.ChannelCount());
+                    image = StbiWrapper.Load(parameters.FilePath, parameters.TextureParameters.InternalFormat.ChannelCount());
                     break;
                 case LoadingFunction.Load16:
-                    image = StbiWrapper.Load16(parameters.FilePath, parameters.TextureParameters.PixelInternalFormat.ChannelCount());
+                    image = StbiWrapper.Load16(parameters.FilePath, parameters.TextureParameters.InternalFormat.ChannelCount());
                     break;
                 case LoadingFunction.LoadF:
-                    image = StbiWrapper.LoadF(parameters.FilePath, parameters.TextureParameters.PixelInternalFormat.ChannelCount());
+                    image = StbiWrapper.LoadF(parameters.FilePath, parameters.TextureParameters.InternalFormat.ChannelCount());
                     break;
                 default:
-                    image = StbiWrapper.Load(parameters.FilePath, parameters.TextureParameters.PixelInternalFormat.ChannelCount());
+                    image = StbiWrapper.Load(parameters.FilePath, parameters.TextureParameters.InternalFormat.ChannelCount());
                     Logger.Log(
                         Severity.Error,
                         Tag.Loading,
@@ -119,41 +105,30 @@ namespace VengineX.Graphics.Rendering.Textures
 
 
             // Update textures size properties
-            Width = image.Width;
-            Height = image.Height;
+            Width = parameters.TextureParameters.Width;
+            Height = parameters.TextureParameters.Height;
 
-            // Generate texture
-            GL.TexImage2D(
-                TextureTarget,
-                0,
-                parameters.TextureParameters.PixelInternalFormat,
-                image.Width,
-                image.Height,
-                0,
+
+            GL.TextureStorage2D(Handle, 0, parameters.TextureParameters.InternalFormat, Width, Height);
+            GL.TextureSubImage2D(
+                Handle, 0, 0, 0,
+                Width, Height,
                 parameters.TextureParameters.PixelFormat,
                 parameters.TextureParameters.PixelType,
                 image.Data);
 
-
-            // Free image bytes from ram, no longer needed
-            image.Dispose();
-
-
             // Set parameters
             // Min/Mag
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)parameters.TextureParameters.MinFilter);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)parameters.TextureParameters.MagFilter);
-
+            GL.TextureParameter(Handle, TextureParameterName.TextureMinFilter, (int)parameters.TextureParameters.MinFilter);
+            GL.TextureParameter(Handle, TextureParameterName.TextureMagFilter, (int)parameters.TextureParameters.MagFilter);
 
             // WrapS/WrapT
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)parameters.TextureParameters.WrapModeS);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)parameters.TextureParameters.WrapModeT);
+            GL.TextureParameter(Handle, TextureParameterName.TextureWrapS, (int)parameters.TextureParameters.WrapModeS);
+            GL.TextureParameter(Handle, TextureParameterName.TextureWrapT, (int)parameters.TextureParameters.WrapModeT);
 
-
-            // Mipmaps
             if (parameters.TextureParameters.GenerateMipmaps)
             {
-                GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+                GL.GenerateTextureMipmap(Handle);
             }
         }
     }
