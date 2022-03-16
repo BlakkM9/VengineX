@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using VengineX.Core;
 using VengineX.Graphics.Rendering.Pipelines;
 using VengineX.Graphics.Rendering.Textures;
+using VengineX.Input;
 using VengineX.Resources;
 using VengineX.Tweening;
 using VengineX.UI;
@@ -25,12 +27,14 @@ namespace VengineX.Screens
     public class SplashScreen : IScreen
     {
         private RenderPipelineBase _pipeline;
+        private InputManager _input;
 
         /// <summary>
         /// Occurs when the SplashScreens animation is finished.
         /// </summary>
         public event Action? Finished;
 
+        private Sequence _splashSequence;
         private Texture2D _logo;
         private Image _logoImage;
 
@@ -38,10 +42,10 @@ namespace VengineX.Screens
         /// <summary>
         /// Creates the splash screen and uses given render pipline for it.
         /// </summary>
-        /// <param name="pipeline"></param>
-        public SplashScreen(RenderPipelineBase pipeline)
+        public SplashScreen(RenderPipelineBase pipeline, InputManager input)
         {
             _pipeline = pipeline;
+            _input = input;
         }
 
 
@@ -95,22 +99,31 @@ namespace VengineX.Screens
                     _logoImage.Height = startSize + t * sizeChange;
                     _logoImage.UpdateLayout();
                 });
-            Tween outAnim = new Tween(0.5f, EasingFunction.EaseInSine, (t) =>
+            Tween outAnim = new Tween(0.5f, EasingFunction.EaseOutCubic, (t) =>
             {
-                _logoImage.Color = new Vector4(1, 1, 1, 1 - t * aChange);
+                _logoImage.Color = new Vector4(1, 1, 1, 1 - (t * aChange));
             });
 
 
-            Sequence splashSequence = new Sequence(inAnim, outAnim);
-            splashSequence.Finished += (_) => Finished?.Invoke();
-            splashSequence.Start();
+            _splashSequence = new Sequence(inAnim, outAnim);
+            _splashSequence.Stopped += (_) => Finished?.Invoke();
+            _splashSequence.Start();
         }
 
 
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public void Update(double delta) { }
+        public void Update(double delta) {
+
+            // Skip splash screen with ESC
+            KeyboardState kbs = _input.KeyboardState;
+
+            if (kbs.IsKeyPressed(Keys.Escape))
+            {
+                _splashSequence.Stop();
+            }
+        }
 
 
         /// <summary>

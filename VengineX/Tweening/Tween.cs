@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VengineX.Core;
+using VengineX.Utils.Easing;
 using VengineX.Utils.Extensions;
+using static VengineX.Utils.Easing.EasingFunctions;
 
 namespace VengineX.Tweening
 {
@@ -16,7 +18,13 @@ namespace VengineX.Tweening
         /// <summary>
         /// Occurs when the tween was run to completion.
         /// </summary>
-        public event Action<Tween>? Finished;
+        public event Action<Tween>? Completed;
+
+        /// <summary>
+        /// Occurs when the tween was stopped.<br/>
+        /// Also occurs when tween was completed.
+        /// </summary>
+        public event Action<Tween>? Stopped;
 
         /// <summary>
         /// Function that calculates <see cref="T"/> for the update function<br/>
@@ -51,7 +59,7 @@ namespace VengineX.Tweening
         /// Wether or not this tween should loop.<br/>
         /// When this tween is part of a <see cref="Sequence"/>, setting this to true will<br/>
         /// break the sequence and keep looping the tween with loop set to true.<br/>
-        /// When true, <see cref="Finished"/> will never occur.
+        /// When true, <see cref="Completed"/> will never occur.
         /// </summary>
         public bool Loop { get; set; }
 
@@ -60,6 +68,10 @@ namespace VengineX.Tweening
         private UpdateFunction _updateFunction;
 
 
+        /// <summary>
+        /// Most basic constructor for a tween. Own defined easing and and update functions.
+        /// </summary>
+        /// <param name="duration">Duration of the tween in seconds.</param>
         public Tween(float duration, EasingFunction easingFunction, UpdateFunction updateFunction)
         {
             Duration = duration;
@@ -68,8 +80,22 @@ namespace VengineX.Tweening
         }
 
 
+        /// <summary>
+        /// Overload for <see cref="Tween(float, EasingFunction, UpdateFunction)"/>, using<br/>
+        /// <see cref="Tweening.EasingFunction"/> enum for easing function.
+        /// </summary>
         public Tween(float duration, Tweening.EasingFunction easingFunction, UpdateFunction updateFunction)
             : this(duration, easingFunction.Function(), updateFunction) { }
+
+
+        /// <summary>
+        /// Overload for <see cref="Tween(float, EasingFunction, UpdateFunction)"/>, using<br/>
+        /// css-like cubic-bezier (<see cref="UnitBezier"/>) for the easing function.<br/>
+        /// If there is a pre-defined <see cref="Tweening.EasingFunction"/>, use this one<br/>
+        /// instead for (usually) better performance.
+        /// </summary>
+        public Tween(float duration, UnitBezier cubicBezier, UpdateFunction updateFunction)
+            : this(duration, (d, c) => (float)cubicBezier.Solve(c / d, 1e-6), updateFunction) { }
 
 
         /// <summary>
@@ -92,7 +118,7 @@ namespace VengineX.Tweening
                 else
                 {
                     Stop();
-                    Finished?.Invoke(this);
+                    Completed?.Invoke(this);
                 }
             }
         }
@@ -125,6 +151,7 @@ namespace VengineX.Tweening
             TweenManager.RemoveTween(this);
             T = 0;
             CurrentTime = 0;
+            Stopped?.Invoke(this);
         }
     }
 }

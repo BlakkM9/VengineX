@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VengineX.Tweening;
+using VengineX.Utils.Easing;
 
 namespace VengineX.Utils.Extensions
 {
@@ -25,7 +26,7 @@ namespace VengineX.Utils.Extensions
                 EasingFunction.EaseInOutSine => (d, c) => EasingFunctions.EaseInOutSine(c / d),
                 EasingFunction.EaseInCubic => (d, c) => EasingFunctions.EaseInCubic(c / d),
                 EasingFunction.EaseOutCubic => (d, c) => EasingFunctions.EaseOutCubic(c / d),
-                EasingFunction.EaseInOutCubic => (d, c) => EasingFunctions.EaseInOutCubic(d / c),
+                EasingFunction.EaseInOutCubic => (d, c) => EasingFunctions.EaseInOutCubic(c / d),
                 _ => throw new NotImplementedException(),
             };
         }

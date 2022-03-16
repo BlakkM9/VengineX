@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VengineX.Utils
+namespace VengineX.Utils.Easing
 {
     public static class EasingFunctions
     {
@@ -18,8 +18,8 @@ namespace VengineX.Utils
 
         #endregion
 
-        public static float EaseInSine(float x) => 1 - Cos((x * PI) / 2);
-        public static float EaseOutSine(float x) => Sin((x * PI) / 2);
+        public static float EaseInSine(float x) => 1 - Cos(x * PI / 2);
+        public static float EaseOutSine(float x) => Sin(x * PI / 2);
         public static float EaseInOutSine(float x) => -(Cos(x * PI) - 1) / 2;
         public static float EaseInCubic(float x) => x * x * x;
         public static float EaseOutCubic(float x) => 1 - Pow(1 - x, 3);

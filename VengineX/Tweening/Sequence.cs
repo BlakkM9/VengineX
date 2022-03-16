@@ -14,7 +14,13 @@ namespace VengineX.Tweening
         /// <summary>
         /// Occurs when the sequence was run to completion.
         /// </summary>
-        public event Action<Sequence>? Finished;
+        public event Action<Sequence>? Completed;
+
+        /// <summary>
+        /// Occurs when the sequence was stopped.<br/>
+        /// Also occurs when the sequence was completed.
+        /// </summary>
+        public event Action<Sequence>? Stopped;
 
         /// <summary>
         /// Wether or not this sequence should loop.
@@ -49,7 +55,7 @@ namespace VengineX.Tweening
         /// </summary>
         public void Start()
         {
-            CurrentTween.Finished += CurrentTween_Over;
+            CurrentTween.Completed += CurrentTween_Over;
             CurrentTween.Start();
         }
 
@@ -59,7 +65,7 @@ namespace VengineX.Tweening
         /// </summary>
         public void Pause()
         {
-            CurrentTween.Finished -= CurrentTween_Over;
+            CurrentTween.Completed -= CurrentTween_Over;
             CurrentTween.Pause();
         }
 
@@ -72,17 +78,18 @@ namespace VengineX.Tweening
         {
             CurrentTween.Stop();
             _currentTweenIndex = 0;
+            Stopped?.Invoke(this);
         }
 
 
         private void CurrentTween_Over(Tween currentTween)
         {
-            currentTween.Finished -= CurrentTween_Over;
+            currentTween.Completed -= CurrentTween_Over;
             _currentTweenIndex++;
 
             if (_currentTweenIndex < _tweens.Count)
             {
-                CurrentTween.Finished += CurrentTween_Over;
+                CurrentTween.Completed += CurrentTween_Over;
                 CurrentTween.Start();
             }
             else
@@ -95,7 +102,8 @@ namespace VengineX.Tweening
                 else
                 {
                     _currentTweenIndex = 0;
-                    Finished?.Invoke(this);
+                    Stop();
+                    Completed?.Invoke(this);
                 }
             }
         }
