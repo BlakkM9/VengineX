@@ -27,6 +27,12 @@ namespace VengineX.Utils.Extensions
                 EasingFunction.EaseInCubic => (d, c) => EasingFunctions.EaseInCubic(c / d),
                 EasingFunction.EaseOutCubic => (d, c) => EasingFunctions.EaseOutCubic(c / d),
                 EasingFunction.EaseInOutCubic => (d, c) => EasingFunctions.EaseInOutCubic(c / d),
+
+                // ...
+
+                EasingFunction.EaseInBounce => (d, c) => EasingFunctions.EaseInBounce(c / d),
+                EasingFunction.EaseOutBounce => (d, c) => EasingFunctions.EaseOutBounce(c / d),
+                EasingFunction.EaseInOutBounce => (d, c) => EasingFunctions.EaseInOutBounce(c / d),
                 _ => throw new NotImplementedException(),
             };
         }

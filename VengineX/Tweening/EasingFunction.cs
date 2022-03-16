@@ -16,5 +16,11 @@ namespace VengineX.Tweening
         EaseInCubic,
         EaseOutCubic,
         EaseInOutCubic,
+
+        // ...
+
+        EaseInBounce,
+        EaseOutBounce,
+        EaseInOutBounce,
     }
 }

@@ -153,5 +153,15 @@ namespace VengineX.Tweening
             CurrentTime = 0;
             Stopped?.Invoke(this);
         }
+
+
+        /// <summary>
+        /// Returns a tween that can servers as a delay (between tweens within a sequence)
+        /// </summary>
+        /// <param name="duration">Delay in seconds.</param>
+        public static Tween Delay(float duration)
+        {
+            return new Tween(duration, Tweening.EasingFunction.Linear, (_) => { });
+        }
     }
 }
