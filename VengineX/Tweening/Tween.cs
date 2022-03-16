@@ -63,9 +63,9 @@ namespace VengineX.Tweening
         /// </summary>
         public bool Loop { get; set; }
 
-        private EasingFunction _easingFunction;
+        private readonly EasingFunction _easingFunction;
 
-        private UpdateFunction _updateFunction;
+        private readonly UpdateFunction _updateFunction;
 
 
         /// <summary>
