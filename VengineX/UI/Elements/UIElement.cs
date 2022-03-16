@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VengineX.Debugging.Logging;
 using VengineX.Graphics.Rendering;
 using VengineX.UI.Canvases;
 
@@ -21,35 +22,36 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// Handler for all mouse events.
         /// </summary>
-        /// <param name="currentMouseState"></param>
         public delegate void MouseEventHandler(UIElement sender, MouseState currentMouseState);
 
         /// <summary>
         /// The mouse cursor entered this UI element.
         /// </summary>
-        public event MouseEventHandler MouseEntered;
+        public event MouseEventHandler? MouseEntered;
 
         /// <summary>
         /// The mouse cursor left this UI element.
         /// </summary>
-        public event MouseEventHandler MouseLeft;
+        public event MouseEventHandler? MouseLeft;
 
         /// <summary>
         /// Any mousebutton was pressed while above this element.
         /// </summary>
-        public event MouseEventHandler MouseButtonPressed;
+        public event MouseEventHandler? MouseButtonPressed;
 
         /// <summary>
         /// Any mousebutton was released while above this element.
         /// </summary>
-        public event MouseEventHandler MouseButtonReleased;
+        public event MouseEventHandler? MouseButtonReleased;
 
         /// <summary>
         /// Wether or not the mouse cursor is currently over this UI element.
         /// </summary>
         public bool IsMouseOver { get; protected set; }
 
-
+        /// <summary>
+        /// Wether or not any mouse button is down on this element.
+        /// </summary>
         public bool IsMouseDown { get; protected set; }
 
         #endregion
@@ -58,13 +60,13 @@ namespace VengineX.UI.Elements
         /// The parent element of this UI element.<br/>
         /// If no parent it is null.
         /// </summary>
-        public UIElement ParentElement { get; protected set; }
+        public UIElement? ParentElement { get; protected set; }
 
         /// <summary>
         /// The root canvas for this UI element.<br/>
         /// null means this element is not in any canvas.
         /// </summary>
-        public Canvas ParentCanvas { get; protected set; }
+        public Canvas? ParentCanvas { get; protected set; }
 
         /// <summary>
         /// The absolute x position in the canvas.
@@ -119,8 +121,12 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// ModelMatrix used for transforming the Quad the UIElement is rendered on.
         /// </summary>
-        protected ref Matrix4 ModelMatrix { get => ref _modelMatrix; }
+        public ref Matrix4 ModelMatrix { get => ref _modelMatrix; }
         private Matrix4 _modelMatrix;
+
+        public HorizontalOrientation HorizontalOrientation { get; set; }
+
+        public VerticalOrientation VerticalOrientation { get; set; }
 
         /// <summary>
         /// All children that are in this UI element.
@@ -149,44 +155,47 @@ namespace VengineX.UI.Elements
         /// </summary>
         public virtual void Update()
         {
-            // Update self.
-            MouseState ms = ParentCanvas.Input.MouseState;
-
-            // Mouse entered / left
-            if (Rect.Contains(ms.X, ms.Y) && !IsMouseOver)
+            if (ParentCanvas != null)
             {
-                IsMouseOver = true;
-                MouseEntered?.Invoke(this, ms);
-            }
-            else if (!Rect.Contains(ms.X, ms.Y) && IsMouseOver)
-            {
-                IsMouseOver = false;
-                MouseLeft?.Invoke(this, ms);
-            }
+                // Update self.
+                MouseState ms = ParentCanvas.Input.MouseState;
 
-            // Mouse down / up
-            if (IsMouseOver)
-            {
-                
-
-                if (ms.IsAnyButtonDown && !IsMouseDown)
+                // Mouse entered / left
+                if (Rect.Contains(ms.X, ms.Y) && !IsMouseOver)
                 {
-                    Console.WriteLine("MB Pressed");
-                    IsMouseDown = true;
-                    MouseButtonPressed?.Invoke(this, ms);
+                    IsMouseOver = true;
+                    MouseEntered?.Invoke(this, ms);
                 }
-                else if (!ms.IsAnyButtonDown && IsMouseDown)
+                else if (!Rect.Contains(ms.X, ms.Y) && IsMouseOver)
                 {
-                    Console.WriteLine("MB Released");
-                    IsMouseDown = false;
-                    MouseButtonReleased?.Invoke(this, ms);
+                    IsMouseOver = false;
+                    MouseLeft?.Invoke(this, ms);
                 }
-            }
 
-            // Update children
-            foreach (UIElement child in Children)
-            {
-                child.Update();
+                // Mouse down / up
+                if (IsMouseOver)
+                {
+
+
+                    if (ms.IsAnyButtonDown && !IsMouseDown)
+                    {
+                        Console.WriteLine("MB Pressed");
+                        IsMouseDown = true;
+                        MouseButtonPressed?.Invoke(this, ms);
+                    }
+                    else if (!ms.IsAnyButtonDown && IsMouseDown)
+                    {
+                        Console.WriteLine("MB Released");
+                        IsMouseDown = false;
+                        MouseButtonReleased?.Invoke(this, ms);
+                    }
+                }
+
+                // Update children
+                foreach (UIElement child in Children)
+                {
+                    child.Update();
+                }
             }
         }
 
@@ -199,20 +208,115 @@ namespace VengineX.UI.Elements
 
 
         /// <summary>
+        /// Calculates and updates the layout (positiona and size) based on the current<br/>
+        /// <see cref="HorizontalOrientation"/> and <see cref="VerticalOrientation"/>.
+        /// </summary>
+        public virtual void UpdateLayout()
+        {
+            float x = 0;
+            float y = 0;
+            float w = Width;
+            float h = Height;
+
+            // Horizontal
+            switch (HorizontalOrientation)
+            {
+                case HorizontalOrientation.Unset:
+                    x = X;
+                    break;
+                case HorizontalOrientation.Left:
+                    break;
+                case HorizontalOrientation.Right:
+                    x = ParentElement.Width - Width;
+                    break;
+                case HorizontalOrientation.Center:
+                    x = (ParentElement.Width - Width) / 2;
+                    break;
+                case HorizontalOrientation.Stretch:
+                    w = ParentElement.Width;
+                    break;
+            }
+
+
+            // Vertical
+            switch (VerticalOrientation)
+            {
+                case VerticalOrientation.Unset:
+                    y = Y;
+                    break;
+                case VerticalOrientation.Top:
+                    break;
+                case VerticalOrientation.Bottom:
+                    y = ParentElement.Height - Height;
+                    break;
+                case VerticalOrientation.Center:
+                    y = (ParentElement.Height - Height) / 2;
+                    break;
+                case VerticalOrientation.Stretch:
+                    h = ParentElement.Height;
+                    break;
+            }
+
+
+            Rect = new RectangleF(x, y, w, h);
+        }
+
+
+        /// <summary>
         /// Renders this ui element.
         /// </summary>
         public abstract void Render();
 
 
         /// <summary>
-        /// Adds given UI element as child of this element.
+        /// Adds given UI element as child of this element.<br/>
+        /// Does not change the layout(position/size) of the child to be added.
         /// </summary>
-        /// <param name="element"></param>
-        public virtual void AddChild(UIElement element)
+        public virtual void AddChild(UIElement element) => AddChild(element, HorizontalOrientation.Unset, VerticalOrientation.Unset);
+
+
+        /// <summary>
+        /// Adds the given UI element as a child of this element<br/>
+        /// with given layout.
+        /// </summary>
+        public virtual void AddChild(
+            UIElement element,
+            HorizontalOrientation horizontalOrientation,
+            VerticalOrientation verticalOrientation)
         {
             Children.Add(element);
+            element.HorizontalOrientation = horizontalOrientation;
+            element.VerticalOrientation = verticalOrientation;
             element.ParentCanvas = ParentCanvas;
             element.ParentElement = this;
+
+            element.UpdateLayout();
+        }
+
+
+        /// <summary>
+        /// Removes all the children (recursively) from this UI Element.<br/>
+        /// </summary>
+        /// <param name="dispose">Wether or not dispose childs if implementing IDisposable</param>
+        public virtual void ClearChildren(bool dispose)
+        {
+            // ClearChildren for each child
+            foreach (UIElement child in Children)
+            {
+                child.ClearChildren(dispose);
+            }
+            
+            // Dispose direct childs
+            if (dispose)
+            {
+                foreach (UIElement child in Children)
+                {
+                    (child as IDisposable)?.Dispose();
+                }
+            }
+
+            // Clear children list
+            Children.Clear();
         }
     }
 }

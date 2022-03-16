@@ -28,6 +28,10 @@
     <ProjectReference Include="..\stbilib\stbilib.vcxproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Tweening\" />
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;$(ProjectDir)_lib&quot; &quot;$(TargetDir)lib\&quot; /e /y /f&#xD;&#xA;xcopy &quot;$(ProjectDir)_res&quot; &quot;$(TargetDir)res\&quot; /e /y /f" />
   </Target>
