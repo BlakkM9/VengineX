@@ -29,6 +29,9 @@ namespace VengineX.UI.Elements
         public Vector4 Color { get => _color; set => _color = value; }
         protected Vector4 _color;
 
+        /// <summary>
+        /// Sets and gets the text of this label.
+        /// </summary>
         public string Text
         {
             get => _text;
@@ -44,9 +47,9 @@ namespace VengineX.UI.Elements
         }
         protected string _text;
 
-
         private Mesh<UIVertex> _textMesh;
         private BitmapFont _font;
+
 
         public Label(BitmapFont font, string text, float x, float y, float size, Vector4 color)
             : base(x, y, font.CalculateWidth(text), size)
@@ -107,6 +110,8 @@ namespace VengineX.UI.Elements
         }
 
 
+        #region IDisposable
+
         private bool _disposedValue;
 
         protected virtual void Dispose(bool disposing)
@@ -138,5 +143,7 @@ namespace VengineX.UI.Elements
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+
+        #endregion
     }
 }
