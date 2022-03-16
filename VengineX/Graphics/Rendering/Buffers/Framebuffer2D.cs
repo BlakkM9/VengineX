@@ -30,6 +30,12 @@ namespace VengineX.Graphics.Rendering.Buffers
         /// </summary>
         public bool IsTextureDetached { get; private set; } = false;
 
+
+        /// <summary>
+        /// Holds the viewport dimensions before binding this framebuffer (and chaning viewport to fb's size)
+        /// </summary>
+        private int[] _viewportBeforeBind = new int[4];
+
         /// <summary>
         /// Creates a new framebuffer with a 2D output texture <see cref="FramebufferAttachment.ColorAttachment0"/>.
         /// </summary>
@@ -157,6 +163,9 @@ namespace VengineX.Graphics.Rendering.Buffers
         /// </summary>
         public void Bind()
         {
+            // Save viewport dimensions before bind
+            GL.GetInteger(GetPName.Viewport, _viewportBeforeBind);
+
             GL.Viewport(0, 0, OutputTexture.Width, OutputTexture.Height);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, _fbo);
         }
@@ -167,9 +176,7 @@ namespace VengineX.Graphics.Rendering.Buffers
         /// </summary>
         public void Unbind()
         {
-            int[] data = new int[4];
-            GL.GetInteger(GetPName.Viewport, data);
-            GL.Viewport(data[0], data[1], data[2], data[3]);
+            GL.Viewport(_viewportBeforeBind[0], _viewportBeforeBind[1], _viewportBeforeBind[2], _viewportBeforeBind[3]);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
 
