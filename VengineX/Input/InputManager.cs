@@ -57,14 +57,19 @@ namespace VengineX.Input
         /// </summary>
         internal void Update()
         {
+            // Store if any mouse button was down last update.
             if (MouseState != null)
             {
                 WasAnyMouseButtonDown = MouseState.IsAnyButtonDown;
             }
 
+
+            // Store current state.
             MouseState = _window.MouseState.GetSnapshot();
             KeyboardState = _window.KeyboardState.GetSnapshot();
 
+
+            // Update MousePressed an MouseReleased
             if (MouseState.IsAnyButtonDown && !WasAnyMouseButtonDown)
             {
                 AnyMouseButtonPressed = true;
