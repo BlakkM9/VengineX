@@ -90,9 +90,7 @@ namespace VengineX.Screens
             float startSize = _logoImage.Width;
             float sizeChange = 20;
             float aChange = 1;
-            Tween inAnim = new Tween(1.5f,
-                EasingFunction.EaseOutCubic,
-                (t) =>
+            Tween inAnim = new Tween(1.5f, EasingFunction.EaseOutCubic, (t) =>
                 {
                     _logoImage.Color = new Vector4(1, 1, 1, t * aChange);
                     _logoImage.Width = startSize + t * sizeChange;
@@ -105,7 +103,7 @@ namespace VengineX.Screens
             });
 
 
-            _splashSequence = new Sequence(inAnim, outAnim);
+            _splashSequence = new Sequence(inAnim, Tween.Delay(0.5f), outAnim);
             _splashSequence.Stopped += (_) => Finished?.Invoke();
             _splashSequence.Start();
         }
@@ -118,8 +116,9 @@ namespace VengineX.Screens
 
             // Skip splash screen with ESC
             KeyboardState kbs = _input.KeyboardState;
+            MouseState ms = _input.MouseState;
 
-            if (kbs.IsKeyPressed(Keys.Escape))
+            if (kbs.IsAnyKeyDown || ms.IsAnyButtonDown)
             {
                 _splashSequence.Stop();
             }
