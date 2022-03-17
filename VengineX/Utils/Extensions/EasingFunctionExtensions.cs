@@ -20,6 +20,7 @@ namespace VengineX.Utils.Extensions
         {
             return easingFunction switch
             {
+                EasingFunction.None => (d, c) => 0,
                 EasingFunction.Linear => (d, c) => c / d,
                 EasingFunction.EaseInSine => (d, c) => EasingFunctions.EaseInSine(c / d),
                 EasingFunction.EaseOutSine => (d, c) => EasingFunctions.EaseOutSine(c / d),
