@@ -1,66 +1,20 @@
 ﻿using OpenTK.Mathematics;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VengineX.Debugging.Logging;
 using VengineX.Graphics.Rendering;
 using VengineX.UI.Canvases;
 
 namespace VengineX.UI.Elements
 {
     /// <summary>
-    /// Base class for all UI elements.
+    /// Defines the very base of an ui element.
     /// </summary>
     public abstract class UIElement : IRenderable
     {
-        #region Events
-
-        /// <summary>
-        /// Handler for all mouse events.
-        /// </summary>
-        public delegate void MouseEventHandler(UIElement sender, MouseState currentMouseState);
-
-        /// <summary>
-        /// The mouse cursor entered this UI element.
-        /// </summary>
-        public event MouseEventHandler? MouseEntered;
-
-        /// <summary>
-        /// The mouse cursor left this UI element.
-        /// </summary>
-        public event MouseEventHandler? MouseLeft;
-
-        /// <summary>
-        /// Any mousebutton was pressed while above this element.
-        /// </summary>
-        public event MouseEventHandler? MouseButtonPressed;
-
-        /// <summary>
-        /// Any mousebutton was released while above this element.
-        /// </summary>
-        public event MouseEventHandler? MouseButtonReleased;
-
-        public event MouseEventHandler? MouseButtonClicked;
-
-        /// <summary>
-        /// Wether or not the mouse cursor is currently over this UI element.
-        /// </summary>
-        public bool IsMouseOver { get; protected set; }
-
-        /// <summary>
-        /// Wether or not any mouse button is down on this element.
-        /// </summary>
-        public bool IsMouseDown { get; protected set; }
-
-
-        protected bool _clickStartedInside;
-
-        #endregion
-
         /// <summary>
         /// The parent element of this UI element.<br/>
         /// If no parent it is null.
@@ -116,12 +70,21 @@ namespace VengineX.UI.Elements
         {
             get => _rect;
             set
-            { 
+            {
                 _rect = value;
                 CalculateModelMatrix();
             }
         }
         private RectangleF _rect;
+
+        // TODO: Implement
+        /// <summary>
+        /// Inner padding of the canas.<br/>
+        /// Padding means that the Children can only be moved<br/>
+        /// within the inner space even if the canvas is larger than that.
+        /// </summary>
+        public float Padding { get; set; }
+
 
         /// <summary>
         /// ModelMatrix used for transforming the Quad the UIElement is rendered on.
@@ -162,72 +125,9 @@ namespace VengineX.UI.Elements
 
 
         /// <summary>
-        /// Updates this ui element (used for creating input events).
+        /// Updates this ui element.
         /// </summary>
-        public virtual void Update()
-        {
-            if (ParentCanvas != null)
-            {
-                // Update self.
-                MouseState ms = ParentCanvas.Input.MouseState;
-
-                // Mouse entered / left
-                if (Rect.Contains(ms.X, ms.Y) && !IsMouseOver)
-                {
-                    IsMouseOver = true;
-                    MouseEntered?.Invoke(this, ms);
-                }
-                else if (!Rect.Contains(ms.X, ms.Y) && IsMouseOver)
-                {
-                    IsMouseOver = false;
-                    IsMouseDown = false;
-                    MouseLeft?.Invoke(this, ms);
-                }
-
-
-                // Mouse down / up / pressed / released / clicked
-                if (IsMouseOver)
-                {
-                    if (ParentCanvas.Input.AnyMouseButtonPressed)
-                    {
-                        _clickStartedInside = true;
-                        MouseButtonPressed?.Invoke(this, ms);
-                    }
-                    else if (ParentCanvas.Input.AnyMouseButtonReleased)
-                    {
-                        MouseButtonReleased?.Invoke(this, ms);
-
-                        if (_clickStartedInside)
-                        {
-                            MouseButtonClicked?.Invoke(this, ms);
-                        }
-                    }
-
-                    if (ms.IsAnyButtonDown && !IsMouseDown)
-                    {
-                        IsMouseDown = true;
-                    }
-                    else if (!ms.IsAnyButtonDown && IsMouseDown)
-                    {
-                        IsMouseDown = false;
-                    }
-                }
-                else
-                {
-                    if (ParentCanvas.Input.AnyMouseButtonReleased)
-                    {
-                        _clickStartedInside = false;
-                    }
-                }
-
-
-                // Update children
-                foreach (UIElement child in Children)
-                {
-                    child.Update();
-                }
-            }
-        }
+        public abstract void Update();
 
 
         /// <summary>
@@ -243,52 +143,65 @@ namespace VengineX.UI.Elements
         /// </summary>
         public virtual void UpdateLayout()
         {
-            float x = 0;
-            float y = 0;
-            float w = Width;
-            float h = Height;
-
-            // Horizontal
-            switch (HorizontalOrientation)
+            if (ParentElement != null)
             {
-                case HorizontalOrientation.Unset:
-                    x = X;
-                    break;
-                case HorizontalOrientation.Left:
-                    break;
-                case HorizontalOrientation.Right:
-                    x = ParentElement.Width - Width;
-                    break;
-                case HorizontalOrientation.Center:
-                    x = (ParentElement.Width - Width) / 2;
-                    break;
-                case HorizontalOrientation.Stretch:
-                    w = ParentElement.Width;
-                    break;
+                // Update self
+                float x = 0;
+                float y = 0;
+                float w = Width;
+                float h = Height;
+
+                // Horizontal
+                switch (HorizontalOrientation)
+                {
+                    case HorizontalOrientation.Unset:
+                        x = X;
+                        break;
+                    case HorizontalOrientation.Left:
+                        x = ParentElement.X;
+                        break;
+                    case HorizontalOrientation.Right:
+                        x = ParentElement.X + (ParentElement.Width - Width);
+                        break;
+                    case HorizontalOrientation.Center:
+                        x = ParentElement.X + ((ParentElement.Width - Width) / 2);
+                        break;
+                    case HorizontalOrientation.Stretch:
+                        w = ParentElement.Width;
+                        break;
+                }
+
+
+                // Vertical
+                switch (VerticalOrientation)
+                {
+                    case VerticalOrientation.Unset:
+                        y = Y;
+                        break;
+                    case VerticalOrientation.Top:
+                        y = ParentElement.Y;
+                        break;
+                    case VerticalOrientation.Bottom:
+                        y = ParentElement.Y + (ParentElement.Height - Height);
+                        break;
+                    case VerticalOrientation.Center:
+                        y = ParentElement.Y + ((ParentElement.Height - Height) / 2);
+                        break;
+                    case VerticalOrientation.Stretch:
+                        h = ParentElement.Height;
+                        break;
+                }
+
+                Rect = new RectangleF(x, y, w, h);
+
+
+                // Update children
+                foreach (UIElement child in Children)
+                {
+                    child.UpdateLayout();
+                }
             }
 
-
-            // Vertical
-            switch (VerticalOrientation)
-            {
-                case VerticalOrientation.Unset:
-                    y = Y;
-                    break;
-                case VerticalOrientation.Top:
-                    break;
-                case VerticalOrientation.Bottom:
-                    y = ParentElement.Height - Height;
-                    break;
-                case VerticalOrientation.Center:
-                    y = (ParentElement.Height - Height) / 2;
-                    break;
-                case VerticalOrientation.Stretch:
-                    h = ParentElement.Height;
-                    break;
-            }
-
-
-            Rect = new RectangleF(x, y, w, h);
         }
 
 
@@ -324,6 +237,14 @@ namespace VengineX.UI.Elements
         }
 
 
+        // TODO: Fix child can't be removed while iterating over children.
+        /// <summary>
+        /// Removes the given UIElement from this UIElement.
+        /// </summary>
+        /// <param name="child"></param>
+        public void RemoveChild(UIElement child) => Children?.Remove(child);
+
+
         /// <summary>
         /// Removes all the children (recursively) from this UI Element.<br/>
         /// </summary>
@@ -335,7 +256,7 @@ namespace VengineX.UI.Elements
             {
                 child.ClearChildren(dispose);
             }
-            
+
             // Dispose direct childs
             if (dispose)
             {
