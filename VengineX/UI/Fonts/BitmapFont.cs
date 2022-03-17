@@ -153,7 +153,8 @@ namespace VengineX.UI.Fonts
             Shader imageShader = ResourceManager.GetResource<Shader>("shader.ui.image");
             Matrix4 proj = Matrix4.CreateOrthographicOffCenter(0, textureSize, -textureSize, 0, -1.0f, 1.0f);
             Matrix4 view = Matrix4.Identity;
-            Vector4 color = Vector4.One;
+            Vector4 color = Vector4.Zero;
+            Vector4 tint = Vector4.One;
 
             // Render all the textures
             fb.Bind();
@@ -164,6 +165,7 @@ namespace VengineX.UI.Fonts
             imageShader.SetUniformMat4("P", ref proj);
             imageShader.SetUniformMat4("V", ref view);
             imageShader.SetUniformVec4("uColor", ref color);
+            imageShader.SetUniformVec4("uTint", ref tint);
 
 
             int rowSpaceUsed = 0;

@@ -15,21 +15,25 @@ using VengineX.Resources;
 namespace VengineX.UI.Elements
 {
 
-    public class Image : UIElement
+    public class Image : EventDrivenUIElement
     {
         public static Shader ImageShader { get; private set; }
         public static int ProjectionMatrixLocation { get; private set; }
         public static int ModelMatrixLocation { get; private set; }
         public static int ViewMatrixLocation { get; private set; }
         public static int ColorLocation { get; private set; }
+        public static int TintLocation { get; private set; }
 
         public Vector4 Color { get => _color; set => _color = value; }
         protected Vector4 _color;
 
-        private Texture2D _texture;
+        public Vector4 Tint { get => _tint; set => _tint = value; }
+        protected Vector4 _tint;
+
+        private Texture2D? _texture;
 
 
-        public Image(float x, float y, float width, float height, Texture2D texture, Vector4 color) : base(x, y, width, height)
+        public Image(float x, float y, float width, float height, Texture2D texture, Vector4 color, Vector4 tint) : base(x, y, width, height)
         {
             // Lazy shader initialization
             if (ImageShader == null)
@@ -39,25 +43,62 @@ namespace VengineX.UI.Elements
                 ModelMatrixLocation = ImageShader.GetUniformLocation("M");
                 ViewMatrixLocation = ImageShader.GetUniformLocation("V");
                 ColorLocation = ImageShader.GetUniformLocation("uColor");
+                TintLocation = ImageShader.GetUniformLocation("uTint");
             }
 
             _color = color;
+            _tint = tint;
             _texture = texture;
         }
 
 
+        public Image(float x, float y, float width, float height, Vector4 color)
+            : this(x, y, width, height, null, color, Vector4.One) { }
+
+
+        public Image(float x, float y, float width, float height, Texture2D texture, Vector4 tint)
+            : this(x, y, width, height, texture, Vector4.Zero, tint) { }
+
+
+        public Image(float x, float y, float width, float height, Texture2D texture)
+            : this(x, y, width, height, texture, Vector4.Zero, Vector4.One) { }
+
+
+        // TODO batch rendering with instanced quads if same texture is used
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public override void Render()
         {
-            ImageShader.Bind();
+            if (ParentCanvas != null)
+            {
+                // Render self
+                ImageShader.Bind();
 
-            _texture.Bind();
+                if (_texture == null)
+                {
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
+                }
+                else
+                {
+                    _texture.Bind();
+                }
 
-            ImageShader.SetUniformMat4(ProjectionMatrixLocation, ref ParentCanvas.ProjectionMatrix);
-            ImageShader.SetUniformMat4(ViewMatrixLocation, ref ParentCanvas.ViewMatrix);
-            ImageShader.SetUniformMat4(ModelMatrixLocation, ref ModelMatrix);
-            ImageShader.SetUniformVec4(ColorLocation, ref _color);
+                ImageShader.SetUniformMat4(ProjectionMatrixLocation, ref ParentCanvas.ProjectionMatrix);
+                ImageShader.SetUniformMat4(ViewMatrixLocation, ref ParentCanvas.ViewMatrix);
+                ImageShader.SetUniformMat4(ModelMatrixLocation, ref ModelMatrix);
+                ImageShader.SetUniformVec4(ColorLocation, ref _color);
+                ImageShader.SetUniformVec4(TintLocation, ref _tint);
 
-            ParentCanvas.Quad.Render();
+                ParentCanvas.Quad.Render();
+
+
+                // Render children
+                foreach (EventDrivenUIElement child in Children)
+                {
+                    child.Render();
+                }
+            }
         }
 
 

@@ -18,7 +18,7 @@ namespace VengineX.UI.Elements
     /// <summary>
     /// Label with text.
     /// </summary>
-    public class Label : UIElement, IDisposable
+    public class Label : EventDrivenUIElement, IDisposable
     {
         public static Shader BitmapFontShader { get; private set; }
         public static int ProjectionMatrixLocation { get; private set; }
@@ -81,17 +81,20 @@ namespace VengineX.UI.Elements
         /// </summary>
         public override void Render()
         {
-            BitmapFontShader.Bind();
-            _font.TextureAtlas.Bind();
+            if (ParentCanvas != null)
+            {
+                BitmapFontShader.Bind();
+                _font.TextureAtlas.Bind();
 
-            BitmapFontShader.SetUniformMat4(ProjectionMatrixLocation, ref ParentCanvas.ProjectionMatrix);
-            BitmapFontShader.SetUniformMat4(ViewMatrixLocation, ref ParentCanvas.ViewMatrix);
-            BitmapFontShader.SetUniformMat4(ModelMatrixLocation, ref ModelMatrix);
-            BitmapFontShader.SetUniformVec4(ColorLocation, ref _color);
+                BitmapFontShader.SetUniformMat4(ProjectionMatrixLocation, ref ParentCanvas.ProjectionMatrix);
+                BitmapFontShader.SetUniformMat4(ViewMatrixLocation, ref ParentCanvas.ViewMatrix);
+                BitmapFontShader.SetUniformMat4(ModelMatrixLocation, ref ModelMatrix);
+                BitmapFontShader.SetUniformVec4(ColorLocation, ref _color);
 
-            //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-            _textMesh.Render();
-            //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+                //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+                _textMesh.Render();
+                //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+            }
         }
 
 
