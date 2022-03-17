@@ -19,14 +19,13 @@ namespace VengineX.UI.Canvases
     /// Canvas is the root of any UI.<br/>
     /// It is re-rendered onto famebuffers texture if needed.
     /// </summary>
-    public class Canvas : UIElement, IDisposable
+    public class Canvas : EventDrivenUIElement, IDisposable
     {
         /// <summary>
         /// The input manager that controls all the UI elements within this canvas.
         /// </summary>
         public InputManager Input { get; private set; }
 
-        // TODO batch all the ui elements into a single mesh if possible, maybe?
         /// <summary>
         /// The quad for rendering all the UI elements (that can be rendered onto a quad).
         /// </summary>
@@ -53,14 +52,6 @@ namespace VengineX.UI.Canvases
         /// Height of the canvas.
         /// </summary>
         public override float Height { get; set; }
-
-        // TODO implement
-        /// <summary>
-        /// Inner padding of the canas.<br/>
-        /// Padding means that the Children can only be moved<br/>
-        /// within the inner space even if the canvas is larger than that.
-        /// </summary>
-        public float Padding { get; set; }
 
 
         public Canvas(float width, float height, InputManager input) : base(0, 0, width, height)
