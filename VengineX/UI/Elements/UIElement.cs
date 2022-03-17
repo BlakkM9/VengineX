@@ -129,8 +129,14 @@ namespace VengineX.UI.Elements
         public ref Matrix4 ModelMatrix { get => ref _modelMatrix; }
         private Matrix4 _modelMatrix;
 
+        /// <summary>
+        /// The horizontal orientation within it's parent.
+        /// </summary>
         public HorizontalOrientation HorizontalOrientation { get; set; }
 
+        /// <summary>
+        /// The vertical orientation within it's parent.
+        /// </summary>
         public VerticalOrientation VerticalOrientation { get; set; }
 
         /// <summary>
