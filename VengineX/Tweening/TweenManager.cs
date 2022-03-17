@@ -20,13 +20,13 @@ namespace VengineX.Tweening
         /// Queue holding all the tweens that were started while updating current tweens.<br/>
         /// They will be added once the updating in this frame is done.
         /// </summary>
-        private readonly static Queue<Tween> _addQueue = new Queue<Tween>();
+        private readonly static Stack<Tween> _addQueue = new Stack<Tween>();
 
         /// <summary>
         /// Queue holding all the tweens that were stopped (removed) while updating current tweens.<br/>
         /// They will be added once the updating in this frame is done.
         /// </summary>
-        private readonly static Queue<Tween> _removeQueue = new Queue<Tween>();
+        private readonly static Stack<Tween> _removeQueue = new Stack<Tween>();
 
 
         /// <summary>
@@ -43,13 +43,13 @@ namespace VengineX.Tweening
             // Remove tweens that were stopped.
             while (_removeQueue.Count > 0)
             {
-                _tweens.Remove(_removeQueue.Dequeue());
+                _tweens.Remove(_removeQueue.Pop());
             }
 
             // Add tweens that were started.
             while (_addQueue.Count > 0)
             {
-                _tweens.Add(_addQueue.Dequeue());
+                _tweens.Add(_addQueue.Pop());
             }
         }
 
@@ -60,7 +60,7 @@ namespace VengineX.Tweening
         /// <param name="tween">Tween to add.</param>
         internal static void AddTween(Tween tween)
         {
-            _addQueue.Enqueue(tween);
+            _addQueue.Push(tween);
         }
 
 
@@ -70,7 +70,7 @@ namespace VengineX.Tweening
         /// <param name="tween">Tween to remove.</param>
         internal static void RemoveTween(Tween tween)
         {
-            _removeQueue.Enqueue(tween);
+            _removeQueue.Push(tween);
         }
     }
 }
