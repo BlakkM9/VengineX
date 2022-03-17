@@ -72,7 +72,7 @@ namespace VengineX.Screens
                 },
             });
 
-            _logoImage = new Image(0, 0, 512, 512, _logo, Vector4.One);
+            _logoImage = new Image(0, 0, 512, 512, _logo);
             _pipeline.OverlayUI.AddChild(
                 _logoImage,
                 HorizontalOrientation.Center,
@@ -92,14 +92,14 @@ namespace VengineX.Screens
             float aChange = 1;
             Tween inAnim = new Tween(1.5f, EasingFunction.EaseOutCubic, (t) =>
                 {
-                    _logoImage.Color = new Vector4(1, 1, 1, t * aChange);
+                    _logoImage.Tint = new Vector4(1, 1, 1, t * aChange);
                     _logoImage.Width = startSize + t * sizeChange;
                     _logoImage.Height = startSize + t * sizeChange;
                     _logoImage.UpdateLayout();
                 });
             Tween outAnim = new Tween(0.5f, EasingFunction.EaseOutCubic, (t) =>
             {
-                _logoImage.Color = new Vector4(1, 1, 1, 1 - (t * aChange));
+                _logoImage.Tint = new Vector4(1, 1, 1, 1 - (t * aChange));
             });
 
 
