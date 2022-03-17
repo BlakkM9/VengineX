@@ -40,7 +40,7 @@ namespace VengineX.Utils.Easing
     /// If there is a pre-defined easing function (<see cref="EasingFunction"/>), use these<br/>
     /// because they are usually more performant.
     /// </summary>
-    public struct UnitBezier
+    public struct CubicBezier
     {
         private double cx;
         private double bx;
@@ -53,7 +53,7 @@ namespace VengineX.Utils.Easing
         /// <summary>
         /// Create the easing curve with given control points
         /// </summary>
-        public UnitBezier(double p1x, double p1y, double p2x, double p2y)
+        public CubicBezier(double p1x, double p1y, double p2x, double p2y)
         {
             // Calculate the polynomial coefficients, implicit first and last control points are (0,0) and (1,1).
             cx = 3.0 * p1x;
