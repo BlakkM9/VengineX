@@ -20,7 +20,7 @@ namespace VengineX.Graphics.Rendering
         public int ProjectionMatrixLocation { get; }
 
 
-        public Material(Shader shader, Texture2D[] textures)
+        public Material(Shader shader, params Texture2D[] textures)
         {
             Shader = shader;
             ModelMatrixLocation = Shader.GetUniformLocation("M");
