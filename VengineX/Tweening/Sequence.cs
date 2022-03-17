@@ -72,7 +72,6 @@ namespace VengineX.Tweening
             // Toggle reverse for first tween if sequence is backwards.
             if (IsReverse)
             {
-                Console.WriteLine("reversing all tweens");
                 foreach (Tween t in _tweens)
                 {
                     t.Reverse();
@@ -97,7 +96,6 @@ namespace VengineX.Tweening
         {
             _tweens[_currentTweenIndex].Completed += CurrentTween_Completed;
             _tweens[_currentTweenIndex].Start();
-            Logger.Log("Starting " + _currentTweenIndex);
         }
 
 
@@ -135,8 +133,6 @@ namespace VengineX.Tweening
             // Get next index and check if running direction needs to change.
             _sequenceIterator.MoveNext();
             (int nextIndex, bool toggleReverse) result = _sequenceIterator.Current;
-            Console.WriteLine(result);
-
 
             // Check if still in current iteration
             if (_currentSequenceCount == _tweens.Count)
