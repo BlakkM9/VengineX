@@ -13,7 +13,7 @@ namespace VengineX.Tweening
     /// <summary>
     /// Class that provides an easy solution for creating animations.
     /// </summary>
-    public class Tween
+    public class Tween : TweenBase
     {
         /// <summary>
         /// Occurs when the tween was run to completion.
@@ -56,46 +56,81 @@ namespace VengineX.Tweening
         public float CurrentTime { get; private set; }
 
         /// <summary>
-        /// Wether or not this tween should loop.<br/>
-        /// When this tween is part of a <see cref="Sequence"/>, setting this to true will<br/>
-        /// break the sequence and keep looping the tween with loop set to true.<br/>
-        /// When true, <see cref="Completed"/> will never occur.
+        /// The iteration count of this tween.<br/>
+        /// Set to <see cref="TweenBase"/> (-1) for infinite iterations.<br/>
+        /// When this tween is part of a <see cref="Sequence"/>, setting this to <see cref="TweenBase.INFINITE"/> will<br/>
+        /// break the sequence and keep looping this tween.<br/>
+        /// When <see cref="TweenBase.INFINITE"/>, <see cref="Completed"/> will never occur.
         /// </summary>
-        public bool Loop { get; set; }
+        public override int IterationCount { get; }
 
-        private EasingFunction _easingFunction;
+        /// <summary>
+        /// The animation direction of this tween.
+        /// </summary>
+        public override Direction Direction { get; }
 
-        private UpdateFunction _updateFunction;
+        /// <summary>
+        /// Is this tween currently running reversed?
+        /// </summary>
+        public bool IsRunningReversed { get; private set; }
+
+
+        private readonly EasingFunction _easingFunction;
+        private readonly UpdateFunction _updateFunction;
 
 
         /// <summary>
         /// Most basic constructor for a tween. Own defined easing and and update functions.
         /// </summary>
         /// <param name="duration">Duration of the tween in seconds.</param>
-        public Tween(float duration, EasingFunction easingFunction, UpdateFunction updateFunction)
+        /// <param name="direction">Animation direction of this tween.</param>
+        /// <param name="iterations">How often this tween should be played. Use <see cref="TweenBase.INFINITE"/> (-1) for infinite iterations.</param>
+        /// <param name="easingFunction"><see cref="EasingFunction"/> for this tween.</param>
+        /// <param name="updateFunction"><see cref="UpdateFunction"/> function for this tween.</param>
+        public Tween(float duration, Direction direction, int iterations, EasingFunction easingFunction, UpdateFunction updateFunction)
         {
             Duration = duration;
+
+            Direction = direction;
+            IsRunningReversed = IsReverse;
+
+            IterationCount = iterations;
+            CurrentIterationCount = IterationCount;
+
             _easingFunction = easingFunction;
             _updateFunction = updateFunction;
         }
 
 
         /// <summary>
-        /// Overload for <see cref="Tween(float, EasingFunction, UpdateFunction)"/>, using<br/>
+        /// Overload for <see cref="Tween(float, Direction, int, EasingFunction, UpdateFunction)"/>, using<br/>
         /// <see cref="Tweening.EasingFunction"/> enum for easing function.
         /// </summary>
-        public Tween(float duration, Tweening.EasingFunction easingFunction, UpdateFunction updateFunction)
-            : this(duration, easingFunction.Function(), updateFunction) { }
+        public Tween(float duration, Direction direction, int iterations, Tweening.EasingFunction easingFunction, UpdateFunction updateFunction)
+            : this(duration, direction, iterations, easingFunction.Function(), updateFunction) { }
 
 
         /// <summary>
-        /// Overload for <see cref="Tween(float, EasingFunction, UpdateFunction)"/>, using<br/>
-        /// css-like cubic-bezier (<see cref="UnitBezier"/>) for the easing function.<br/>
+        /// Overload for <see cref="Tween(float, Direction, int, EasingFunction, UpdateFunction)"/>, using<br/>
+        /// css-like cubic-bezier (<see cref="CubicBezier"/>) for the easing function.<br/>
         /// If there is a pre-defined <see cref="Tweening.EasingFunction"/>, use this one<br/>
         /// instead for (usually) better performance.
         /// </summary>
-        public Tween(float duration, UnitBezier cubicBezier, UpdateFunction updateFunction)
-            : this(duration, (d, c) => (float)cubicBezier.Solve(c / d, 1e-6), updateFunction) { }
+        public Tween(float duration, Direction direction, int iterations, CubicBezier easingFunction, UpdateFunction updateFunction)
+            : this(duration, direction, iterations, (d, c) => (float)easingFunction.Solve(c / d, 1e-6), updateFunction) { }
+
+
+        public Tween(float duration, EasingFunction easingFunction, UpdateFunction updateFunction)
+            : this(duration, Direction.Normal, 1, easingFunction, updateFunction) { }
+
+
+        public Tween(float duration, Tweening.EasingFunction easingFunction, UpdateFunction updateFunction)
+            : this(duration, Direction.Normal, 1, easingFunction, updateFunction) { }
+
+
+        public Tween(float duration, CubicBezier easingFunction, UpdateFunction updateFunction)
+            : this(duration, Direction.Normal, 1, easingFunction, updateFunction) { }
+
 
 
         /// <summary>
@@ -106,16 +141,37 @@ namespace VengineX.Tweening
         {
             CurrentTime += (float)Time.DeltaUpdate;
             T = _easingFunction(Duration, CurrentTime);
-            _updateFunction.Invoke(T);
 
+
+            if (IsRunningReversed)
+            {
+                _updateFunction.Invoke(1 - T);
+            }
+            else
+            {
+                _updateFunction.Invoke(T);
+            }
+            
+
+            // Check if tween interation is over
             if (CurrentTime > Duration)
             {
-                if (Loop)
+                // Update current iteration count if not infinite
+                if (IterationCount != INFINITE) { CurrentIterationCount--; }
+
+                // Check if more iterations or stopping
+                if (IterationCount == INFINITE || CurrentIterationCount > 0)
                 {
                     CurrentTime = 0;
                     T = 0;
+
+                    // Update alternation
+                    if (IsAlternating)
+                    {
+                        Reverse();
+                    }
                 }
-                else
+                else if (CurrentIterationCount == 0)
                 {
                     Stop();
                     Completed?.Invoke(this);
@@ -127,41 +183,41 @@ namespace VengineX.Tweening
         /// <summary>
         /// Starts/Resumes this tween.
         /// </summary>
-        public void Start()
-        {
-            TweenManager.AddTween(this);
-        }
+        public override void Start() => TweenManager.AddTween(this);
 
 
         /// <summary>
         /// Pauses this tween.
         /// </summary>
-        public void Pause()
-        {
-            TweenManager.RemoveTween(this);
-        }
+        public override void Pause() => TweenManager.RemoveTween(this);
 
 
         /// <summary>
         /// Stops this tween.<br/>
         /// If the tween is started again, it will start at the beginning again.
         /// </summary>
-        public void Stop()
+        public override void Stop()
         {
             TweenManager.RemoveTween(this);
             T = 0;
             CurrentTime = 0;
+            CurrentIterationCount = IterationCount;
             Stopped?.Invoke(this);
         }
 
 
         /// <summary>
+        /// Toggles <see cref="IsRunningReversed"/>.
+        /// </summary>
+        public void Reverse()
+        {
+            IsRunningReversed = !IsRunningReversed;
+        }
+
+        /// <summary>
         /// Returns a tween that can servers as a delay (between tweens within a sequence)
         /// </summary>
         /// <param name="duration">Delay in seconds.</param>
-        public static Tween Delay(float duration)
-        {
-            return new Tween(duration, Tweening.EasingFunction.Linear, (_) => { });
-        }
+        public static Tween Delay(float duration) => new Tween(duration, Tweening.EasingFunction.None, (_) => { });
     }
 }

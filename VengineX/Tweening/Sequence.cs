@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VengineX.Debugging.Logging;
 
 namespace VengineX.Tweening
 {
     /// <summary>
     /// A sequence holding different tweens which are executed one after another.
     /// </summary>
-    public class Sequence
+    public class Sequence : TweenBase
     {
         /// <summary>
         /// Occurs when the sequence was run to completion.
@@ -23,50 +24,90 @@ namespace VengineX.Tweening
         public event Action<Sequence>? Stopped;
 
         /// <summary>
-        /// Wether or not this sequence should loop.
+        /// Iteration count for this sequence. Use <see cref="TweenBase.INFINITE"/> for infinite looping.<br/>
         /// </summary>
-        public bool Loop { get; set; }
+        public override int IterationCount { get; }
 
-        private Tween CurrentTween { get => _tweens[_currentTweenIndex]; }
+        /// <summary>
+        /// The animation <see cref="Direction"/> of this sequence.<br/>
+        /// When direction is not <see cref="Direction.Normal"/> this will<br/>
+        /// Control and overwrites the direction of the <see cref="Tween"/>s in this sequence.<br/>
+        /// It is assumed that all the tweens in this sequence are using normal direction.<br/>
+        /// If you need more control over how the tweens in the sequence are looping, create multiple tweens<br/>
+        /// And use <see cref="Direction.Normal"/> in the sequence.
+        /// </summary>
+        public override Direction Direction { get; }
 
+        private readonly IEnumerator<(int, bool)> _sequenceIterator;
+
+        /// <summary>
+        /// List holding all the tweens in this sequence.
+        /// </summary>
         private readonly List<Tween> _tweens;
 
+        /// <summary>
+        /// Index of the current tween.
+        /// </summary>
         private int _currentTweenIndex;
 
-
-        private Sequence()
-        {
-            _tweens = new List<Tween>();
-            _currentTweenIndex = 0;
-        }
-
+        /// <summary>
+        /// How many tweens completed in the current sequence iteration.
+        /// </summary>
+        private int _currentSequenceCount;
 
         /// <summary>
         /// Creates a sequence from given tweens.
         /// </summary>
-        public Sequence(params Tween[] tweens)
+        private Sequence(Direction direction, int iterations, params Tween[] tweens)
         {
             _tweens = tweens.ToList();
+
+            Direction = direction;
+            IterationCount = iterations;
+            CurrentIterationCount = IterationCount;
+
+            _currentTweenIndex = IsReverse ? _tweens.Count - 1 : 0;
+            _currentSequenceCount = 0;
+
+            // Toggle reverse for first tween if sequence is backwards.
+            if (IsReverse)
+            {
+                Console.WriteLine("reversing all tweens");
+                foreach (Tween t in _tweens)
+                {
+                    t.Reverse();
+                }
+            }
+
+            _sequenceIterator = SequenceIterator.GetIteratorFor(direction, _tweens.Count);
+            _sequenceIterator.MoveNext();
         }
+
+
+        public Sequence(int iterations, params Tween[] tweens) : this(Direction.Normal, iterations, tweens) { }
+
+
+        public Sequence(params Tween[] tweens) : this(Direction.Normal, 1, tweens) { }
 
 
         /// <summary>
         /// Starts/Resumes this sequence.
         /// </summary>
-        public void Start()
+        public override void Start()
         {
-            CurrentTween.Completed += CurrentTween_Over;
-            CurrentTween.Start();
+            _tweens[_currentTweenIndex].Completed += CurrentTween_Completed;
+            _tweens[_currentTweenIndex].Start();
+            Logger.Log("Starting " + _currentTweenIndex);
         }
 
 
         /// <summary>
         /// Pauses this sequence.
         /// </summary>
-        public void Pause()
+        public override void Pause()
         {
-            CurrentTween.Completed -= CurrentTween_Over;
-            CurrentTween.Pause();
+            _tweens[_currentTweenIndex].Completed -= CurrentTween_Completed;
+            _tweens[_currentTweenIndex].Pause();
         }
 
 
@@ -74,37 +115,72 @@ namespace VengineX.Tweening
         /// Stops the sequence.<br/>
         /// If started again it will start at the beginning of the first sequence.
         /// </summary>
-        public void Stop()
+        public override void Stop()
         {
-            CurrentTween.Stop();
-            _currentTweenIndex = 0;
+            _tweens[_currentTweenIndex].Stop();
+
+            CurrentIterationCount = IterationCount;
+            _currentTweenIndex = IsReverse ? _tweens.Count - 1 : 0;
+
             Stopped?.Invoke(this);
         }
 
-
-        private void CurrentTween_Over(Tween currentTween)
+        private void CurrentTween_Completed(Tween currentTween)
         {
-            currentTween.Completed -= CurrentTween_Over;
-            _currentTweenIndex++;
+            // Remove completed listener of last tween
+            currentTween.Completed -= CurrentTween_Completed;
 
-            if (_currentTweenIndex < _tweens.Count)
+            _currentSequenceCount++;
+
+            // Get next index and check if running direction needs to change.
+            _sequenceIterator.MoveNext();
+            (int nextIndex, bool toggleReverse) result = _sequenceIterator.Current;
+            Console.WriteLine(result);
+
+
+            // Check if still in current iteration
+            if (_currentSequenceCount == _tweens.Count)
             {
-                CurrentTween.Completed += CurrentTween_Over;
-                CurrentTween.Start();
-            }
-            else
-            {
-                if (Loop)
+                // No, start next iteration
+
+                // Reset sequence count
+                _currentSequenceCount = 0;
+
+                // Update iteration count
+                if (CurrentIterationCount != INFINITE) { CurrentIterationCount--; }
+
+                // If no more iterations CurrentIteratorCount is 0, otherwise -1 or > 0
+                if (CurrentIterationCount == 0)
                 {
-                    _currentTweenIndex = 0;
-                    Start();
-                }
-                else
-                {
-                    _currentTweenIndex = 0;
+                    // No, finished all iterations.
                     Stop();
                     Completed?.Invoke(this);
                 }
+                else
+                {
+                    // Update index
+                    _currentTweenIndex = result.nextIndex;
+
+                    // Toggle tweens directions
+                    if (result.toggleReverse)
+                    {
+                        Console.WriteLine("reversing all tweens");
+                        foreach (Tween t in _tweens)
+                        {
+                            t.Reverse();
+                        }
+                    }
+
+                    Start();
+                }
+            }
+            else
+            {
+                // Still in iteration; go to next tween in sequence
+                _currentTweenIndex = result.nextIndex;
+
+                // Update the tweens current running direction if sequence direction is not normal
+                Start();
             }
         }
     }
