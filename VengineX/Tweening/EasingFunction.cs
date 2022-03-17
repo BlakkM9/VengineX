@@ -9,6 +9,7 @@ namespace VengineX.Tweening
 {
     public enum EasingFunction
     {
+        None,
         Linear,
         EaseInSine,
         EaseOutSine,
