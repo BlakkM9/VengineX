@@ -21,6 +21,9 @@ namespace VengineX.UI.LWUI.Elements
         public ref Matrix4 ModelMatrix => ref _modelMatrix;
         private Matrix4 _modelMatrix;
 
+        /// <summary>
+        /// The parent canvas of this ui element.
+        /// </summary>
         public Canvas ParentCanvas { get; }
 
         /// <summary>
@@ -29,7 +32,9 @@ namespace VengineX.UI.LWUI.Elements
         public UIElement? Parent { get; set; } = null;
 
         /// <summary>
-        /// Layout generator of this element.
+        /// Layout generator.<br/>
+        /// This controls how the child elements in this element<br/>
+        /// are layouted. To apply changes, call <see cref="UpdateLayout"/>
         /// </summary>
         public Layout? Layout { get; set; } = null;
 
@@ -54,21 +59,20 @@ namespace VengineX.UI.LWUI.Elements
         /// <summary>
         /// Width of this element. Shortcut for <see cref="Size"/>.
         /// </summary>
-        public float Width { get => Size.X; }
+        public float Width
+        {
+            get => Size.X;
+            set => Size = new Vector2(value, Height);
+        }
 
         /// <summary>
         /// Height of this element. Shortcut for <see cref="Size"/>.
         /// </summary>
-        public float Height { get => Size.Y; }
-
-        /// <summary>
-        /// If nonzero, components of the fixed size attribute override any values
-        /// computed by a layout generator associated with this widget. Note that
-        /// just setting the fixed size alone is not enough to actually change its
-        /// size; this is done with a call to \ref setSize or a call to \ref performLayout()
-        /// in the parent widget.
-        /// </summary>
-        public Vector2 FixedSize { get; set; } = Vector2.Zero;
+        public float Height
+        {
+            get => Size.Y;
+            set => Size = new Vector2(Width, value);
+        }
 
         /// <summary>
         /// Wether or not the element is currently visible (assuming all parents are visible).
@@ -99,16 +103,19 @@ namespace VengineX.UI.LWUI.Elements
         /// </summary>
         public int ChildCount { get => Children.Count; }
 
-
+        /// <summary>
+        /// List holding all the children of this ui element.
+        /// </summary>
         public List<UIElement> Children { get; }
 
 
         public bool Enabled { get; set; } = true;
 
-        public bool Focuesd { get; set; } = false;
+        public bool IgnoreLayout { get; set; } = true;
 
         /// <summary>
-        /// Calculates the preferred size of this element.
+        /// Calculates the preferred size of this element.<br/>
+        /// Preferred size is the size of this element needed to fit all its layouted children.
         /// </summary>
         public Vector2 PreferredSize { get => Layout == null ? Size : Layout.PreferredSize(this); }
 
@@ -162,7 +169,10 @@ namespace VengineX.UI.LWUI.Elements
         /// <summary>
         /// Removes child at given index.
         /// </summary>
-        public void RemoveChild(int index) => Children.RemoveAt(index);
+        public void RemoveChild(int index)
+        {
+            Children.RemoveAt(index);
+        }
 
 
         /// <summary>
@@ -175,18 +185,6 @@ namespace VengineX.UI.LWUI.Elements
         /// Returns the index of given child.
         /// </summary>
         public void IndexOf(UIElement element) => Children.IndexOf(element);
-
-
-        public void RequestFocus()
-        {
-            UIElement element = this;
-            while (element.Parent != null)
-            {
-                element = element.Parent;
-            }
-
-            throw new NotImplementedException();
-        }
 
 
         /// <summary>
@@ -217,25 +215,18 @@ namespace VengineX.UI.LWUI.Elements
 
 
         /// <summary>
-        /// Performs layouting for this element (recursive).
+        /// Performs layouting for this element and updates the model matrix (recursive).
         /// </summary>
-        public virtual void PerformLayout()
+        public virtual void UpdateLayout()
         {
             if (Layout != null)
             {
-                Layout.PerformLayout(this);
+                Layout.UpdateLayout(this);
             }
-            else
+
+            foreach (UIElement child in Children)
             {
-                foreach (UIElement child in Children)
-                {
-                    Vector2 preferredSize = child.PreferredSize;
-                    Vector2 fixedSize = child.FixedSize;
-                    child.Size = new Vector2(
-                        fixedSize[0] != 0 ? fixedSize[0] : preferredSize[0],
-                        fixedSize[1] != 0 ? fixedSize[1] : preferredSize[1]);
-                    child.PerformLayout();
-                }
+                child.UpdateLayout();
             }
 
             CalculateModelMatrix();
@@ -262,7 +253,7 @@ namespace VengineX.UI.LWUI.Elements
         /// <summary>
         /// Calculates the model matrix of this element, based on <see cref="Size"/> and <see cref="AbsolutePosition"/><br/>
         /// </summary>
-        public virtual void CalculateModelMatrix()
+        protected virtual void CalculateModelMatrix()
         {
             ModelMatrix = Matrix4.Identity;
             ModelMatrix *= Matrix4.CreateScale(Width / 2f, Height / 2f, 0);

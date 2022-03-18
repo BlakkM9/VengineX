@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace VengineX.UI.LWUI.Layouts
 {
-
     public enum Orientation
     {
         /// <summary>

@@ -6,26 +6,62 @@ using System.Threading.Tasks;
 
 namespace VengineX.UI.LWUI.Layouts
 {
+    /// <summary>
+    /// Generalized alignment
+    /// </summary>
     public enum Alignment
     {
         /// <summary>
-        /// Only as much space as is required.
+        /// Alignment left / top.
         /// </summary>
-        Minimum,
-
+        Start = 0,
         /// <summary>
-        /// Center alignement.
+        /// Aligned center.
         /// </summary>
-        Middle,
-
+        Center = 1,
         /// <summary>
-        /// As much space as is allowed.
+        /// Aligned right / bottom.
         /// </summary>
-        Maximum,
+        End = 2,
+    }
 
+
+    /// <summary>
+    /// Describes horizontal alignment (must remain castable to <see cref="Alignment"/>.
+    /// </summary>
+    public enum HorizontalAlignment
+    {
         /// <summary>
-        /// Fill according to preferred sizes.
+        /// Aligns left.
         /// </summary>
-        Fill,
+        Left = 0,
+        /// <summary>
+        /// Aligns center.
+        /// </summary>
+        Center = 1,
+        /// <summary>
+        /// Aligns right.
+        /// </summary>
+        Right = 2,
+    }
+
+
+    /// <summary>
+    /// Describes vertical alignment (must remain castable to <see cref="Alignment"/>.
+    /// </summary>
+    public enum VerticalAlignment
+    {
+        /// <summary>
+        /// Aligns top.
+        /// </summary>
+        Top = 0,
+        /// <summary>
+        /// Aligns center.
+        /// </summary>
+        Center = 1,
+        /// <summary>
+        /// Aligns bottom.
+        /// </summary>
+        Bottom = 2,
     }
 }
