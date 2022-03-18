@@ -39,7 +39,7 @@ namespace VengineX.UI.Elements
             {
                 _text = value;
                 _font.CreateMeshData(_text, out UnmanagedArray<UIVertex> vertices, out UnmanagedArray<uint> indices);
-                _textMesh.UpdateVertices(ref vertices, ref indices);
+                _textMesh.UpdateVertices(vertices, indices);
                 vertices.Free();
                 indices.Free();
                 Width = _font.CalculateWidth(_text);
