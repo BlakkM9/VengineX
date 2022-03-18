@@ -14,11 +14,17 @@ namespace VengineX.UI.Layouts
     /// </summary>
     public class StackLayout : Layout
     {
+        /// <summary>
+        /// The horizontal alignment of child elements.
+        /// </summary>
         public HorizontalAlignment HorizontalAlignment
         {
             get => Orientation == Orientation.Horizontal ? (HorizontalAlignment)_alignments[0] : (HorizontalAlignment)_alignments[1];
         }
 
+        /// <summary>
+        /// The vertical alignment of child elements.
+        /// </summary>
         public VerticalAlignment VerticalAlignment
         {
             get => Orientation == Orientation.Vertical ? (VerticalAlignment)_alignments[0] : (VerticalAlignment)_alignments[1];
@@ -53,12 +59,16 @@ namespace VengineX.UI.Layouts
         }
         private Orientation _orientation;
 
+
         /// <summary>
         /// Spacing between the children of this layout.
         /// </summary>
         public float Spacing { get; set; }
 
 
+        /// <summary>
+        /// Creates a new stack layout with given parameters.
+        /// </summary>
         public StackLayout(HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Orientation orientation, float spacing)
         {
             if (orientation == Orientation.Horizontal)

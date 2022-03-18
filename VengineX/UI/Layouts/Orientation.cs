@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace VengineX.UI.Layouts
 {
+    /// <summary>
+    /// Orientation for various <see cref="Layout"/>s
+    /// </summary>
     public enum Orientation
     {
         /// <summary>

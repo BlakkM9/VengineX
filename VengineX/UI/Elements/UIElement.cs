@@ -109,9 +109,9 @@ namespace VengineX.UI.Elements
         /// </summary>
         public List<UIElement> Children { get; }
 
-        public bool Enabled { get; set; } = true;
+        //public bool Enabled { get; set; } = true;
 
-        public bool IgnoreLayout { get; set; } = true;
+        //public bool IgnoreLayout { get; set; } = true;
 
         /// <summary>
         /// Calculates the preferred size of this element.<br/>

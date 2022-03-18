@@ -74,6 +74,9 @@ namespace VengineX.Graphics.Rendering.Textures
 
         private bool _disposedValue;
 
+        /// <summary>
+        /// Disposable pattern.
+        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
@@ -90,6 +93,9 @@ namespace VengineX.Graphics.Rendering.Textures
             }
         }
 
+        /// <summary>
+        /// Disposable pattern.
+        /// </summary>
         // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
         ~Texture()
         {
@@ -97,6 +103,9 @@ namespace VengineX.Graphics.Rendering.Textures
             Dispose(disposing: false);
         }
 
+        /// <summary>
+        /// Disposable pattern.
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

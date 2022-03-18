@@ -124,15 +124,21 @@ namespace VengineX.Tweening
         public Tween(float duration, Direction direction, int iterations, CubicBezier easingFunction, UpdateFunction updateFunction)
             : this(duration, direction, iterations, (d, c) => (float)easingFunction.Solve(c / d, 1e-6), updateFunction) { }
 
-
+        /// <summary>
+        /// Overload for <see cref="Tween(float, Direction, int, EasingFunction, UpdateFunction)"/>
+        /// </summary>
         public Tween(float duration, EasingFunction easingFunction, UpdateFunction updateFunction)
             : this(duration, Direction.Normal, 1, easingFunction, updateFunction) { }
 
-
+        /// <summary>
+        /// Overload for <see cref="Tween(float, Direction, int, EasingFunction, UpdateFunction)"/>
+        /// </summary>
         public Tween(float duration, Tweening.EasingFunction easingFunction, UpdateFunction updateFunction)
             : this(duration, Direction.Normal, 1, easingFunction, updateFunction) { }
 
-
+        /// <summary>
+        /// Overload for <see cref="Tween(float, Direction, int, EasingFunction, UpdateFunction)"/>
+        /// </summary>
         public Tween(float duration, CubicBezier easingFunction, UpdateFunction updateFunction)
             : this(duration, Direction.Normal, 1, easingFunction, updateFunction) { }
 

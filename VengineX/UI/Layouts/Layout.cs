@@ -8,6 +8,9 @@ using VengineX.UI.Elements;
 
 namespace VengineX.UI.Layouts
 {
+    /// <summary>
+    /// Base class for all layouts. Layouts are used to control the layout of child ui elements.
+    /// </summary>
     public abstract class Layout
     {
         /// <summary>

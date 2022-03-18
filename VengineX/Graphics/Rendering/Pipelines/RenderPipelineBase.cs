@@ -53,6 +53,9 @@ namespace VengineX.Graphics.Rendering.Pipelines
 
         private bool _disposedValue;
 
+        /// <summary>
+        /// Disposable pattern.
+        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
@@ -67,13 +70,18 @@ namespace VengineX.Graphics.Rendering.Pipelines
             }
         }
 
+        /// <summary>
+        /// Disposable pattern.
+        /// </summary>
         ~RenderPipelineBase()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: false);
         }
 
-
+        /// <summary>
+        /// Disposable pattern.
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

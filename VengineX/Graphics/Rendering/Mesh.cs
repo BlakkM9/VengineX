@@ -197,6 +197,9 @@ namespace VengineX.Graphics.Rendering
 
         private bool _disposedValue;
 
+        /// <summary>
+        /// Disposable pattern.
+        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
@@ -214,14 +217,18 @@ namespace VengineX.Graphics.Rendering
             }
         }
 
-
+        /// <summary>
+        /// Disposable pattern.
+        /// </summary>
         ~Mesh()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: false);
         }
 
-
+        /// <summary>
+        /// Disposable pattern.
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

@@ -21,12 +21,12 @@ namespace VengineX.UI.Fonts
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public string ResourcePath { get; set; }
+        public string ResourcePath { get; set; } = string.Empty;
 
         /// <summary>
         /// TextureAtlas that was generated for this font.
         /// </summary>
-        public Texture2D TextureAtlas { get; private set; }
+        public Texture2D? TextureAtlas { get; private set; }
 
         /// <summary>
         /// The size (height) of the font in pixels.
@@ -344,7 +344,7 @@ namespace VengineX.UI.Fonts
             {
                 if (disposing)
                 {
-                    TextureAtlas.Dispose();
+                    TextureAtlas?.Dispose();
                 }
 
                 // Dispose unmanaged

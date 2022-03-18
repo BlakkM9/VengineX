@@ -46,7 +46,8 @@ namespace VengineX.Debugging.Logging
         private static void DebugProc(DebugSource source, DebugType type, int id, DebugSeverity glSeverity, int length, IntPtr message, IntPtr userParam)
         {
             //string message;
-            Logger.Log(GLSeverityToSeverity(glSeverity), Tag.OpenGL, Marshal.PtrToStringAuto(message));
+            string? msg = Marshal.PtrToStringAuto(message);
+            Log(GLSeverityToSeverity(glSeverity), Tag.OpenGL, msg == null ? "" : msg);
         }
 
 

@@ -9,7 +9,10 @@ using VengineX.Graphics.Rendering.Vertices;
 
 namespace VengineX.Graphics.Rendering.UnitModels
 {
-
+    /// <summary>
+    /// A simple quad from -1 to 1 using <see cref="UIVertex"/>.<br/>
+    /// Might be used for postprocessing and ui rendering.
+    /// </summary>
     public class Quad : IDisposable
     {
         private static readonly UIVertex[] vertices = new UIVertex[] {
@@ -68,6 +71,9 @@ namespace VengineX.Graphics.Rendering.UnitModels
 
         private bool _disposedValue;
 
+        /// <summary>
+        /// Disposable pattern.
+        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
@@ -87,6 +93,9 @@ namespace VengineX.Graphics.Rendering.UnitModels
         //    Dispose(disposing: false);
         //}
 
+        /// <summary>
+        /// Disposable pattern.
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

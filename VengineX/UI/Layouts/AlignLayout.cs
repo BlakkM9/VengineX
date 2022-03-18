@@ -14,8 +14,14 @@ namespace VengineX.UI.Layouts
     /// </summary>
     public class AlignLayout : Layout
     {
+        /// <summary>
+        /// Horizontal alignment of child elements
+        /// </summary>
         public HorizontalAlignment HorizontalAlignment { get; set; }
 
+        /// <summary>
+        /// Vertical alignment of child elements
+        /// </summary>
         public VerticalAlignment VerticalAlignment { get; set; }
 
 
