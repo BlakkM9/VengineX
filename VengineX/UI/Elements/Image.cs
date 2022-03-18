@@ -77,7 +77,7 @@ namespace VengineX.UI.Elements
 
                 if (_texture == null)
                 {
-                    GL.BindTexture(TextureTarget.Texture2D, 0);
+                    GL.BindTextureUnit(0, 0);
                 }
                 else
                 {

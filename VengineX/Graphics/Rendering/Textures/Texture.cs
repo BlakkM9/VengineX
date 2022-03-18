@@ -15,52 +15,48 @@ namespace VengineX.Graphics.Rendering.Textures
     public abstract class Texture : IDisposable, IBindable
     {
         /// <summary>
+        /// Reference to the Handle for the texture in VRAM.
+        /// </summary>
+        public ref uint Handle { get => ref _handle; }
+
+        /// <summary>
         /// Handle for the texture in VRAM.
         /// </summary>
-        public int Handle { get; }
+        protected uint _handle;
 
         /// <summary>
         /// TextureTarget of this texture.
         /// </summary>
         public TextureTarget TextureTarget { get; }
 
-
         /// <summary>
         /// Generates a new texture with open gl as given texture target.
         /// </summary>
-        /// <param name="target"></param>
         public Texture(TextureTarget target)
         {
             TextureTarget = target;
-            Handle = GL.GenTexture();
+            GL.CreateTextures(TextureTarget, 1, out Handle);
         }
 
 
         /// <summary>
         /// Binds this texture to given texture unit.
-        /// </summary>
-        public void Bind(TextureUnit unit)
-        {
-            GL.ActiveTexture(unit);
-            GL.BindTexture(TextureTarget, Handle);
-        }
-
-
-        /// <summary>
-        /// Overload for <see cref="Bind(TextureUnit)"/>.<br/>
         /// <paramref name="unit"/> needs to be between 0 and 31.
         /// </summary>
         /// <param name="unit">Unit to bind to.</param>
-        public void Bind(int unit) => Bind(TextureUnit.Texture0 + unit);
+        public void Bind(uint unit)
+        {
+            GL.BindTextureUnit(unit, Handle);
+        }
 
 
         #region IBindable
 
         /// <summary>
         /// Binds to texture unit 0. Not to be used, only because implementing IBindable.<br/>
-        /// Use <see cref="Bind(TextureUnit)"/> if you want to bind to another texture unit.
+        /// Use <see cref="Bind(uint)"/> if you want to bind to another texture unit.
         /// </summary>
-        public void Bind() => Bind(TextureUnit.Texture0);
+        public void Bind() => Bind(0);
 
 
         /// <summary>
@@ -68,7 +64,7 @@ namespace VengineX.Graphics.Rendering.Textures
         /// </summary>
         public void Unbind()
         {
-            GL.ActiveTexture(0);
+            GL.BindTextureUnit(0, 0);
         }
 
         #endregion
@@ -84,17 +80,17 @@ namespace VengineX.Graphics.Rendering.Textures
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects)
+                    // Dispose managed state (managed objects)
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // Free unmanaged resources (unmanaged objects) and override finalizer
                 GL.DeleteTexture(Handle);
-                // TODO: set large fields to null
+                // Set large fields to null
                 _disposedValue = true;
             }
         }
 
-        // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
         ~Texture()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

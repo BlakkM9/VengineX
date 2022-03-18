@@ -34,9 +34,9 @@ namespace VengineX.Graphics.Rendering
             typeof(Vector4),
         };
 
-        private int _vbo;
-        private int _vao;
-        private int _ebo;
+        private uint _vbo;
+        private uint _vao;
+        private uint _ebo;
 
         /// <summary>
         /// ModelMatrix of this mesh.
@@ -70,18 +70,6 @@ namespace VengineX.Graphics.Rendering
         }
         private Vector3 _position;
 
-
-        ///// <summary>
-        ///// Array holding all vertices of this mesh.
-        ///// </summary>
-        //public T[] Vertices { get; private set; }
-
-
-        ///// <summary>
-        ///// Array holding all indices of this mesh.
-        ///// </summary>
-        //public uint[] Indices { get; private set; }
-
         /// <summary>
         /// Amount of indices in this mesh.
         /// </summary>
@@ -112,20 +100,12 @@ namespace VengineX.Graphics.Rendering
         {
             _numIndices = indices.Length;
 
-            // Create VertexBufferObject
-            _vbo = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf(typeof(T)), vertices, BufferUsage);
+            GL.CreateVertexArrays(1, out _vao);
+            GL.CreateBuffers(1, out _vbo);
+            GL.CreateBuffers(1, out _ebo);
 
-            // Create VertexArrayObject
-            _vao = GL.GenVertexArray();
-            GL.BindVertexArray(_vao);
-
-            // Create ElementBufferObject
-            // ebo is a property of vao so vao needs to be binded when we bind ebo
-            _ebo = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsage);
+            GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices, BufferUsage);
+            GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices, BufferUsage);
 
             SetupAttribPointers();
         }
@@ -135,20 +115,12 @@ namespace VengineX.Graphics.Rendering
         {
             _numIndices = indices.Length;
 
-            // Create VertexBufferObject
-            _vbo = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf(typeof(T)), vertices.Pointer, BufferUsage);
+            GL.CreateVertexArrays(1, out _vao);
+            GL.CreateBuffers(1, out _vbo);
+            GL.CreateBuffers(1, out _ebo);
 
-            // Create VertexArrayObject
-            _vao = GL.GenVertexArray();
-            GL.BindVertexArray(_vao);
-
-            // Create ElementBufferObject
-            // ebo is a property of vao so vao needs to be binded when we bind ebo
-            _ebo = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices.Pointer, BufferUsage);
+            GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices.Pointer, BufferUsage);
+            GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices.Pointer, BufferUsage);
 
             SetupAttribPointers();
         }
@@ -157,11 +129,11 @@ namespace VengineX.Graphics.Rendering
         private void SetupAttribPointers()
         {
             Type vertexType = typeof(T);
-            int location = 0;
+            uint location = 0;
             bool normalized = false;
-            VertexAttribPointerType type = VertexAttribPointerType.Float;
+            VertexAttribType type = VertexAttribType.Float;
             int stride = Marshal.SizeOf(typeof(T));
-            int offset = 0;
+            uint offset = 0;
 
             foreach (FieldInfo field in vertexType.GetFields())
             {
@@ -173,16 +145,16 @@ namespace VengineX.Graphics.Rendering
                 int fieldSize = Marshal.SizeOf(field.FieldType);
                 int fieldCount = fieldSize / sizeof(float);
 
-                GL.VertexAttribPointer(location, fieldCount, type, normalized, stride, offset);
-                GL.EnableVertexAttribArray(location);
+                GL.EnableVertexArrayAttrib(_vao, location);
+                GL.VertexArrayAttribBinding(_vao, location, 0);
+                GL.VertexArrayAttribFormat(_vao, location, fieldCount, type, normalized, offset);
 
                 location++;
-                offset += fieldSize;
+                offset += (uint)fieldSize;
             }
 
-            // Unbind vao
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.BindVertexArray(0);
+            GL.VertexArrayVertexBuffer(_vao, 0, _vbo, IntPtr.Zero, stride);
+            GL.VertexArrayElementBuffer(_vao, _ebo);
         }
 
 
@@ -194,7 +166,7 @@ namespace VengineX.Graphics.Rendering
             GL.BindVertexArray(_vao);
             GL.DrawElements(PrimitiveType.Triangles, _numIndices, DrawElementsType.UnsignedInt, 0);
             //GL.MultiDrawElements(PrimitiveType.Triangles, new int[] { _numIndices }, DrawElementsType.UnsignedInt, new int[] { 0 }, 1);
-            GL.BindVertexArray(0);
+            //GL.BindVertexArray(0);
         }
 
 
@@ -205,30 +177,20 @@ namespace VengineX.Graphics.Rendering
         {
             _numIndices = indices.Length;
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf(typeof(T)), vertices, BufferUsage);
-
-            GL.BindVertexArray(_vao);
-
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsage);
+            GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices, BufferUsage);
+            GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices, BufferUsage);
         }
 
 
         /// <summary>
         /// Updates the vertices and indices for this mesh
         /// </summary>
-        public void UpdateVertices(ref UnmanagedArray<T> vertices, ref UnmanagedArray<uint> indices)
+        public void UpdateVertices(UnmanagedArray<T> vertices, UnmanagedArray<uint> indices)
         {
             _numIndices = indices.Length;
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Marshal.SizeOf(typeof(T)), vertices.Pointer, BufferUsage);
-
-            GL.BindVertexArray(_vao);
-
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices.Pointer, BufferUsage);
+            GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices.Pointer, BufferUsage);
+            GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices.Pointer, BufferUsage);
         }
 
 

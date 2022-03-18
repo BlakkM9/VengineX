@@ -109,7 +109,7 @@ namespace VengineX.UI.Fonts
 
             Texture2DParameters t2params = new Texture2DParameters()
             {
-                PixelInternalFormat = PixelInternalFormat.R8,
+                InternalFormat = SizedInternalFormat.R8,
                 PixelFormat = PixelFormat.Red,
                 PixelType = PixelType.UnsignedByte,
                 MinFilter = TextureMinFilter.Linear,
@@ -145,7 +145,7 @@ namespace VengineX.UI.Fonts
             int textureSize = MathUtils.CeilPoT(MathHelper.Sqrt((double)length * size * size));
 
             // Create framebuffer to render to.
-            Framebuffer2D fb = new Framebuffer2D(textureSize, textureSize, PixelInternalFormat.R8, PixelFormat.Red, false);
+            Framebuffer2D fb = new Framebuffer2D(textureSize, textureSize, SizedInternalFormat.R8, PixelFormat.Red, false);
             TextureAtlas = fb.DetachTexture();
 
             // Get shader, create quad and uniforms required for rendering

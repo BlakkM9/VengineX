@@ -61,7 +61,7 @@ namespace VengineX.Screens
                 LoadingFunction = LoadingFunction.Load,
                 TextureParameters = new Texture2DParameters()
                 {
-                    PixelInternalFormat = PixelInternalFormat.Rgba8,
+                    InternalFormat = (SizedInternalFormat)All.Rgba8,
                     PixelFormat = PixelFormat.Rgba,
                     PixelType = PixelType.UnsignedByte,
                     MinFilter = TextureMinFilter.Linear,

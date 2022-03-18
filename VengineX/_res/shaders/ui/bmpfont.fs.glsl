@@ -1,4 +1,4 @@
-﻿#version 450 core
+﻿#version 460
 
 uniform sampler2D uTexture;
 uniform vec4 uColor;
