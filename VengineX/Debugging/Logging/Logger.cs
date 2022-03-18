@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,6 +30,10 @@ namespace VengineX.Debugging.Logging
         /// </summary>
         public static void Initialize()
         {
+            // Enable opengl debugging
+            GL.Enable(EnableCap.DebugOutput);
+            GL.Enable(EnableCap.DebugOutputSynchronous);
+
             // Set OpenGL debug message callback
             GL.DebugMessageCallback(DebugProc, IntPtr.Zero);
         }
@@ -38,9 +43,24 @@ namespace VengineX.Debugging.Logging
         /// <summary>
         /// OpenGL debug message callback.
         /// </summary>
-        private static void DebugProc(DebugSource source, DebugType type, int id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam)
+        private static void DebugProc(DebugSource source, DebugType type, int id, DebugSeverity glSeverity, int length, IntPtr message, IntPtr userParam)
         {
-            Console.WriteLine("DebugProc called!");
+            //string message;
+            Logger.Log(GLSeverityToSeverity(glSeverity), Tag.OpenGL, Marshal.PtrToStringAuto(message));
+        }
+
+
+        private static Severity GLSeverityToSeverity(DebugSeverity glSeverity)
+        {
+            return glSeverity switch
+            {
+                DebugSeverity.DontCare => Severity.Debug,
+                DebugSeverity.DebugSeverityNotification => Severity.Info,
+                DebugSeverity.DebugSeverityHigh => Severity.Warning,
+                DebugSeverity.DebugSeverityMedium => Severity.Error,
+                DebugSeverity.DebugSeverityLow => Severity.Fatal,
+                _ => throw new NotImplementedException()
+            };
         }
 
 
