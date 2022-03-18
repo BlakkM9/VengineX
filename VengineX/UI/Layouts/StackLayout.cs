@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VengineX.UI.LWUI.Elements;
+using VengineX.UI.Elements;
 
-namespace VengineX.UI.LWUI.Layouts
+namespace VengineX.UI.Layouts
 {
     /// <summary>
     /// Aligns the children based on <see cref="HorizontalAlignment"/> and <see cref="VerticalAlignment"/><br/>
@@ -15,7 +15,7 @@ namespace VengineX.UI.LWUI.Layouts
     public class StackLayout : Layout
     {
         public HorizontalAlignment HorizontalAlignment
-        { 
+        {
             get => Orientation == Orientation.Horizontal ? (HorizontalAlignment)_alignments[0] : (HorizontalAlignment)_alignments[1];
         }
 
@@ -120,7 +120,7 @@ namespace VengineX.UI.LWUI.Layouts
             {
                 Alignment.Start => 0,
                 Alignment.Center => (containerSize[axis1] - preferedSize[axis1]) / 2,
-                Alignment.End => (containerSize[axis1] - preferedSize[axis1]),
+                Alignment.End => containerSize[axis1] - preferedSize[axis1],
                 _ => throw new NotImplementedException(),
             };
 

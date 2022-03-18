@@ -8,9 +8,9 @@ using VengineX.Input;
 using VengineX.Resources;
 using VengineX.Tweening;
 using VengineX.UI;
-using VengineX.UI.LWUI.Layouts;
+using VengineX.UI.Layouts;
 using VengineX.Wrappers.Stbi;
-using Image = VengineX.UI.LWUI.Elements.Image;
+using Image = VengineX.UI.Elements.Image;
 
 namespace VengineX.Screens
 {

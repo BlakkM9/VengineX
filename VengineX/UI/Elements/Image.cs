@@ -1,21 +1,17 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VengineX.Core;
 using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Textures;
 using VengineX.Resources;
 
 namespace VengineX.UI.Elements
 {
-
-    public class Image : EventDrivenUIElement
+    public class Image : UIElement
     {
         public static Shader ImageShader { get; private set; }
         public static int ProjectionMatrixLocation { get; private set; }
@@ -32,8 +28,8 @@ namespace VengineX.UI.Elements
 
         private Texture2D? _texture;
 
-
-        public Image(float x, float y, float width, float height, Texture2D texture, Vector4 color, Vector4 tint) : base(x, y, width, height)
+        public Image(UIElement parent, Texture2D texture, Vector4 color, Vector4 tint)
+            : base(parent)
         {
             // Lazy shader initialization
             if (ImageShader == null)
@@ -51,17 +47,16 @@ namespace VengineX.UI.Elements
             _texture = texture;
         }
 
-
-        public Image(float x, float y, float width, float height, Vector4 color)
-            : this(x, y, width, height, null, color, new Vector4(1, 1, 1, 0)) { }
-
-
-        public Image(float x, float y, float width, float height, Texture2D texture, Vector4 tint)
-            : this(x, y, width, height, texture, Vector4.Zero, tint) { }
+        public Image(UIElement parent, Vector4 color)
+            : this(parent, null, color, new Vector4(1, 1, 1, 0)) { }
 
 
-        public Image(float x, float y, float width, float height, Texture2D texture)
-            : this(x, y, width, height, texture, Vector4.Zero, Vector4.One) { }
+        public Image(UIElement parent, Texture2D texture, Vector4 tint)
+            : this(parent, texture, Vector4.Zero, tint) { }
+
+
+        public Image(UIElement parent, Texture2D texture)
+            : this(parent, texture, Vector4.Zero, Vector4.One) { }
 
 
         // TODO batch rendering with instanced quads if same texture is used
@@ -70,47 +65,27 @@ namespace VengineX.UI.Elements
         /// </summary>
         public override void Render()
         {
-            if (ParentCanvas != null)
+            // Render self
+            ImageShader.Bind();
+
+            if (_texture == null)
             {
-                // Render self
-                ImageShader.Bind();
-
-                if (_texture == null)
-                {
-                    GL.BindTextureUnit(0, 0);
-                }
-                else
-                {
-                    _texture.Bind();
-                }
-
-                ImageShader.SetUniformMat4(ProjectionMatrixLocation, ref ParentCanvas.ProjectionMatrix);
-                ImageShader.SetUniformMat4(ViewMatrixLocation, ref ParentCanvas.ViewMatrix);
-                ImageShader.SetUniformMat4(ModelMatrixLocation, ref ModelMatrix);
-                ImageShader.SetUniformVec4(ColorLocation, ref _color);
-                ImageShader.SetUniformVec4(TintLocation, ref _tint);
-
-                ParentCanvas.Quad.Render();
-
-
-                // Render children
-                foreach (EventDrivenUIElement child in Children)
-                {
-                    child.Render();
-                }
+                GL.BindTextureUnit(0, 0);
             }
-        }
+            else
+            {
+                _texture.Bind();
+            }
 
+            ImageShader.SetUniformMat4(ProjectionMatrixLocation, ref ParentCanvas.ProjectionMatrix);
+            ImageShader.SetUniformMat4(ViewMatrixLocation, ref ParentCanvas.ViewMatrix);
+            ImageShader.SetUniformMat4(ModelMatrixLocation, ref ModelMatrix);
+            ImageShader.SetUniformVec4(ColorLocation, ref _color);
+            ImageShader.SetUniformVec4(TintLocation, ref _tint);
 
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        protected override void CalculateModelMatrix()
-        {
-            // Update model matrix
-            ModelMatrix = Matrix4.Identity;
-            ModelMatrix *= Matrix4.CreateScale(Width / 2f, Height / 2f, 0);
-            ModelMatrix *= Matrix4.CreateTranslation(Width / 2f + X, -(Height / 2f + Y), 0);
+            ParentCanvas.Quad.Render();
+
+            base.Render();
         }
     }
 }

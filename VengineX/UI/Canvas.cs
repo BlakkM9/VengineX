@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 using VengineX.Graphics.Rendering;
 using VengineX.Graphics.Rendering.UnitModels;
 using VengineX.Input;
-using VengineX.UI.LWUI.Elements;
+using VengineX.UI.Elements;
 
-namespace VengineX.UI.LWUI
+namespace VengineX.UI
 {
+    /// <summary>
+    /// This class is the top element of any ui.<br/>
+    /// All ui elements and events are handled from this class downwards.
+    /// </summary>
     public class Canvas : UIElement, IRenderable
     {
         /// <summary>
@@ -25,10 +29,7 @@ namespace VengineX.UI.LWUI
         public ref Matrix4 ViewMatrix { get => ref _viewMatrix; }
         private Matrix4 _viewMatrix = Matrix4.Identity;
 
-        /// <summary>
-        /// The input manager that controls all the UI elements within this canvas.
-        /// </summary>
-        public InputManager Input { get; private set; }
+        public UIEventSystem EventSystem { get; }
 
         /// <summary>
         /// The quad for rendering all the UI elements (that can be rendered onto a quad).
@@ -40,7 +41,7 @@ namespace VengineX.UI.LWUI
         /// </summary>
         public Canvas(float width, float height, InputManager input) : base(null)
         {
-            Input = input;
+            EventSystem = new UIEventSystem(input);
             Size = new Vector2(width, height);
             Quad = new Quad();
             _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, -Height, 0, -1.0f, 1.0f);
@@ -53,6 +54,15 @@ namespace VengineX.UI.LWUI
         {
             Size = new Vector2(newWidth, newHeight);
             _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, 0, Height, -1.0f, 1.0f);
+        }
+
+
+        /// <summary>
+        /// Updates the <see cref="UIEventSystem"/> of this canvas.
+        /// </summary>
+        public void Update()
+        {
+            EventSystem.UpdateEvents(this);
         }
     }
 }

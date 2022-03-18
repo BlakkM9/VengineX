@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VengineX.UI.LWUI.Elements;
+using VengineX.UI.Elements;
 
-namespace VengineX.UI.LWUI.Layouts
+namespace VengineX.UI.Layouts
 {
     public abstract class Layout
     {

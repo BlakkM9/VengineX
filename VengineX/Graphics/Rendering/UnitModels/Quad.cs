@@ -12,7 +12,6 @@ namespace VengineX.Graphics.Rendering.UnitModels
 
     public class Quad : IDisposable
     {
-
         private static readonly UIVertex[] vertices = new UIVertex[] {
             new UIVertex()
             {

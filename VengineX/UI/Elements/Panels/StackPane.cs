@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VengineX.UI.LWUI.Layouts;
+using VengineX.UI.Layouts;
 
-namespace VengineX.UI.LWUI.Elements.Panes
+namespace VengineX.UI.Elements.Panels
 {
     /// <summary>
     /// Pane that uses <see cref="StackLayout"/>

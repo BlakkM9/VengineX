@@ -1,276 +1,339 @@
 ﻿using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VengineX.Graphics.Rendering;
-using VengineX.UI.Canvases;
+using VengineX.UI.Layouts;
 
 namespace VengineX.UI.Elements
 {
     /// <summary>
-    /// Defines the very base of an ui element.
+    /// Abstract base class for all ui elements.<br/>
+    /// Might also be used as a panel that controls the layout of its children.
     /// </summary>
     public abstract class UIElement : IRenderable
     {
         /// <summary>
-        /// The parent element of this UI element.<br/>
-        /// If no parent it is null.
+        /// ModelMatrix of this element, used for transforming the Quad this UIElement is rendered on.
         /// </summary>
-        public UIElement? ParentElement { get; protected set; }
-
-        /// <summary>
-        /// The root canvas for this UI element.<br/>
-        /// null means this element is not in any canvas.
-        /// </summary>
-        public Canvas? ParentCanvas { get; protected set; }
-
-        /// <summary>
-        /// The absolute x position in the canvas.
-        /// </summary>
-        public virtual float X
-        {
-            get => Rect.X;
-            set => Rect = new RectangleF(value, Y, Width, Height);
-        }
-
-        /// <summary>
-        /// The absolute y position in the canvas.
-        /// </summary>
-        public virtual float Y
-        {
-            get => Rect.Y;
-            set => Rect = new RectangleF(X, value, Width, Height);
-        }
-
-
-        /// <summary>
-        /// The width of this ui element.
-        /// </summary>
-        public virtual float Width
-        {
-            get => Rect.Width;
-            set => Rect = new RectangleF(X, Y, value, Height);
-        }
-
-        /// <summary>
-        /// The height of this ui element.
-        /// </summary>
-        public virtual float Height
-        {
-            get => Rect.Height;
-            set => Rect = new RectangleF(X, Y, Width, value);
-        }
-
-        /// <summary>
-        /// The internal rect, used for all the mouse events.
-        /// </summary>
-        public RectangleF Rect
-        {
-            get => _rect;
-            set
-            {
-                _rect = value;
-                CalculateModelMatrix();
-            }
-        }
-        private RectangleF _rect;
-
-        // TODO: Implement
-        /// <summary>
-        /// Inner padding of the canas.<br/>
-        /// Padding means that the Children can only be moved<br/>
-        /// within the inner space even if the canvas is larger than that.
-        /// </summary>
-        public float Padding { get; set; }
-
-
-        /// <summary>
-        /// ModelMatrix used for transforming the Quad the UIElement is rendered on.
-        /// </summary>
-        public ref Matrix4 ModelMatrix { get => ref _modelMatrix; }
+        public ref Matrix4 ModelMatrix => ref _modelMatrix;
         private Matrix4 _modelMatrix;
 
         /// <summary>
-        /// The horizontal orientation within it's parent.
+        /// The parent canvas of this ui element.
         /// </summary>
-        public HorizontalOrientation HorizontalOrientation { get; set; }
+        public Canvas ParentCanvas { get; }
 
         /// <summary>
-        /// The vertical orientation within it's parent.
+        /// TParent of this element.
         /// </summary>
-        public VerticalOrientation VerticalOrientation { get; set; }
+        public UIElement? Parent { get; set; } = null;
 
         /// <summary>
-        /// All children that are in this UI element.
+        /// Layout generator.<br/>
+        /// This controls how the child elements in this element<br/>
+        /// are layouted. To apply changes, call <see cref="UpdateLayout"/>
         /// </summary>
-        protected List<UIElement> Children { get; set; }
-
+        public Layout? Layout { get; set; } = null;
 
         /// <summary>
-        /// Creates a new UIElement.<br/>
-        /// All the parameters are based of the left upper edge.<br/>
-        /// Canvas 0, 0 is left upper edge aswell.
+        /// Position relative to parent.
         /// </summary>
-        /// <param name="x">Absolute X position of the element.</param>
-        /// <param name="y">Absolute Y position of the element.</param>
-        /// <param name="width">Width of the element.</param>
-        /// <param name="height">Height of the element.</param>
-        public UIElement(float x, float y, float width, float height)
+        public Vector2 Position { get; set; } = Vector2.Zero;
+
+        /// <summary>
+        /// Absolute position of the ui element (on the ui canvas).
+        /// </summary>
+        public Vector2 AbsolutePosition
         {
-            Rect = new RectangleF(x, y, width, height);
+            get => Parent == null ? Position : Parent.AbsolutePosition + Position;
+        }
+
+        /// <summary>
+        /// Size of this element.
+        /// </summary>
+        public Vector2 Size { get; set; } = Vector2.Zero;
+
+        /// <summary>
+        /// Width of this element. Shortcut for <see cref="Size"/>.
+        /// </summary>
+        public float Width
+        {
+            get => Size.X;
+            set => Size = new Vector2(value, Height);
+        }
+
+        /// <summary>
+        /// Height of this element. Shortcut for <see cref="Size"/>.
+        /// </summary>
+        public float Height
+        {
+            get => Size.Y;
+            set => Size = new Vector2(Width, value);
+        }
+
+        /// <summary>
+        /// Wether or not the element is currently visible (assuming all parents are visible).
+        /// </summary>
+        public bool Visible { get; set; } = true;
+
+        /// <summary>
+        /// Check if this element is currently visible, taking parent elements into account.
+        /// </summary>
+        public bool VisibleRecursive
+        {
+            get
+            {
+                bool visible = true;
+                UIElement? element = this;
+                while (element != null)
+                {
+                    visible = element.Visible;
+                    element = element.Parent;
+                }
+
+                return visible;
+            }
+        }
+
+        /// <summary>
+        /// Number of child elements.
+        /// </summary>
+        public int ChildCount { get => Children.Count; }
+
+        /// <summary>
+        /// List holding all the children of this ui element.
+        /// </summary>
+        public List<UIElement> Children { get; }
+
+        public bool Enabled { get; set; } = true;
+
+        public bool IgnoreLayout { get; set; } = true;
+
+        /// <summary>
+        /// Calculates the preferred size of this element.<br/>
+        /// Preferred size is the size of this element needed to fit all its layouted children.
+        /// </summary>
+        public Vector2 PreferredSize { get => Layout == null ? Size : Layout.PreferredSize(this); }
+
+
+        /// <summary>
+        /// Creates a new ui element with the given element as parent.
+        /// </summary>
+        public UIElement(UIElement? parent)
+        {
             Children = new List<UIElement>();
+
+            if (parent != null)
+            {
+                parent.AddChild(this);
+                ParentCanvas = parent.ParentCanvas;
+            }
+            else
+            {
+                if (GetType() == typeof(Canvas))
+                {
+                    ParentCanvas = (Canvas)this;
+                }
+                else
+                {
+                    throw new ArgumentException("Parent can not be null, except for Canvas!");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Iterates over the tree of children.
+        /// </summary>
+        public IEnumerable<UIElement> AllChildren()
+        {
+            foreach (UIElement child in Children)
+            {
+                yield return child;
+
+                foreach (UIElement c in child.AllChildren())
+                {
+                    yield return c;
+                }
+            }
         }
 
 
         /// <summary>
-        /// Updates this ui element.
+        /// Adds child element at given index.
         /// </summary>
-        public abstract void Update();
+        public virtual void AddChild(int index, UIElement element)
+        {
+            Children.Insert(index, element);
+            element.Parent = this;
+        }
 
 
         /// <summary>
-        /// Calculates the ModelMatrix based on width, height, x, and y.<br/>
-        /// Called when automatically when any of these properties change.
+        /// Adds child at the end.
         /// </summary>
-        protected abstract void CalculateModelMatrix();
+        public void AddChild(UIElement element)
+        {
+            Children.Add(element);
+            element.Parent = this;
+        }
 
 
         /// <summary>
-        /// Calculates and updates the layout (positiona and size) based on the current<br/>
-        /// <see cref="HorizontalOrientation"/> and <see cref="VerticalOrientation"/>.
+        /// Removes child at given index.
+        /// </summary>
+        public void RemoveChild(int index)
+        {
+            Children.RemoveAt(index);
+        }
+
+
+        /// <summary>
+        /// Removes given child.
+        /// </summary>
+        public void RemoveChild(UIElement element) => Children.Remove(element);
+
+
+        /// <summary>
+        /// Returns the index of given child.
+        /// </summary>
+        public void IndexOf(UIElement element) => Children.IndexOf(element);
+
+
+        /// <summary>
+        /// Check if this element contains given point.
+        /// </summary>
+        public bool Contains(Vector2 point)
+        {
+            Vector2 distance = point - AbsolutePosition;
+            return distance.X >= 0 && distance.Y >= 0 && distance.X < Size.X && distance.Y < Size.Y;
+        }
+
+
+        /// <summary>
+        /// Finds and returns the element at the given position (recursive).<br/>
+        /// Null if didn't find any.
+        /// </summary>
+        public UIElement? FindElement(Vector2 point)
+        {
+            foreach (UIElement child in Children)
+            {
+                if (child.Visible && child.Contains(point - Position))
+                {
+                    return child.FindElement(point - Position);
+                }
+            }
+            return Contains(point) && GetType() != typeof(Canvas) ? this : null;
+        }
+
+
+        /// <summary>
+        /// Performs layouting for this element and updates the model matrix (recursive).
         /// </summary>
         public virtual void UpdateLayout()
         {
-            ParentCanvas = ParentElement?.ParentCanvas;
-
-            if (ParentElement != null)
+            if (Layout != null)
             {
-                // Update self
-                float x = 0;
-                float y = 0;
-                float w = Width;
-                float h = Height;
-
-                // Horizontal
-                switch (HorizontalOrientation)
-                {
-                    case HorizontalOrientation.Unset:
-                        x = X;
-                        break;
-                    case HorizontalOrientation.Left:
-                        x = ParentElement.X;
-                        break;
-                    case HorizontalOrientation.Right:
-                        x = ParentElement.X + (ParentElement.Width - Width);
-                        break;
-                    case HorizontalOrientation.Center:
-                        x = ParentElement.X + (ParentElement.Width - Width) / 2;
-                        break;
-                    case HorizontalOrientation.Stretch:
-                        w = ParentElement.Width;
-                        break;
-                }
-
-
-                // Vertical
-                switch (VerticalOrientation)
-                {
-                    case VerticalOrientation.Unset:
-                        y = Y;
-                        break;
-                    case VerticalOrientation.Top:
-                        y = ParentElement.Y;
-                        break;
-                    case VerticalOrientation.Bottom:
-                        y = ParentElement.Y + (ParentElement.Height - Height);
-                        break;
-                    case VerticalOrientation.Center:
-                        y = ParentElement.Y + (ParentElement.Height - Height) / 2;
-                        break;
-                    case VerticalOrientation.Stretch:
-                        h = ParentElement.Height;
-                        break;
-                }
-
-                Rect = new RectangleF(x, y, w, h);
-
-
-                // Update children
-                foreach (UIElement child in Children)
-                {
-                    child.UpdateLayout();
-                }
+                Layout.UpdateLayout(this);
             }
 
-        }
-
-
-        /// <summary>
-        /// Renders this ui element.
-        /// </summary>
-        public abstract void Render();
-
-
-        /// <summary>
-        /// Adds given UI element as child of this element.<br/>
-        /// Does not change the layout(position/size) of the child to be added.
-        /// </summary>
-        public virtual void AddChild(UIElement element) => AddChild(element, HorizontalOrientation.Unset, VerticalOrientation.Unset);
-
-
-        /// <summary>
-        /// Adds the given UI element as a child of this element<br/>
-        /// with given layout.
-        /// </summary>
-        public virtual void AddChild(
-            UIElement element,
-            HorizontalOrientation horizontalOrientation,
-            VerticalOrientation verticalOrientation)
-        {
-            Children.Add(element);
-            element.HorizontalOrientation = horizontalOrientation;
-            element.VerticalOrientation = verticalOrientation;
-            element.ParentCanvas = ParentCanvas;
-            element.ParentElement = this;
-
-            element.UpdateLayout();
-        }
-
-
-        // TODO: Fix child can't be removed while iterating over children.
-        /// <summary>
-        /// Removes the given UIElement from this UIElement.
-        /// </summary>
-        /// <param name="child"></param>
-        public void RemoveChild(UIElement child) => Children?.Remove(child);
-
-
-        /// <summary>
-        /// Removes all the children (recursively) from this UI Element.<br/>
-        /// </summary>
-        /// <param name="dispose">Wether or not dispose childs if implementing IDisposable</param>
-        public virtual void ClearChildren(bool dispose)
-        {
-            // ClearChildren for each child
             foreach (UIElement child in Children)
             {
-                child.ClearChildren(dispose);
+                child.UpdateLayout();
             }
 
-            // Dispose direct childs
-            if (dispose)
+            CalculateModelMatrix();
+        }
+
+
+        /// <summary>
+        /// Renders this element (and all children)
+        /// </summary>
+        public virtual void Render()
+        {
+            if (Children.Count == 0) { return; }
+
+            foreach (UIElement child in Children)
             {
-                foreach (UIElement child in Children)
+                if (child.Visible)
                 {
-                    (child as IDisposable)?.Dispose();
+                    child.Render();
                 }
             }
-
-            // Clear children list
-            Children.Clear();
         }
+
+
+        /// <summary>
+        /// Calculates the model matrix of this element, based on <see cref="Size"/> and <see cref="AbsolutePosition"/><br/>
+        /// </summary>
+        protected virtual void CalculateModelMatrix()
+        {
+            ModelMatrix = Matrix4.Identity;
+            ModelMatrix *= Matrix4.CreateScale(Width / 2f, Height / 2f, 0);
+            ModelMatrix *= Matrix4.CreateTranslation(Width / 2f + AbsolutePosition.X, -(Height / 2f + AbsolutePosition.Y), 0);
+        }
+
+
+        #region Events
+
+        /// <summary>
+        /// Handler for all mouse events.
+        /// </summary>
+        public delegate void MouseEventHandler(UIElement sender);
+
+        /// <summary>
+        /// The mouse cursor entered this UI element.
+        /// </summary>
+        public event MouseEventHandler? Entered;
+
+        /// <summary>
+        /// The mouse cursor left this UI element.
+        /// </summary>
+        public event MouseEventHandler? Left;
+
+        /// <summary>
+        /// Any mousebutton was pressed while above this element.
+        /// </summary>
+        public event MouseEventHandler? MouseButtonPressed;
+
+        /// <summary>
+        /// Any mousebutton was released while above this element.
+        /// </summary>
+        public event MouseEventHandler? MouseButtonReleased;
+
+        /// <summary>
+        /// Occus when this element was clicked with any mouse button.
+        /// </summary>
+        public event MouseEventHandler? Clicked;
+
+        /// <summary>
+        /// Wether or not the mouse cursor is currently over this UI element.
+        /// </summary>
+        public bool MouseOver { get; internal set; }
+
+        /// <summary>
+        /// Wether or not any mouse button is down on this element.
+        /// </summary>
+        public bool MouseDown { get; internal set; }
+
+
+        internal bool ClickStartedInside { get; set; }
+
+
+
+        internal void InvokeEntered() => Entered?.Invoke(this);
+
+        internal void InvokeLeft() => Left?.Invoke(this);
+
+        internal void InvokeMouseButtonPressed() => MouseButtonPressed?.Invoke(this);
+
+        internal void InvokeMouseButtonReleased() => MouseButtonReleased?.Invoke(this);
+
+        internal void InvokeClicked() => Clicked?.Invoke(this);
+
+        #endregion
     }
 }
