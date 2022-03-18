@@ -12,6 +12,8 @@ namespace VengineX.Graphics.Rendering.Shaders
 {
     public class Shader : IBindable, IDisposable, ILoadableResource, IResource
     {
+        public static int CurrentBoundShader { get; protected set; }
+
         /// <summary>
         /// OpenGL handle of this shader program.
         /// </summary>
@@ -216,7 +218,12 @@ namespace VengineX.Graphics.Rendering.Shaders
         /// </summary>
         public void Bind()
         {
-            GL.UseProgram(Handle);
+            // Only bind if this shader is not bound already
+            if (CurrentBoundShader != Handle)
+            {
+                GL.UseProgram(Handle);
+                CurrentBoundShader = Handle;
+            }
         }
 
 
@@ -226,7 +233,11 @@ namespace VengineX.Graphics.Rendering.Shaders
         /// </summary>
         public void Unbind()
         {
-            GL.UseProgram(0);
+            if (CurrentBoundShader != 0)
+            {
+                GL.UseProgram(0);
+                CurrentBoundShader = 0;
+            }
         }
 
         #endregion
