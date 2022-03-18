@@ -47,6 +47,7 @@ namespace VengineX.Graphics.Rendering.Pipelines
         /// </summary>
         public abstract void DisposeUnmanaged();
 
+        public abstract void AddRenderable(Material material, IRenderable renderable);
 
         #region IDisposable
 
