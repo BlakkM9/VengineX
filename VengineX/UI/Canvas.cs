@@ -41,7 +41,7 @@ namespace VengineX.UI
         /// </summary>
         public Canvas(float width, float height, InputManager input) : base(null)
         {
-            EventSystem = new UIEventSystem(input);
+            EventSystem = new UIEventSystem(input, this);
             Size = new Vector2(width, height);
             Quad = new Quad();
             _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, -Height, 0, -1.0f, 1.0f);
@@ -54,15 +54,6 @@ namespace VengineX.UI
         {
             Size = new Vector2(newWidth, newHeight);
             _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, 0, Height, -1.0f, 1.0f);
-        }
-
-
-        /// <summary>
-        /// Updates the <see cref="UIEventSystem"/> of this canvas.
-        /// </summary>
-        public void Update()
-        {
-            EventSystem.UpdateEvents(this);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using OpenTK.Windowing.GraphicsLibraryFramework;
+﻿using OpenTK.Windowing.Common;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,15 @@ namespace VengineX.Input
 {
     public class InputManager
     {
-        private readonly Core.Window _window;
+        /// <summary>
+        /// The window this InputManager receives its events from.
+        /// </summary>
+        public Core.Window Window { get; }
 
         /// <summary>
         /// Is the cursor currently grabbed (and invisible)?
         /// </summary>
-        public bool MouseCatched { get => _window.CursorGrabbed; }
+        public bool MouseCatched { get => Window.CursorGrabbed; }
 
         /// <summary>
         /// The current <see cref="OpenTK.Windowing.GraphicsLibraryFramework.MouseState"/> in the current frame.
@@ -28,28 +32,16 @@ namespace VengineX.Input
         public KeyboardState KeyboardState { get; private set; }
 
         /// <summary>
-        /// Was any mouse button down the last update?
-        /// </summary>
-        public bool WasAnyMouseButtonDown { get; private set; }
-
-        /// <summary>
-        /// Was any mouse button pressed this frame?
-        /// </summary>
-        public bool AnyMouseButtonPressed { get; private set; }
-
-        /// <summary>
-        /// Was any mouse button released this frame?
-        /// </summary>
-        public bool AnyMouseButtonReleased { get; private set; }
-
-        /// <summary>
         /// Creates a new InputManager for given window.
         /// </summary>
-        /// <param name="window"></param>
         public InputManager(Core.Window window)
         {
-            _window = window;
+            Window = window;
+
+            MouseState = Window.MouseState.GetSnapshot();
+            KeyboardState = Window.KeyboardState.GetSnapshot();
         }
+
 
         /// <summary>
         /// Updates <see cref="MouseState"/> and <see cref="KeyboardState"/>.<br/>
@@ -57,34 +49,9 @@ namespace VengineX.Input
         /// </summary>
         internal void Update()
         {
-            // Store if any mouse button was down last update.
-            if (MouseState != null)
-            {
-                WasAnyMouseButtonDown = MouseState.IsAnyButtonDown;
-            }
-
-
-            // Store current state.
-            MouseState = _window.MouseState.GetSnapshot();
-            KeyboardState = _window.KeyboardState.GetSnapshot();
-
-
-            // Update MousePressed an MouseReleased
-            if (MouseState.IsAnyButtonDown && !WasAnyMouseButtonDown)
-            {
-                AnyMouseButtonPressed = true;
-                AnyMouseButtonReleased = false;
-            }
-            else if (!MouseState.IsAnyButtonDown && WasAnyMouseButtonDown)
-            {
-                AnyMouseButtonReleased = true;
-                AnyMouseButtonPressed = false;
-            }
-            else
-            {
-                AnyMouseButtonPressed = false;
-                AnyMouseButtonReleased = false;
-            }
+            // Store current keyboard and mouse state.
+            MouseState = Window.MouseState.GetSnapshot();
+            KeyboardState = Window.KeyboardState.GetSnapshot();
         }
     }
 }

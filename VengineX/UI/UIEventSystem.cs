@@ -1,4 +1,6 @@
-﻿using OpenTK.Windowing.GraphicsLibraryFramework;
+﻿using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,87 +16,140 @@ namespace VengineX.UI
     /// </summary>
     public class UIEventSystem
     {
-        /// <summary>
-        /// The input manager this event system is attached to.
-        /// </summary>
         public InputManager Input { get; }
+
+        public Canvas Canvas { get; }
+
+        /// <summary>
+        /// The element that currently has keyboard focus
+        /// </summary>
+        public UIElement? FocusedElement { get; private set; } = null;
+
+        /// <summary>
+        /// The topmost element the cursor is currently above.
+        /// </summary>
+        public UIElement? CurrentElement { get; private set; } = null;
+
+        private UIElement? _prevCurrentElement;
 
         /// <summary>
         /// Creates a new event system with the given input manager.
         /// </summary>
-        public UIEventSystem(InputManager input)
+        public UIEventSystem(InputManager input, Canvas canvas)
         {
             Input = input;
+            Canvas = canvas;
+
+            // Register listeners to native input events
+            input.Window.MouseMove += Window_MouseMove;
+            input.Window.MouseDown += Window_MouseDown;
+            input.Window.MouseUp += Window_MouseUp;
+            input.Window.MouseWheel += Window_MouseWheel;
+
+            input.Window.KeyDown += Window_KeyDown;
+            input.Window.KeyUp += Window_KeyUp;
         }
 
 
-        /// <summary>
-        /// Call this every frame to update the events of all the UI events in given canvas.
-        /// </summary>
-        public void UpdateEvents(Canvas canvas)
+        private void Window_MouseMove(MouseMoveEventArgs args)
         {
-            KeyboardState kbs = Input.KeyboardState;
-            MouseState ms = Input.MouseState;
-
-            foreach (UIElement child in canvas.AllChildren())
+            Vector2 position = new Vector2(args.X, args.Y);
+            
+            foreach (UIElement child in Canvas.AllChildren())
             {
-                UpdateMouseLeftEnter(child, ms);
-                UpdateMousePressedReleased(child, ms);
+                if (child.IgnoreEvents) { continue; }
+
+                // Mouse entered / left
+                if (child.Contains(position) && !child.MouseOver)
+                {
+                    child.MouseOver = true;
+                    child.InvokeEntered(args);
+                }
+                else if (!child.Contains(position) && child.MouseOver)
+                {
+                    child.MouseOver = false;
+                    child.MouseDown = false;
+                    child.InvokeLeft(args);
+                }
             }
         }
 
-        private void UpdateMouseLeftEnter(UIElement element, MouseState mouseState)
+        private void Window_MouseDown(MouseButtonEventArgs args)
         {
-            // Mouse entered / left
-            if (element.Contains(mouseState.Position) && !element.MouseOver)
-            {
-                element.MouseOver = true;
-                element.InvokeEntered();
-            }
-            else if (!element.Contains(mouseState.Position) && element.MouseOver)
-            {
-                element.MouseOver = false;
-                element.MouseDown = false;
-                element.InvokeLeft();
-            }
-        }
+            CurrentElement = Canvas.FindElement(Input.MouseState.Position);
 
-        private void UpdateMousePressedReleased(UIElement element, MouseState mouseState)
-        {
-            // Mouse down / up / pressed / released / clicked
-            if (element.MouseOver)
+            if (CurrentElement != null)
             {
-                if (Input.AnyMouseButtonPressed)
+                if (_prevCurrentElement != null)
                 {
-                    element.ClickStartedInside = true;
-                    element.InvokeMouseButtonPressed();
-                }
-                else if (Input.AnyMouseButtonReleased)
-                {
-                    element.InvokeMouseButtonReleased();
-
-                    if (element.ClickStartedInside)
-                    {
-                        element.InvokeClicked();
-                    }
+                    _prevCurrentElement.ClickStartedInside = false;
                 }
 
-                if (mouseState.IsAnyButtonDown && !element.MouseDown)
+                CurrentElement.ClickStartedInside = true;
+                _prevCurrentElement = CurrentElement;
+                CurrentElement.InvokeMouseButtonPressed(args);
+                CurrentElement.MouseDown = true;
+
+                if (FocusedElement != null && FocusedElement.Focused == true)
                 {
-                    element.MouseDown = true;
+                    FocusedElement.InvokeLostFocus();
+                    FocusedElement.Focused = false;
                 }
-                else if (!mouseState.IsAnyButtonDown && element.MouseDown)
-                {
-                    element.MouseDown = false;
-                }
+
+                FocusedElement = CurrentElement;
+                CurrentElement.Focused = true;
+                CurrentElement.InvokeGainedFocus();
             }
             else
             {
-                if (Input.AnyMouseButtonReleased)
+                if (_prevCurrentElement != null)
                 {
-                    element.ClickStartedInside = false;
+                    _prevCurrentElement.ClickStartedInside = false;
+                }
+
+                if (FocusedElement != null && FocusedElement.Focused == true)
+                {
+                    FocusedElement.Focused = false;
+                    FocusedElement.InvokeLostFocus();
+                    FocusedElement = null;
                 }
             }
+        }
+
+
+        private void Window_MouseUp(MouseButtonEventArgs args)
+        {
+            CurrentElement = Canvas.FindElement(Input.MouseState.Position);
+
+            if (CurrentElement != null)
+            {
+                CurrentElement.InvokeMouseButtonReleased(args);
+                CurrentElement.MouseDown = false;
+
+                if (CurrentElement.ClickStartedInside)
+                {
+                    CurrentElement.InvokeClicked(args);
+                }
+            }
+        }
+
+
+        private void Window_MouseWheel(MouseWheelEventArgs args)
+        {
+            CurrentElement = Canvas.FindElement(Input.MouseState.Position);
+            CurrentElement?.InvokeScrolled(args);
+        }
+
+
+        private void Window_KeyDown(KeyboardKeyEventArgs args)
+        {
+            FocusedElement?.InvokeKeyPressed(args);
+        }
+
+
+        private void Window_KeyUp(KeyboardKeyEventArgs args)
+        {
+            FocusedElement?.InvokeKeyReleased(args);
         }
     }
 }

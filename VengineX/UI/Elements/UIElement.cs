@@ -1,4 +1,5 @@
 ﻿using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Collections.Generic;
@@ -109,10 +110,6 @@ namespace VengineX.UI.Elements
         /// </summary>
         public List<UIElement> Children { get; }
 
-        //public bool Enabled { get; set; } = true;
-
-        //public bool IgnoreLayout { get; set; } = true;
-
         /// <summary>
         /// Calculates the preferred size of this element.<br/>
         /// Preferred size is the size of this element needed to fit all its layouted children.
@@ -219,13 +216,16 @@ namespace VengineX.UI.Elements
         /// </summary>
         public UIElement? FindElement(Vector2 point)
         {
-            foreach (UIElement child in Children)
+            for (int i = ChildCount - 1; i >= 0; i--)
             {
+                UIElement child = Children[i];
+
                 if (child.Visible && child.Contains(point - Position))
                 {
-                    return child.FindElement(point - Position);
+                    return child.FindElement(point);
                 }
             }
+
             return Contains(point) && GetType() != typeof(Canvas) ? this : null;
         }
 
@@ -280,34 +280,89 @@ namespace VengineX.UI.Elements
         #region Events
 
         /// <summary>
-        /// Handler for all mouse events.
+        /// If this is set to true, this element will not receive ui events.
         /// </summary>
-        public delegate void MouseEventHandler(UIElement sender);
+        public bool IgnoreEvents { get; set; } = false;
+
+        /// <summary>
+        /// Handler for generic ui events.
+        /// </summary>
+        public delegate void UIEventHandler(UIElement sender);
+
+        /// <summary>
+        /// Handler mouse move events.
+        /// </summary>
+        public delegate void MouseMoveEventHandler(UIElement sender, MouseMoveEventArgs args);
+
+        /// <summary>
+        /// Handler mouse button events.
+        /// </summary>
+        public delegate void MouseButtonEventHandler(UIElement sender, MouseButtonEventArgs args);
+
+        /// <summary>
+        /// Handler mouse button events.
+        /// </summary>
+        public delegate void MouseWheelEventHandler(UIElement sender, MouseWheelEventArgs args);
+
+        /// <summary>
+        /// Handler mouse button events.
+        /// </summary>
+        public delegate void KeyboardKeyEventHandler(UIElement sender, KeyboardKeyEventArgs args);
 
         /// <summary>
         /// The mouse cursor entered this UI element.
         /// </summary>
-        public event MouseEventHandler? Entered;
+        public event MouseMoveEventHandler? Entered;
 
         /// <summary>
         /// The mouse cursor left this UI element.
         /// </summary>
-        public event MouseEventHandler? Left;
+        public event MouseMoveEventHandler? Left;
 
         /// <summary>
         /// Any mousebutton was pressed while above this element.
         /// </summary>
-        public event MouseEventHandler? MouseButtonPressed;
+        public event MouseButtonEventHandler? MouseButtonPressed;
 
         /// <summary>
         /// Any mousebutton was released while above this element.
         /// </summary>
-        public event MouseEventHandler? MouseButtonReleased;
+        public event MouseButtonEventHandler? MouseButtonReleased;
 
         /// <summary>
         /// Occus when this element was clicked with any mouse button.
         /// </summary>
-        public event MouseEventHandler? Clicked;
+        public event MouseButtonEventHandler? Clicked;
+
+        /// <summary>
+        /// Occurs when this a scroll happened on this element.
+        /// </summary>
+        public event MouseWheelEventHandler? Scrolled;
+
+        /// <summary>
+        /// Occurs when this element gains keyboard focus.
+        /// </summary>
+        public event UIEventHandler? GainedFocus;
+
+        /// <summary>
+        /// Occurs when this element lost keyboard focus.
+        /// </summary>
+        public event UIEventHandler? LostFocus;
+
+        /// <summary>
+        /// Occurs when this element receives a key press.
+        /// </summary>
+        public event KeyboardKeyEventHandler? KeyPressed;
+
+        /// <summary>
+        /// Occurs when this element receives a key release.
+        /// </summary>
+        public event KeyboardKeyEventHandler? KeyReleased;
+
+        /// <summary>
+        /// Wether or not this element has currently keyboard focus.
+        /// </summary>
+        public bool Focused { get; internal set; }
 
         /// <summary>
         /// Wether or not the mouse cursor is currently over this UI element.
@@ -319,20 +374,31 @@ namespace VengineX.UI.Elements
         /// </summary>
         public bool MouseDown { get; internal set; }
 
-
+        /// <summary>
+        /// Saves if a click started inside this element.<br/>
+        /// It is also a valid click if you drag out and reenter the element.
+        /// </summary>
         internal bool ClickStartedInside { get; set; }
 
+        internal void InvokeEntered(MouseMoveEventArgs args) => Entered?.Invoke(this, args);
 
+        internal void InvokeLeft(MouseMoveEventArgs args) => Left?.Invoke(this, args);
 
-        internal void InvokeEntered() => Entered?.Invoke(this);
+        internal void InvokeMouseButtonPressed(MouseButtonEventArgs args) => MouseButtonPressed?.Invoke(this, args);
 
-        internal void InvokeLeft() => Left?.Invoke(this);
+        internal void InvokeMouseButtonReleased(MouseButtonEventArgs args) => MouseButtonReleased?.Invoke(this, args);
 
-        internal void InvokeMouseButtonPressed() => MouseButtonPressed?.Invoke(this);
+        internal void InvokeClicked(MouseButtonEventArgs args) => Clicked?.Invoke(this, args);
 
-        internal void InvokeMouseButtonReleased() => MouseButtonReleased?.Invoke(this);
+        internal void InvokeScrolled(MouseWheelEventArgs args) => Scrolled?.Invoke(this, args);
 
-        internal void InvokeClicked() => Clicked?.Invoke(this);
+        internal void InvokeGainedFocus() => GainedFocus?.Invoke(this);
+
+        internal void InvokeLostFocus() => LostFocus?.Invoke(this);
+
+        internal void InvokeKeyPressed(KeyboardKeyEventArgs args) => KeyPressed?.Invoke(this, args);
+
+        internal void InvokeKeyReleased(KeyboardKeyEventArgs args) => KeyReleased?.Invoke(this, args);
 
         #endregion
     }
