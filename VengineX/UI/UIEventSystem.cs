@@ -45,11 +45,10 @@ namespace VengineX.UI
             input.Window.MouseDown += Window_MouseDown;
             input.Window.MouseUp += Window_MouseUp;
             input.Window.MouseWheel += Window_MouseWheel;
-
             input.Window.KeyDown += Window_KeyDown;
             input.Window.KeyUp += Window_KeyUp;
+            input.Window.TextInput += Window_TextInput;
         }
-
 
         private void Window_MouseMove(MouseMoveEventArgs args)
         {
@@ -82,10 +81,10 @@ namespace VengineX.UI
             {
                 if (_prevCurrentElement != null)
                 {
-                    _prevCurrentElement.ClickStartedInside = false;
+                    _prevCurrentElement.ClickInitiated = false;
                 }
 
-                CurrentElement.ClickStartedInside = true;
+                CurrentElement.ClickInitiated = true;
                 _prevCurrentElement = CurrentElement;
                 CurrentElement.InvokeMouseButtonPressed(args);
                 CurrentElement.MouseDown = true;
@@ -104,7 +103,7 @@ namespace VengineX.UI
             {
                 if (_prevCurrentElement != null)
                 {
-                    _prevCurrentElement.ClickStartedInside = false;
+                    _prevCurrentElement.ClickInitiated = false;
                 }
 
                 if (FocusedElement != null && FocusedElement.Focused == true)
@@ -126,7 +125,7 @@ namespace VengineX.UI
                 CurrentElement.InvokeMouseButtonReleased(args);
                 CurrentElement.MouseDown = false;
 
-                if (CurrentElement.ClickStartedInside)
+                if (CurrentElement.ClickInitiated)
                 {
                     CurrentElement.InvokeClicked(args);
                 }
@@ -138,6 +137,12 @@ namespace VengineX.UI
         {
             CurrentElement = Canvas.FindElement(Input.MouseState.Position);
             CurrentElement?.InvokeScrolled(args);
+        }
+
+
+        private void Window_TextInput(TextInputEventArgs args)
+        {
+            FocusedElement?.InvokeTextInput(args);
         }
 
 

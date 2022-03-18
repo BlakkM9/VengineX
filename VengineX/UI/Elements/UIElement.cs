@@ -300,14 +300,19 @@ namespace VengineX.UI.Elements
         public delegate void MouseButtonEventHandler(UIElement sender, MouseButtonEventArgs args);
 
         /// <summary>
-        /// Handler mouse button events.
+        /// Handler wheel events.
         /// </summary>
         public delegate void MouseWheelEventHandler(UIElement sender, MouseWheelEventArgs args);
 
         /// <summary>
-        /// Handler mouse button events.
+        /// Handler keyboard events.
         /// </summary>
         public delegate void KeyboardKeyEventHandler(UIElement sender, KeyboardKeyEventArgs args);
+
+        /// <summary>
+        /// Handles text input events.
+        /// </summary>
+        public delegate void TextInputEventHandler(UIElement sender, TextInputEventArgs args);
 
         /// <summary>
         /// The mouse cursor entered this UI element.
@@ -350,7 +355,14 @@ namespace VengineX.UI.Elements
         public event UIEventHandler? LostFocus;
 
         /// <summary>
-        /// Occurs when this element receives a key press.
+        /// Occurs when this elemet receives a text input.
+        /// </summary>
+        public event TextInputEventHandler? TextInput;
+
+        /// <summary>
+        /// Occurs when this element receives a key press.<br/>
+        /// Use <see cref="TextInput"/> if you want to use the<br/>
+        /// event argument as string input.
         /// </summary>
         public event KeyboardKeyEventHandler? KeyPressed;
 
@@ -378,7 +390,7 @@ namespace VengineX.UI.Elements
         /// Saves if a click started inside this element.<br/>
         /// It is also a valid click if you drag out and reenter the element.
         /// </summary>
-        internal bool ClickStartedInside { get; set; }
+        public bool ClickInitiated { get; internal set; }
 
         internal void InvokeEntered(MouseMoveEventArgs args) => Entered?.Invoke(this, args);
 
@@ -399,6 +411,8 @@ namespace VengineX.UI.Elements
         internal void InvokeKeyPressed(KeyboardKeyEventArgs args) => KeyPressed?.Invoke(this, args);
 
         internal void InvokeKeyReleased(KeyboardKeyEventArgs args) => KeyReleased?.Invoke(this, args);
+
+        internal void InvokeTextInput(TextInputEventArgs args) => TextInput?.Invoke(this, args);
 
         #endregion
     }

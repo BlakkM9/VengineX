@@ -18,6 +18,7 @@ using VengineX.UI.Fonts;
 using VengineX.Utils;
 using VengineX.Wrappers.FreeType;
 using VengineX.Wrappers.Stbi;
+using CharacterRange = VengineX.Wrappers.FreeType.CharacterRange;
 
 namespace VengineX.Core
 {
