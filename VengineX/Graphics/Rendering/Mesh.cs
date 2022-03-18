@@ -13,8 +13,9 @@ using VengineX.Utils;
 
 namespace VengineX.Graphics.Rendering
 {
+    // TODO save indices and vertices in a single buffer (but how to get offset in c#?)
     /// <summary>
-    /// 
+    /// Class representing a mesh.
     /// </summary>
     /// <typeparam name="T">
     /// Vertex the mesh should use.<br/>
@@ -23,6 +24,8 @@ namespace VengineX.Graphics.Rendering
     /// </typeparam>
     public class Mesh<T> : IDisposable, IRenderable where T : unmanaged
     {
+        public static uint CurrentBoundVAO { get; protected set; }
+
         /// <summary>
         /// Array holding all currently allowed types for vertex attributes within the provided vertex struct typeparam/>
         /// </summary>
@@ -163,10 +166,12 @@ namespace VengineX.Graphics.Rendering
         /// </summary>
         public void Render()
         {
-            GL.BindVertexArray(_vao);
+            if (CurrentBoundVAO != _vao)
+            {
+                GL.BindVertexArray(_vao);
+                CurrentBoundVAO = _vao;
+            }
             GL.DrawElements(PrimitiveType.Triangles, _numIndices, DrawElementsType.UnsignedInt, 0);
-            //GL.MultiDrawElements(PrimitiveType.Triangles, new int[] { _numIndices }, DrawElementsType.UnsignedInt, new int[] { 0 }, 1);
-            //GL.BindVertexArray(0);
         }
 
 
