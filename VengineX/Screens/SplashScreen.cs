@@ -1,11 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VengineX.Core;
 using VengineX.Graphics.Rendering.Pipelines;
 using VengineX.Graphics.Rendering.Textures;
@@ -13,8 +8,9 @@ using VengineX.Input;
 using VengineX.Resources;
 using VengineX.Tweening;
 using VengineX.UI;
+using VengineX.UI.LWUI.Layouts;
 using VengineX.Wrappers.Stbi;
-using Image = VengineX.UI.Elements.Image;
+using Image = VengineX.UI.LWUI.Elements.Image;
 
 namespace VengineX.Screens
 {
@@ -72,34 +68,40 @@ namespace VengineX.Screens
                 },
             });
 
-            _logoImage = new Image(0, 0, 512, 512, _logo);
-            _pipeline.OverlayUI.AddChild(
-                _logoImage,
-                HorizontalOrientation.Center,
-                VerticalOrientation.Center);
+            ////_logoImage = new Image(0, 0, 512, 512, _logo);
+            //_logoImage = new Image(_pipeline.OverlayUI, _logo)
+            //{
+            //    Layout = new BoxLayout(Orientation.Vertical, Alignment.Middle, 0, 0),
+            //    Size = new Vector2(512, 512),
+            //};
+            //_pipeline.OverlayUI.PerformLayout();
+            //_pipeline.OverlayUI.AddChild(
+            //    _logoImage,
+            //    HorizontalOrientation.Center,
+            //    VerticalOrientation.Center);
 
-            _logoImage.Width = _logoImage.Height;
-            _logoImage.VerticalOrientation = VerticalOrientation.Center;
-            _logoImage.UpdateLayout();
+            //_logoImage.Width = _logoImage.Height;
+            //_logoImage.VerticalOrientation = VerticalOrientation.Center;
+            //_logoImage.UpdateLayout();
 
             // Clear color
             _pipeline.ClearColor = Vector4.Zero;
 
 
             // Create logo animation
-            float startSize = _logoImage.Width;
+            //float startSize = _logoImage.Width;
             float sizeChange = 20;
             float aChange = 1;
             Tween inAnim = new Tween(1.5f, EasingFunction.EaseOutCubic, (t) =>
                 {
-                    _logoImage.Tint = new Vector4(1, 1, 1, t * aChange);
-                    _logoImage.Width = startSize + t * sizeChange;
-                    _logoImage.Height = startSize + t * sizeChange;
-                    _logoImage.UpdateLayout();
+                    //_logoImage.Tint = new Vector4(1, 1, 1, t * aChange);
+                    //_logoImage.Width = startSize + t * sizeChange;
+                    //_logoImage.Height = startSize + t * sizeChange;
+                    //_logoImage.UpdateLayout();
                 });
             Tween outAnim = new Tween(0.5f, EasingFunction.EaseOutCubic, (t) =>
             {
-                _logoImage.Tint = new Vector4(1, 1, 1, 1 - (t * aChange));
+                //_logoImage.Tint = new Vector4(1, 1, 1, 1 - (t * aChange));
             });
 
 
@@ -149,7 +151,7 @@ namespace VengineX.Screens
             ResourceManager.UnloadResource(_logo);
 
             // Clear the OverlayUI in the rendering pipeline
-            _pipeline.OverlayUI.ClearChildren(true);
+            //_pipeline.OverlayUI.ClearChildren(true);
         }
     }
 }

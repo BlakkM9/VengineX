@@ -53,7 +53,7 @@ namespace VengineX.UI.Elements
 
 
         public Image(float x, float y, float width, float height, Vector4 color)
-            : this(x, y, width, height, null, color, Vector4.One) { }
+            : this(x, y, width, height, null, color, new Vector4(1, 1, 1, 0)) { }
 
 
         public Image(float x, float y, float width, float height, Texture2D texture, Vector4 tint)

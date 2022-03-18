@@ -45,6 +45,7 @@ namespace VengineX.UI.Elements
             set => Rect = new RectangleF(X, value, Width, Height);
         }
 
+
         /// <summary>
         /// The width of this ui element.
         /// </summary>
@@ -113,8 +114,8 @@ namespace VengineX.UI.Elements
         /// All the parameters are based of the left upper edge.<br/>
         /// Canvas 0, 0 is left upper edge aswell.
         /// </summary>
-        /// <param name="x">X position of the element.</param>
-        /// <param name="y">Y position of the element.</param>
+        /// <param name="x">Absolute X position of the element.</param>
+        /// <param name="y">Absolute Y position of the element.</param>
         /// <param name="width">Width of the element.</param>
         /// <param name="height">Height of the element.</param>
         public UIElement(float x, float y, float width, float height)
@@ -143,6 +144,8 @@ namespace VengineX.UI.Elements
         /// </summary>
         public virtual void UpdateLayout()
         {
+            ParentCanvas = ParentElement?.ParentCanvas;
+
             if (ParentElement != null)
             {
                 // Update self
@@ -164,7 +167,7 @@ namespace VengineX.UI.Elements
                         x = ParentElement.X + (ParentElement.Width - Width);
                         break;
                     case HorizontalOrientation.Center:
-                        x = ParentElement.X + ((ParentElement.Width - Width) / 2);
+                        x = ParentElement.X + (ParentElement.Width - Width) / 2;
                         break;
                     case HorizontalOrientation.Stretch:
                         w = ParentElement.Width;
@@ -185,7 +188,7 @@ namespace VengineX.UI.Elements
                         y = ParentElement.Y + (ParentElement.Height - Height);
                         break;
                     case VerticalOrientation.Center:
-                        y = ParentElement.Y + ((ParentElement.Height - Height) / 2);
+                        y = ParentElement.Y + (ParentElement.Height - Height) / 2;
                         break;
                     case VerticalOrientation.Stretch:
                         h = ParentElement.Height;

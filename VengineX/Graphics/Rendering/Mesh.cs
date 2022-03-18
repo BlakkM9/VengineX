@@ -24,8 +24,6 @@ namespace VengineX.Graphics.Rendering
     /// </typeparam>
     public class Mesh<T> : IDisposable, IRenderable where T : unmanaged
     {
-        public static uint CurrentBoundVAO { get; protected set; }
-
         /// <summary>
         /// Array holding all currently allowed types for vertex attributes within the provided vertex struct typeparam/>
         /// </summary>
@@ -166,11 +164,7 @@ namespace VengineX.Graphics.Rendering
         /// </summary>
         public void Render()
         {
-            if (CurrentBoundVAO != _vao)
-            {
-                GL.BindVertexArray(_vao);
-                CurrentBoundVAO = _vao;
-            }
+            GL.BindVertexArray(_vao);
             GL.DrawElements(PrimitiveType.Triangles, _numIndices, DrawElementsType.UnsignedInt, 0);
         }
 

@@ -29,6 +29,8 @@ namespace VengineX.UI.Elements
         public Vector4 Color { get => _color; set => _color = value; }
         protected Vector4 _color;
 
+        public float Size { get; }
+
         /// <summary>
         /// Sets and gets the text of this label.
         /// </summary>
@@ -42,7 +44,7 @@ namespace VengineX.UI.Elements
                 _textMesh.UpdateVertices(vertices, indices);
                 vertices.Free();
                 indices.Free();
-                Width = _font.CalculateWidth(_text);
+                Width = _font.CalculateWidth(_text, Size);
             }
         }
         protected string _text;
@@ -52,7 +54,7 @@ namespace VengineX.UI.Elements
 
 
         public Label(BitmapFont font, string text, float x, float y, float size, Vector4 color)
-            : base(x, y, font.CalculateWidth(text), size)
+            : base(x, y, font.CalculateWidth(text, size), size)
         {
             // Lazy shader initialization
             if (BitmapFontShader == null)
@@ -64,6 +66,7 @@ namespace VengineX.UI.Elements
                 ColorLocation = BitmapFontShader.GetUniformLocation("uColor");
             }
 
+            Size = size;
             _font = font;
             _text = text;
             _font.CreateMeshData(_text, out UnmanagedArray<UIVertex> vertices, out UnmanagedArray<uint> indices);
@@ -91,9 +94,7 @@ namespace VengineX.UI.Elements
                 BitmapFontShader.SetUniformMat4(ModelMatrixLocation, ref ModelMatrix);
                 BitmapFontShader.SetUniformVec4(ColorLocation, ref _color);
 
-                //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
                 _textMesh.Render();
-                //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
             }
         }
 
