@@ -27,6 +27,11 @@ namespace VengineX.Tweening
         public event Action<Tween>? Stopped;
 
         /// <summary>
+        /// Occurs when the tween finished an iteration.
+        /// </summary>
+        public event Action<Tween>? Iterated;
+
+        /// <summary>
         /// Function that calculates <see cref="T"/> for the update function<br/>
         /// based on the duration and current time of the tween.
         /// </summary>
@@ -156,6 +161,8 @@ namespace VengineX.Tweening
             // Check if tween interation is over
             if (CurrentTime > Duration)
             {
+                Iterated?.Invoke(this);
+
                 // Update current iteration count if not infinite
                 if (IterationCount != INFINITE) { CurrentIterationCount--; }
 
