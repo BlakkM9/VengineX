@@ -318,16 +318,16 @@ namespace VengineX.UI.Fonts
 
 
         /// <summary>
-        /// Calculates the width of the given text (unscaled).
+        /// Calculates the width of the given text at given text size.
         /// </summary>
-        public float CalculateWidth(string text)
+        public float CalculateWidth(string text, float size)
         {
             float width = 0;
             foreach (char c in text)
             {
                 width += _characters[c].Advance >> 6;
             }
-            return width;
+            return width * (size / Size);
         }
 
 
