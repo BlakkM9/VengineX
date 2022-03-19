@@ -20,9 +20,13 @@ namespace VengineX.UI.Layouts
         /// </summary>
         Center = 1,
         /// <summary>
+        /// Elements are streched to fill the parent.
+        /// </summary>
+        Stretch = 2,
+        /// <summary>
         /// Aligned right / bottom.
         /// </summary>
-        End = 2,
+        End = 3,
     }
 
 
@@ -40,9 +44,13 @@ namespace VengineX.UI.Layouts
         /// </summary>
         Center = 1,
         /// <summary>
+        /// Elements are streched to fill the parent.
+        /// </summary>
+        Stretch = 2,
+        /// <summary>
         /// Aligns right.
         /// </summary>
-        Right = 2,
+        Right = 3,
     }
 
 
@@ -60,8 +68,12 @@ namespace VengineX.UI.Layouts
         /// </summary>
         Center = 1,
         /// <summary>
+        /// Elements are streched to fill the parent.
+        /// </summary>
+        Stretch = 2,
+        /// <summary>
         /// Aligns bottom.
         /// </summary>
-        Bottom = 2,
+        Bottom = 3,
     }
 }

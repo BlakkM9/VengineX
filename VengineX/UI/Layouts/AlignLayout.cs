@@ -17,12 +17,12 @@ namespace VengineX.UI.Layouts
         /// <summary>
         /// Horizontal alignment of child elements
         /// </summary>
-        public HorizontalAlignment HorizontalAlignment { get; set; }
+        public HorizontalAlignment HorizontalAlignment { get; }
 
         /// <summary>
         /// Vertical alignment of child elements
         /// </summary>
-        public VerticalAlignment VerticalAlignment { get; set; }
+        public VerticalAlignment VerticalAlignment { get; }
 
 
         /// <summary>
@@ -45,14 +45,9 @@ namespace VengineX.UI.Layouts
 
             foreach (UIElement child in element.Children)
             {
-                Vector2 childPreferred = child.PreferredSize;
-
-                if (childPreferred.X > maxWidth) { maxWidth = childPreferred.X; }
-                if (childPreferred.Y > maxHeight) { maxHeight = childPreferred.Y; }
+                if (child.Width > maxWidth) { maxWidth = child.Width; }
+                if (child.Height > maxHeight) { maxHeight = child.Height; }
             }
-
-            //maxWidth = MathHelper.Max(maxWidth, element.Width);
-            //maxHeight = MathHelper.Max(maxHeight, element.Height);
 
             return new Vector2(maxWidth, maxHeight);
         }
@@ -63,17 +58,18 @@ namespace VengineX.UI.Layouts
         /// </summary>
         public override void UpdateLayout(UIElement element)
         {
-            Vector2 containerSize = element.Size;
+            //Vector2 containerSize = element.Size;
 
             foreach (UIElement child in element.Children)
             {
-                Vector2 childPreferred = child.PreferredSize;
+                //Vector2 childSize = child.Size;
 
                 float posX = HorizontalAlignment switch
                 {
                     HorizontalAlignment.Left => 0,
-                    HorizontalAlignment.Center => (containerSize.X - childPreferred.X) / 2,
-                    HorizontalAlignment.Right => containerSize.X - childPreferred.X,
+                    HorizontalAlignment.Center => (element.Width - child.Width) / 2,
+                    HorizontalAlignment.Stretch =>  0,
+                    HorizontalAlignment.Right => element.Width - child.Width,
                     _ => throw new NotImplementedException(),
                 };
 
@@ -81,12 +77,26 @@ namespace VengineX.UI.Layouts
                 float posY = VerticalAlignment switch
                 {
                     VerticalAlignment.Top => 0,
-                    VerticalAlignment.Center => (containerSize.Y - childPreferred.Y) / 2,
-                    VerticalAlignment.Bottom => containerSize.Y - childPreferred.Y,
+                    VerticalAlignment.Center => (element.Height - child.Height) / 2,
+                    VerticalAlignment.Stretch => 0,
+                    VerticalAlignment.Bottom => element.Height - child.Height,
                     _ => throw new NotImplementedException(),
                 };
 
                 child.Position = new Vector2(posX, posY);
+
+
+                // Stretch to parent size. Children need to update layout again if size changed.
+                if (HorizontalAlignment == HorizontalAlignment.Stretch)
+                {
+                    child.Width = element.Width;
+                    child.UpdateLayout();
+                }
+                if (VerticalAlignment == VerticalAlignment.Stretch)
+                {
+                    child.Height = element.Height;
+                    child.UpdateLayout();
+                }
             }
         }
     }

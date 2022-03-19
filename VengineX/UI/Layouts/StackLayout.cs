@@ -35,35 +35,19 @@ namespace VengineX.UI.Layouts
         /// If <see cref="Orientation"/> is horizontal, element at 0 is <see cref="HorizontalAlignment"/><br/>
         /// And the other way around.
         /// </summary>
-        private Alignment[] _alignments;
+        private readonly Alignment[] _alignments;
 
         /// <summary>
         /// The orientatio the children of this layout are arranged.
         /// </summary>
-        public Orientation Orientation
-        {
-            get => _orientation;
-            set
-            {
-                _orientation = value;
+        public Orientation Orientation { get; }
 
-                if (_orientation == Orientation.Horizontal)
-                {
-                    _alignments = new Alignment[] { (Alignment)HorizontalAlignment, (Alignment)VerticalAlignment };
-                }
-                else
-                {
-                    _alignments = new Alignment[] { (Alignment)VerticalAlignment, (Alignment)HorizontalAlignment };
-                }
-            }
-        }
-        private Orientation _orientation;
 
 
         /// <summary>
         /// Spacing between the children of this layout.
         /// </summary>
-        public float Spacing { get; set; }
+        public float Spacing { get; }
 
 
         /// <summary>
@@ -80,10 +64,9 @@ namespace VengineX.UI.Layouts
                 _alignments = new Alignment[] { (Alignment)verticalAlignment, (Alignment)horizontalAlignment };
             }
 
-            _orientation = orientation;
+            Orientation = orientation;
             Spacing = spacing;
         }
-
 
 
         /// <summary>
@@ -120,11 +103,10 @@ namespace VengineX.UI.Layouts
         public override void UpdateLayout(UIElement element)
         {
             Vector2 containerSize = element.Size;
+            Vector2 preferedSize = element.PreferredSize;
 
             int axis1 = (int)Orientation;
             int axis2 = ((int)Orientation + 1) % 2;
-
-            Vector2 preferedSize = element.PreferredSize;
 
             float pos1 = _alignments[0] switch
             {
@@ -138,20 +120,20 @@ namespace VengineX.UI.Layouts
             bool first = true;
             foreach (UIElement child in element.Children)
             {
-                Vector2 childPrefered = child.PreferredSize;
                 if (!child.Visible) { continue; }
                 if (first) { first = false; }
                 else { pos1 += Spacing; }
 
+                Vector2 childSize = child.Size;
                 Vector2 targetPos = Vector2.Zero;
                 targetPos[axis1] = pos1;
-                pos1 += childPrefered[axis1];
+                pos1 += childSize[axis1];
 
                 float pos2 = _alignments[1] switch
                 {
                     Alignment.Start => 0,
-                    Alignment.Center => (MathHelper.Max(preferedSize[axis2], element.Size[axis2]) - childPrefered[axis2]) / 2,
-                    Alignment.End => MathHelper.Max(preferedSize[axis2], element.Size[axis2]) - childPrefered[axis2],
+                    Alignment.Center => (containerSize[axis2] - childSize[axis2]) / 2,
+                    Alignment.End => containerSize[axis2] - childSize[axis2],
                     _ => throw new NotImplementedException(),
                 };
                 targetPos[axis2] = pos2;
