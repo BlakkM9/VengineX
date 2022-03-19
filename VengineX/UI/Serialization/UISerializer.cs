@@ -83,10 +83,12 @@ namespace VengineX.UI.Serialization
 
 
         /// <summary>
-        /// Loads the given <see cref="UIGroup"/> from given file path.
+        /// Loads the given <see cref="LoadableUI"/> from given file path.
         /// </summary>
-        /// <returns>The loaded <see cref="UIGroup"/></returns>
-        public T LoadFromXML<T>(UIElement parent, string filePath) where T : UIGroup
+        /// <param name="filePath">The file path to load this UI from.</param>
+        /// <param name="parent">The element to attach the loaded UI as child.</param>
+        /// <returns>The loaded <see cref="LoadableUI"/></returns>
+        public T LoadFromXML<T>(UIElement parent, string filePath) where T : LoadableUI
         {
             XDocument doc = XDocument.Load(filePath);
 
