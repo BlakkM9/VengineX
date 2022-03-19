@@ -10,6 +10,7 @@ using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Vertices;
 using VengineX.Resources;
 using VengineX.UI.Fonts;
+using VengineX.UI.Serialization;
 using VengineX.Utils;
 
 namespace VengineX.UI.Elements
@@ -45,12 +46,22 @@ namespace VengineX.UI.Elements
         /// The text color of this label
         /// </summary>
         public Vector4 Color { get => _color; set => _color = value; }
-        private Vector4 _color;
+        private Vector4 _color = Vector4.One;
 
         /// <summary>
         /// Size of the text.
         /// </summary>
-        public float TextSize { get; }
+        public float TextSize
+        {
+            get => _textSize;
+            set
+            {
+                _textSize = value;
+                Size = new Vector2(_font.CalculateWidth(_text, _textSize), _textSize);
+            }
+        }
+
+        private float _textSize = 20;
 
         /// <summary>
         /// Sets and gets the text of this label.
@@ -61,21 +72,41 @@ namespace VengineX.UI.Elements
             set
             {
                 _text = value;
-                _font.CreateMeshData(_text, out UnmanagedArray<UIVertex> vertices, out UnmanagedArray<uint> indices);
-                _textMesh.UpdateVertices(vertices, indices);
-                vertices.Free();
-                indices.Free();
-                Width = _font.CalculateWidth(_text, TextSize);
+                UpdateTextMesh();
             }
         }
-        private string _text;
+        private string _text = string.Empty;
 
-        private Mesh<UIVertex> _textMesh;
-        private BitmapFont _font;
-
-
-        public Label(UIElement parent, BitmapFont font, string text, float textSize, Vector4 color) : base(parent)
+        public BitmapFont? Font
         {
+            get => _font;
+            set
+            {
+                _font = value;
+                UpdateTextMesh();
+            }
+        }
+        private BitmapFont? _font = null;
+
+        
+        private Mesh<UIVertex>? _textMesh = null;
+
+
+        public Label(UIElement parent, BitmapFont font, string text, float textSize, Vector4 color) : this(parent)
+        {
+            TextSize = textSize;
+            _font = font;
+            _text = text;
+            _color = color;
+
+            UpdateTextMesh();
+        }
+
+
+        /// <summary>
+        /// Constructor for <see cref="UISerializer"/>.
+        /// </summary>
+        public Label(UIElement parent) : base(parent) {
             // Lazy shader initialization
             if (BitmapFontShader == null)
             {
@@ -86,17 +117,19 @@ namespace VengineX.UI.Elements
                 ColorLocation = BitmapFontShader.GetUniformLocation("uColor");
             }
 
-            TextSize = textSize;
-            Size = new Vector2(font.CalculateWidth(text, textSize), textSize);
-            _font = font;
-            _text = text;
+        }
+
+
+        /// <summary>
+        /// Updates the text mesh to current font and test. Also updates the width.
+        /// </summary>
+        private void UpdateTextMesh()
+        {
             _font.CreateMeshData(_text, out UnmanagedArray<UIVertex> vertices, out UnmanagedArray<uint> indices);
             _textMesh = new Mesh<UIVertex>(Vector3.Zero, BufferUsageHint.DynamicDraw, vertices, indices);
             vertices.Free();
             indices.Free();
-            _color = color;
-
-            CalculateModelMatrix();
+            Width = _font.CalculateWidth(_text, TextSize);
         }
 
 

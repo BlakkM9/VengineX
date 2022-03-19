@@ -31,7 +31,7 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// TParent of this element.
         /// </summary>
-        public UIElement? Parent { get; set; } = null;
+        public UIElement Parent { get; set; } = null;
 
         /// <summary>
         /// Layout generator.<br/>
