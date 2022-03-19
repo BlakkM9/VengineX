@@ -66,11 +66,11 @@ namespace VengineX.Tweening
             IterationCount = iterations;
             CurrentIterationCount = IterationCount;
 
-            _currentTweenIndex = IsReverse ? _tweens.Count - 1 : 0;
+            _currentTweenIndex = Reversed ? _tweens.Count - 1 : 0;
             _currentSequenceCount = 0;
 
             // Toggle reverse for first tween if sequence is backwards.
-            if (IsReverse)
+            if (Reversed)
             {
                 foreach (Tween t in _tweens)
                 {
@@ -94,6 +94,7 @@ namespace VengineX.Tweening
         /// </summary>
         public override void Start()
         {
+            Paused = false;
             _tweens[_currentTweenIndex].Completed += CurrentTween_Completed;
             _tweens[_currentTweenIndex].Start();
         }
@@ -104,6 +105,7 @@ namespace VengineX.Tweening
         /// </summary>
         public override void Pause()
         {
+            Paused = true;
             _tweens[_currentTweenIndex].Completed -= CurrentTween_Completed;
             _tweens[_currentTweenIndex].Pause();
         }
@@ -115,10 +117,11 @@ namespace VengineX.Tweening
         /// </summary>
         public override void Stop()
         {
+            Paused = true;
             _tweens[_currentTweenIndex].Stop();
 
             CurrentIterationCount = IterationCount;
-            _currentTweenIndex = IsReverse ? _tweens.Count - 1 : 0;
+            _currentTweenIndex = Reversed ? _tweens.Count - 1 : 0;
 
             Stopped?.Invoke(this);
         }

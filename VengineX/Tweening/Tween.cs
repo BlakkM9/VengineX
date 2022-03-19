@@ -97,7 +97,7 @@ namespace VengineX.Tweening
             Duration = duration;
 
             Direction = direction;
-            IsRunningReversed = IsReverse;
+            IsRunningReversed = base.Reversed;
 
             IterationCount = iterations;
             CurrentIterationCount = IterationCount;
@@ -179,7 +179,7 @@ namespace VengineX.Tweening
                     T = 0;
 
                     // Update alternation
-                    if (IsAlternating)
+                    if (Alternating)
                     {
                         Reverse();
                     }
@@ -196,13 +196,21 @@ namespace VengineX.Tweening
         /// <summary>
         /// Starts/Resumes this tween.
         /// </summary>
-        public override void Start() => TweenManager.AddTween(this);
+        public override void Start()
+        {
+            Paused = false;
+            TweenManager.AddTween(this);
+        }
 
 
         /// <summary>
         /// Pauses this tween.
         /// </summary>
-        public override void Pause() => TweenManager.RemoveTween(this);
+        public override void Pause()
+        {
+            Paused = true;
+            TweenManager.RemoveTween(this);
+        }
 
 
         /// <summary>
@@ -211,6 +219,7 @@ namespace VengineX.Tweening
         /// </summary>
         public override void Stop()
         {
+            Paused = true;
             TweenManager.RemoveTween(this);
             T = 0;
             CurrentTime = 0;
