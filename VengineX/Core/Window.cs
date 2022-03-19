@@ -25,16 +25,16 @@ namespace VengineX.Core
                 switch (value)
                 {
                     case WindowMode.Fullscreen:
-                        WindowState = OpenTK.Windowing.Common.WindowState.Fullscreen;
-                        WindowBorder = OpenTK.Windowing.Common.WindowBorder.Fixed;
+                        WindowState = WindowState.Fullscreen;
+                        WindowBorder = WindowBorder.Fixed;
                         break;
                     case WindowMode.Borderless:
-                        WindowState = OpenTK.Windowing.Common.WindowState.Normal;
-                        WindowBorder = OpenTK.Windowing.Common.WindowBorder.Hidden;
+                        WindowState = WindowState.Normal;
+                        WindowBorder = WindowBorder.Hidden;
                         break;
                     case WindowMode.Windowed:
-                        WindowState = OpenTK.Windowing.Common.WindowState.Normal;
-                        WindowBorder = OpenTK.Windowing.Common.WindowBorder.Fixed;
+                        WindowState = WindowState.Normal;
+                        WindowBorder = WindowBorder.Fixed;
                         break;
                 }
 
