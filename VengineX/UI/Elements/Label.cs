@@ -119,6 +119,13 @@ namespace VengineX.UI.Elements
 
         }
 
+        public override void UpdateLayout()
+        {
+            Width = _font.CalculateWidth(_text, TextSize);
+
+            base.UpdateLayout();
+        }
+
 
         /// <summary>
         /// Updates the text mesh to current font and test. Also updates the width.
