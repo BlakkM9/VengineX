@@ -32,19 +32,13 @@ namespace VengineX.Config
 
             foreach (SettingsSection section in settings.Values)
             {
-                xw.WriteStartElement("Section");
-                xw.WriteAttributeString("name", section.Name);
+                xw.WriteStartElement(section.Name);
 
                 foreach (Setting setting in section)
                 {
-                    xw.WriteStartElement("Setting");
-
-                    xw.WriteElementString("key", setting.Key);
-                    xw.WriteStartElement("value");
-                    xw.WriteAttributeString("type", setting.Type.ToString());
+                    xw.WriteStartElement(setting.Key);
+                    xw.WriteAttributeString("Type", setting.Type.ToString());
                     xw.WriteString(setting.Value.ToString());
-                    xw.WriteEndElement();
-
                     xw.WriteEndElement();
                 }
 
@@ -71,17 +65,15 @@ namespace VengineX.Config
             XDocument doc = XDocument.Parse(xmlString);
             foreach (XElement section in doc.Element("Settings").Elements())
             {
-                string sectionName = section.Attribute("name").Value;
+                string sectionName = section.Name.LocalName;
                 settings.Add(sectionName, new SettingsSection(sectionName));
 
                 foreach (XElement setting in section.Elements())
                 {
-                    string key = setting.Element("key").Value;
+                    string key = setting.Name.LocalName;
 
-                    XElement valueEl = setting.Element("value");
-
-                    string type = valueEl.Attribute("type").Value;
-                    string strValue = valueEl.Value;
+                    string type = setting.Attribute("Type").Value;
+                    string strValue = setting.Value;
 
                     // Cast value to correct type (string if failed to parse as int or double)
                     settings[sectionName][key] = type switch
