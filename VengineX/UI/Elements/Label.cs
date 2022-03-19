@@ -15,6 +15,10 @@ using VengineX.Utils;
 
 namespace VengineX.UI.Elements
 {
+
+    // TODO: Label layout is not properly updated when text changed.
+    // The workaround is to call update twice on the parent element.
+    // but there is proabably some edge case that needs to be fixed.
     public class Label : UIElement, IDisposable
     {
         /// <summary>
@@ -119,12 +123,11 @@ namespace VengineX.UI.Elements
 
         }
 
-        public override void UpdateLayout()
-        {
-            Width = _font.CalculateWidth(_text, TextSize);
-
-            base.UpdateLayout();
-        }
+        //public override void UpdateLayout()
+        //{
+        //    Width = _font.CalculateWidth(_text, TextSize);
+        //    base.UpdateLayout();
+        //}
 
 
         /// <summary>
@@ -137,6 +140,9 @@ namespace VengineX.UI.Elements
             vertices.Free();
             indices.Free();
             Width = _font.CalculateWidth(_text, TextSize);
+
+            // HACK: only for update layout only needed to called once after mesh changed.
+            Parent.UpdateLayout();
         }
 
 
