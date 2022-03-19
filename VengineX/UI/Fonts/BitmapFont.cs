@@ -16,40 +16,19 @@ namespace VengineX.UI.Fonts
     /// A font that is stored in a single texture and different letters are accessed by uvs.<br/>
     /// Font will not look good if it is scaled to much. SDF coming at some point, don't worry.
     /// </summary>
-    public class BitmapFont : IDisposable, IResource, ILoadableResource
+    public class BitmapFont : Font
     {
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        public string ResourcePath { get; set; } = string.Empty;
-
         /// <summary>
         /// TextureAtlas that was generated for this font.
         /// </summary>
         public Texture2D? TextureAtlas { get; private set; }
-
-        /// <summary>
-        /// The size (height) of the font in pixels.
-        /// </summary>
-        public float Size { get; private set; }
-
-
-        private readonly Dictionary<char, Character> _characters;
-
-        /// <summary>
-        /// Creates an empty BitmapFont object (for <see cref="ResourceManager"/>).
-        /// </summary>
-        public BitmapFont()
-        {
-            _characters = new Dictionary<char, Character>();
-        }
 
 
         /// <summary>
         /// Loads a font from file by using freetype and given <see cref="BitmapFontLoadingParameters"/>.<br/>
         /// All filetypes that are supported by freetype are also working here.
         /// </summary>
-        public void Load(ref ILoadingParameters loadingParameters)
+        public override void Load(ref ILoadingParameters loadingParameters)
         {
             BitmapFontLoadingParameters parameters = (BitmapFontLoadingParameters)loadingParameters;
             Size = parameters.Size;
@@ -202,7 +181,7 @@ namespace VengineX.UI.Fonts
 
 
                 // Create Character and add to dict.
-                _characters.Add(glyph.charCode, new Character()
+                Characters.Add(glyph.charCode, new Character()
                 {
                     HasTexture = textures[glyph.charCode] != null,
                     Size = new Vector2i(glyph.width, glyph.height),
@@ -212,7 +191,7 @@ namespace VengineX.UI.Fonts
                 });
 
                 // Don't update to next pos if no texture was rendered in that position.
-                if (!_characters[glyph.charCode].HasTexture) { continue; }
+                if (!Characters[glyph.charCode].HasTexture) { continue; }
 
                 // Calculate next x and y.
                 rowSpaceUsed += size;
@@ -244,13 +223,11 @@ namespace VengineX.UI.Fonts
         /// </summary>
         public void CreateMeshData(string text, out UnmanagedArray<UIVertex> vertices, out UnmanagedArray<uint> indices)
         {
-
-
             // Calculate quad count
             int quads = 0;
             foreach (char c in text)
             {
-                Character ch = _characters[c];
+                Character ch = Characters[c];
                 if (ch.HasTexture) { quads++; }
             }
 
@@ -263,7 +240,7 @@ namespace VengineX.UI.Fonts
 
             foreach (char c in text)
             {
-                Character ch = _characters[c];
+                Character ch = Characters[c];
 
                 // Ignore non texture chars
                 if (ch.HasTexture)
@@ -318,52 +295,11 @@ namespace VengineX.UI.Fonts
 
 
         /// <summary>
-        /// Calculates the width of the given text at given text size.
+        /// <inheritdoc/>
         /// </summary>
-        public float CalculateWidth(string text, float size)
+        protected override void DisposeManaged()
         {
-            float width = 0;
-            foreach (char c in text)
-            {
-                width += _characters[c].Advance >> 6;
-            }
-            return width * (size / Size);
+            TextureAtlas?.Dispose();
         }
-
-
-        #region IDisposable
-
-        private bool _disposedValue;
-
-        /// <summary>
-        /// Disposable pattern.
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposedValue)
-            {
-                if (disposing)
-                {
-                    TextureAtlas?.Dispose();
-                }
-
-                // Dispose unmanaged
-
-                // TODO: set large fields to null
-                _disposedValue = true;
-            }
-        }
-
-        /// <summary>
-        /// Disposable pattern.
-        /// </summary>
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
     }
 }
