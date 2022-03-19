@@ -10,7 +10,7 @@ namespace VengineX.UI.Elements.Panels
     /// <summary>
     /// Pane that uses <see cref="StackLayout"/>
     /// </summary>
-    public class StackPane : UIElement
+    public class StackPane : Pane
     {
         /// <summary>
         /// Creates a new stack pane.
