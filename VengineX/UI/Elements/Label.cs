@@ -114,6 +114,7 @@ namespace VengineX.UI.Elements
             BitmapFontShader.SetUniformVec4(ColorLocation, ref _color);
 
             _textMesh.Render();
+            _font.TextureAtlas.Unbind();
 
             base.Render();
         }
