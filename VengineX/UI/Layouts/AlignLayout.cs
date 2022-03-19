@@ -45,6 +45,8 @@ namespace VengineX.UI.Layouts
 
             foreach (UIElement child in element.Children)
             {
+                if (child.IgnoreLayout) { continue; }
+
                 if (child.Width > maxWidth) { maxWidth = child.Width; }
                 if (child.Height > maxHeight) { maxHeight = child.Height; }
             }
@@ -60,6 +62,7 @@ namespace VengineX.UI.Layouts
         {
             foreach (UIElement child in element.Children)
             {
+                if (child.IgnoreLayout) { continue; }
 
                 float posX = HorizontalAlignment switch
                 {

@@ -82,9 +82,10 @@ namespace VengineX.UI.Layouts
             bool first = true;
             foreach (UIElement child in element.Children)
             {
+                if (child.IgnoreLayout) { continue; }
+
                 Vector2 childPreferred = child.PreferredSize;
 
-                if (!child.Visible) { continue; }
                 if (first) { first = false; }
                 else { preferredSize[axis1] += Spacing; }
                 preferredSize[axis1] += childPreferred[axis1];
@@ -120,7 +121,8 @@ namespace VengineX.UI.Layouts
             bool first = true;
             foreach (UIElement child in element.Children)
             {
-                if (!child.Visible) { continue; }
+                if (child.IgnoreLayout) { continue; }
+
                 if (first) { first = false; }
                 else { pos1 += Spacing; }
 

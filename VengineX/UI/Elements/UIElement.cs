@@ -94,6 +94,12 @@ namespace VengineX.UI.Elements
         }
 
         /// <summary>
+        /// If set to true, this element will ignore all layouting.<br/>
+        /// Children of this element will still be layouted (if their <see cref="IgnoreLayout"/> is true).
+        /// </summary>
+        public bool IgnoreLayout { get; set; } = false;
+
+        /// <summary>
         /// Wether or not the element is currently visible (assuming all parents are visible).
         /// </summary>
         public bool Visible { get; set; } = true;
@@ -262,7 +268,7 @@ namespace VengineX.UI.Elements
         /// </summary>
         public virtual void UpdateLayout()
         {
-            // Update all children (so their size is usable for own layouting)
+            // Update all children first (so their size is updated for own layouting)
             foreach (UIElement child in Children)
             {
                 child.UpdateLayout();
