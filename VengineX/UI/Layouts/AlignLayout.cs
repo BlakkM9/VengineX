@@ -40,22 +40,21 @@ namespace VengineX.UI.Layouts
         /// </summary>
         public override Vector2 PreferredSize(UIElement element)
         {
-            float maxX = 0;
-            float maxY = 0;
+            float maxWidth = 0;
+            float maxHeight = 0;
 
-            bool first = true;
             foreach (UIElement child in element.Children)
             {
                 Vector2 childPreferred = child.PreferredSize;
 
-                if (!child.Visible) { continue; }
-                if (first) { first = false; }
-
-                if (childPreferred.X > maxX) { maxX = childPreferred.X; }
-                if (childPreferred.Y > maxY) { maxY = childPreferred.Y; }
+                if (childPreferred.X > maxWidth) { maxWidth = childPreferred.X; }
+                if (childPreferred.Y > maxHeight) { maxHeight = childPreferred.Y; }
             }
 
-            return new Vector2(maxX, maxY);
+            //maxWidth = MathHelper.Max(maxWidth, element.Width);
+            //maxHeight = MathHelper.Max(maxHeight, element.Height);
+
+            return new Vector2(maxWidth, maxHeight);
         }
 
 

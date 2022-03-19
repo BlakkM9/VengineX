@@ -29,12 +29,17 @@ namespace VengineX.UI
         public ref Matrix4 ViewMatrix { get => ref _viewMatrix; }
         private Matrix4 _viewMatrix = Matrix4.Identity;
 
+        /// <summary>
+        /// The <see cref="UIEventSystem"/> that handles (and indirectly invokes) all the<br/>
+        /// input events for ui elements within this canvas.
+        /// </summary>
         public UIEventSystem EventSystem { get; }
 
         /// <summary>
         /// The quad for rendering all the UI elements (that can be rendered onto a quad).
         /// </summary>
         public Quad Quad { get; }
+
 
         /// <summary>
         /// Creates a new canvas to render UI elements on.
@@ -46,6 +51,7 @@ namespace VengineX.UI
             Quad = new Quad();
             _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, -Height, 0, -1.0f, 1.0f);
         }
+
 
         /// <summary>
         /// Resizes the canvas.

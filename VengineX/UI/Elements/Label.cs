@@ -16,12 +16,34 @@ namespace VengineX.UI.Elements
 {
     public class Label : UIElement, IDisposable
     {
+        /// <summary>
+        /// The shader that is used to render text.
+        /// </summary>
         public static Shader BitmapFontShader { get; private set; }
+
+        /// <summary>
+        /// Project matrix uniform location of the font shader.
+        /// </summary>
         public static int ProjectionMatrixLocation { get; private set; }
+
+        /// <summary>
+        /// Model matrix uniform location of the font shader.
+        /// </summary>
         public static int ModelMatrixLocation { get; private set; }
+
+        /// <summary>
+        /// View matrix uniform location of the font shader.
+        /// </summary>
         public static int ViewMatrixLocation { get; private set; }
+
+        /// <summary>
+        /// uColor uniform location of the font shader.
+        /// </summary>
         public static int ColorLocation { get; private set; }
 
+        /// <summary>
+        /// The text color of this label
+        /// </summary>
         public Vector4 Color { get => _color; set => _color = value; }
         private Vector4 _color;
 
@@ -50,6 +72,7 @@ namespace VengineX.UI.Elements
 
         private Mesh<UIVertex> _textMesh;
         private BitmapFont _font;
+
 
         public Label(UIElement parent, BitmapFont font, string text, float textSize, Vector4 color) : base(parent)
         {

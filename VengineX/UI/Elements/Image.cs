@@ -61,7 +61,10 @@ namespace VengineX.UI.Elements
         public Vector4 Tint { get => _tint; set => _tint = value; }
         private Vector4 _tint;
 
-        private readonly Texture2D? _texture;
+        /// <summary>
+        /// The texture of this image.
+        /// </summary>
+        private Texture2D? Texture { get; set; }
 
         /// <summary>
         /// Creates a new image ui element from given parameters.
@@ -80,9 +83,9 @@ namespace VengineX.UI.Elements
                 TintLocation = ImageShader.GetUniformLocation("uTint");
             }
 
-            _color = color;
-            _tint = tint;
-            _texture = texture;
+            Color = color;
+            Tint = tint;
+            Texture = texture;
         }
 
         /// <summary>
@@ -113,13 +116,13 @@ namespace VengineX.UI.Elements
             // Render self
             ImageShader?.Bind();
 
-            if (_texture == null)
+            if (Texture == null)
             {
                 GL.BindTextureUnit(0, 0);
             }
             else
             {
-                _texture.Bind();
+                Texture.Bind();
             }
 
             ImageShader?.SetUniformMat4(ProjectionMatrixLocation, ref ParentCanvas.ProjectionMatrix);

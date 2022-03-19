@@ -9,6 +9,9 @@ using VengineX.Core;
 
 namespace VengineX.Input
 {
+    /// <summary>
+    /// Class that handles the input for this game.
+    /// </summary>
     public class InputManager
     {
         /// <summary>
@@ -30,6 +33,7 @@ namespace VengineX.Input
         /// The current <see cref="OpenTK.Windowing.GraphicsLibraryFramework.KeyboardState"/> in the current frame.
         /// </summary>
         public KeyboardState KeyboardState { get; private set; }
+
 
         /// <summary>
         /// Creates a new InputManager for given window.

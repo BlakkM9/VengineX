@@ -46,6 +46,23 @@ namespace VengineX.UI.Elements
         public Vector2 Position { get; set; } = Vector2.Zero;
 
         /// <summary>
+        /// X positon relative to its parent. Shortcut for <see cref="Position"/>
+        /// </summary>
+        public float X {
+            get => Position.X;
+            set => Position = new Vector2(value, Position.Y);
+        }
+
+        /// <summary>
+        /// X positon relative to its parent. Shortcut for <see cref="Position"/>
+        /// </summary>
+        public float Y
+        {
+            get => Position.Y;
+            set => Position = new Vector2(Position.Y, value);
+        }
+
+        /// <summary>
         /// Absolute position of the ui element (on the ui canvas).
         /// </summary>
         public Vector2 AbsolutePosition
@@ -142,6 +159,7 @@ namespace VengineX.UI.Elements
             }
         }
 
+
         /// <summary>
         /// Iterates over the tree of children.
         /// </summary>
@@ -151,9 +169,9 @@ namespace VengineX.UI.Elements
             {
                 yield return child;
 
-                foreach (UIElement c in child.AllChildren())
+                foreach (UIElement childsChild in child.AllChildren())
                 {
-                    yield return c;
+                    yield return childsChild;
                 }
             }
         }
@@ -271,8 +289,7 @@ namespace VengineX.UI.Elements
         /// </summary>
         protected virtual void CalculateModelMatrix()
         {
-            ModelMatrix = Matrix4.Identity;
-            ModelMatrix *= Matrix4.CreateScale(Width / 2f, Height / 2f, 0);
+            ModelMatrix = Matrix4.CreateScale(Width / 2f, Height / 2f, 0);
             ModelMatrix *= Matrix4.CreateTranslation(Width / 2f + AbsolutePosition.X, -(Height / 2f + AbsolutePosition.Y), 0);
         }
 

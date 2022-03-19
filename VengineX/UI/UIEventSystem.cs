@@ -89,7 +89,7 @@ namespace VengineX.UI
                 CurrentElement.InvokeMouseButtonPressed(args);
                 CurrentElement.MouseDown = true;
 
-                if (FocusedElement != null && FocusedElement.Focused == true)
+                if (FocusedElement != null && FocusedElement.Focused)
                 {
                     FocusedElement.InvokeLostFocus();
                     FocusedElement.Focused = false;
@@ -106,7 +106,7 @@ namespace VengineX.UI
                     _prevCurrentElement.ClickInitiated = false;
                 }
 
-                if (FocusedElement != null && FocusedElement.Focused == true)
+                if (FocusedElement != null && FocusedElement.Focused)
                 {
                     FocusedElement.Focused = false;
                     FocusedElement.InvokeLostFocus();

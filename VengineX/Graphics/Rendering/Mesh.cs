@@ -71,15 +71,24 @@ namespace VengineX.Graphics.Rendering
         }
         private Vector3 _position;
 
+
         /// <summary>
         /// Amount of indices in this mesh.
         /// </summary>
         private int _numIndices;
 
 
+        /// <summary>
+        /// Creates a new mesh.
+        /// </summary>
+        /// <param name="position">Position of the mesh</param>
+        /// <param name="bufferUsage"><see cref="BufferUsageHint"/> for the vertex- and indexbuffer of this mesh.</param>
+        /// <param name="vertices">Vertices of this mesh.</param>
+        /// <param name="indices">Indices of this mesh.</param>
         public Mesh(Vector3 position, BufferUsageHint bufferUsage, T[] vertices, uint[] indices)
         {
-            _modelMatrix = Matrix4.Identity;
+            _modelMatrix = Matrix4.CreateTranslation(Position);
+
             Position = position;
             BufferUsage = bufferUsage;
 
@@ -87,9 +96,17 @@ namespace VengineX.Graphics.Rendering
         }
 
 
+        /// <summary>
+        /// Creates a new mesh.
+        /// </summary>
+        /// <param name="position">Position of the mesh</param>
+        /// <param name="bufferUsage"><see cref="BufferUsageHint"/> for the vertex- and indexbuffer of this mesh.</param>
+        /// <param name="vertices">Vertices of this mesh.</param>
+        /// <param name="indices">Indices of this mesh.</param>
         public Mesh(Vector3 position, BufferUsageHint bufferUsage, UnmanagedArray<T> vertices, UnmanagedArray<uint> indices)
         {
-            _modelMatrix = Matrix4.Identity;
+            _modelMatrix = Matrix4.CreateTranslation(Position);
+
             Position = position;
             BufferUsage = bufferUsage;
 
@@ -211,8 +228,6 @@ namespace VengineX.Graphics.Rendering
                     GL.DeleteBuffer(_ebo);
                 }
 
-                //Vertices = null;
-                //Indices = null;
                 _disposedValue = true;
             }
         }
