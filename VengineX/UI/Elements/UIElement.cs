@@ -100,26 +100,21 @@ namespace VengineX.UI.Elements
         public bool IgnoreLayout { get; set; } = false;
 
         /// <summary>
-        /// Wether or not the element is currently visible (assuming all parents are visible).
+        /// Wether or not the element is currently visible
         /// </summary>
         public bool Visible { get; set; } = true;
 
         /// <summary>
-        /// Check if this element is currently visible, taking parent elements into account.
+        /// Sets the visibility of self and all children.<br/>
         /// </summary>
         public bool VisibleRecursive
         {
-            get
+            set
             {
-                bool visible = true;
-                UIElement? element = this;
-                while (element != null)
+                foreach (UIElement child in Children)
                 {
-                    visible = element.Visible;
-                    element = element.Parent;
+                    child.VisibleRecursive = value;
                 }
-
-                return visible;
             }
         }
 
@@ -253,7 +248,7 @@ namespace VengineX.UI.Elements
             {
                 UIElement child = Children[i];
 
-                if (child.Visible && child.ContainsRelative(point - Position))
+                if (child.ContainsRelative(point - Position))
                 {
                     return child.FindElement(point - Position);
                 }
@@ -291,10 +286,7 @@ namespace VengineX.UI.Elements
 
             foreach (UIElement child in Children)
             {
-                if (child.Visible)
-                {
-                    child.Render();
-                }
+                child.Render();
             }
         }
 

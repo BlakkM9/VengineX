@@ -121,17 +121,21 @@ namespace VengineX.UI.Elements
         /// </summary>
         public override void Render()
         {
-            // Render self
-            ImageShader.Bind();
-            Texture?.Bind();
+            if (Visible)
+            {
+                // Render self
+                ImageShader.Bind();
+                Texture?.Bind();
 
-            ImageShader.SetUniformMat4(ProjectionMatrixLocation, ref ParentCanvas.ProjectionMatrix);
-            ImageShader.SetUniformMat4(ViewMatrixLocation, ref ParentCanvas.ViewMatrix);
-            ImageShader.SetUniformMat4(ModelMatrixLocation, ref ModelMatrix);
-            ImageShader.SetUniformVec4(ColorLocation, ref _color);
-            ImageShader.SetUniformVec4(TintLocation, ref _tint);
+                ImageShader.SetUniformMat4(ProjectionMatrixLocation, ref ParentCanvas.ProjectionMatrix);
+                ImageShader.SetUniformMat4(ViewMatrixLocation, ref ParentCanvas.ViewMatrix);
+                ImageShader.SetUniformMat4(ModelMatrixLocation, ref ModelMatrix);
+                ImageShader.SetUniformVec4(ColorLocation, ref _color);
+                ImageShader.SetUniformVec4(TintLocation, ref _tint);
 
-            ParentCanvas.Quad.Render();
+                ParentCanvas.Quad.Render();
+            }
+
 
             base.Render();
         }

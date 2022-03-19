@@ -145,16 +145,20 @@ namespace VengineX.UI.Elements
         /// </summary>
         public override void Render()
         {
-            BitmapFontShader.Bind();
-            _font.TextureAtlas.Bind();
+            if (Visible)
+            {
+                BitmapFontShader.Bind();
+                _font.TextureAtlas.Bind();
 
-            BitmapFontShader.SetUniformMat4(ProjectionMatrixLocation, ref ParentCanvas.ProjectionMatrix);
-            BitmapFontShader.SetUniformMat4(ViewMatrixLocation, ref ParentCanvas.ViewMatrix);
-            BitmapFontShader.SetUniformMat4(ModelMatrixLocation, ref ModelMatrix);
-            BitmapFontShader.SetUniformVec4(ColorLocation, ref _color);
+                BitmapFontShader.SetUniformMat4(ProjectionMatrixLocation, ref ParentCanvas.ProjectionMatrix);
+                BitmapFontShader.SetUniformMat4(ViewMatrixLocation, ref ParentCanvas.ViewMatrix);
+                BitmapFontShader.SetUniformMat4(ModelMatrixLocation, ref ModelMatrix);
+                BitmapFontShader.SetUniformVec4(ColorLocation, ref _color);
 
-            _textMesh.Render();
-            _font.TextureAtlas.Unbind();
+                _textMesh.Render();
+                _font.TextureAtlas.Unbind();
+            }
+
 
             base.Render();
         }
