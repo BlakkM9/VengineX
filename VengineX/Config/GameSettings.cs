@@ -52,6 +52,23 @@ namespace VengineX.Config
             set => Set("Window.ResolutionY", value);
         }
 
+        /// <summary>
+        /// X position of the game window.
+        /// </summary>
+        public int LocationX
+        {
+            get => GetInt("Window.LocationX");
+            set => Set("Window.LocationX", value);
+        }
+
+        /// <summary>
+        /// Y position of the game window.
+        /// </summary>
+        public int LocationY
+        {
+            get => GetInt("Window.LocationY");
+            set => Set("Window.LocationY", value);
+        }
 
         /// <summary>
         /// The monitor the game's window should be displayed on.<br/>
@@ -100,6 +117,8 @@ namespace VengineX.Config
             MonitorInfo monitor = Monitors.GetMonitors()[0];
             ResolutionX = monitor.HorizontalResolution;
             ResolutionY = monitor.VerticalResolution;
+            LocationX = 0;
+            LocationY = 0;
             TargetMonitor = 0;
             WindowMode = WindowMode.Borderless;
 
