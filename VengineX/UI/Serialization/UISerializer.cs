@@ -197,7 +197,6 @@ namespace VengineX.UI.Serialization
             foreach (XAttribute attr in xmlElement.Attributes())
             {
                 string attributeName = attr.Name.LocalName;
-                Console.WriteLine(attr.Name.LocalName + ": " + attr.Value);
 
                 // Set the field in the root to this element
                 if (attributeName == "Name")
