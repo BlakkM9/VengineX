@@ -58,11 +58,8 @@ namespace VengineX.UI.Layouts
         /// </summary>
         public override void UpdateLayout(UIElement element)
         {
-            //Vector2 containerSize = element.Size;
-
             foreach (UIElement child in element.Children)
             {
-                //Vector2 childSize = child.Size;
 
                 float posX = HorizontalAlignment switch
                 {

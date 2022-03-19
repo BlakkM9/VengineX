@@ -69,7 +69,7 @@ namespace VengineX.Screens
             });
 
             //_logoImage = new Image(0, 0, 512, 512, _logo);
-            _pipeline.OverlayUI.Layout = new StackLayout(HorizontalAlignment.Center, VerticalAlignment.Center, Orientation.Horizontal, 0);
+            _pipeline.OverlayUI.Layout = new AlignLayout(HorizontalAlignment.Center, VerticalAlignment.Center);
             Image logoImage = new Image(_pipeline.OverlayUI, _logo);
             logoImage.Size = new Vector2(512, 512);
             _pipeline.OverlayUI.UpdateLayout();
