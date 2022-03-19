@@ -82,8 +82,8 @@ namespace VengineX.Core
             {
                 Size = new Vector2i(Settings.ResolutionX, Settings.ResolutionY),
                 CurrentMonitor = Monitors.GetMonitors()[Settings.TargetMonitor].Handle,
+                Location = new Vector2i(Settings.LocationX, Settings.LocationY),
             };
-
 
             // Configure WindowMode.
             switch (Settings.WindowMode)
@@ -106,9 +106,22 @@ namespace VengineX.Core
             // Set logger configuration.
             Logger.Configuration = loggerConfiguration;
 
+            // Log window initialization settings
+            Logger.Log(Severity.Info, Tag.Initialization, "Initializing Window...");
+            Logger.Log(Severity.Info, Tag.Initialization, $"RenderFrequency: {gwSettings.RenderFrequency}");
+            Logger.Log(Severity.Info, Tag.Initialization, $"UpdateFrequency: {gwSettings.UpdateFrequency}");
+            Logger.Log(Severity.Info, Tag.Initialization, $"Size: {nwSettings.Size}");
+            Logger.Log(Severity.Info, Tag.Initialization, $"Monitor: {Monitors.GetMonitors()[Settings.TargetMonitor].HorizontalResolution}x{Monitors.GetMonitors()[Settings.TargetMonitor].VerticalResolution}");
+            Logger.Log(Severity.Info, Tag.Initialization, $"WindowState: {nwSettings.WindowState}");
+            Logger.Log(Severity.Info, Tag.Initialization, $"WindowBorder: {nwSettings.WindowBorder}");
 
             // Create window and add event hooks.
             Window = new Window(gwSettings, nwSettings);
+
+            Logger.Log(Severity.Info, Tag.Initialization, "Done:");
+            Logger.Log(Severity.Info, Tag.Initialization, $"API: {Window.API}");
+            Logger.Log(Severity.Info, Tag.Initialization, $"API Version: {Window.APIVersion}");
+
             RegisterWindowHooks();
 
             // Create screen manager
