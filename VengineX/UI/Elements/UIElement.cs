@@ -219,11 +219,20 @@ namespace VengineX.UI.Elements
 
 
         /// <summary>
-        /// Check if this element contains given point.
+        /// Check if this element contains given point in absolute (relative to canvas) space.
         /// </summary>
-        public bool Contains(Vector2 point)
+        public bool ContainsAbsolute(Vector2 point)
         {
             Vector2 distance = point - AbsolutePosition;
+            return distance.X >= 0 && distance.Y >= 0 && distance.X < Size.X && distance.Y < Size.Y;
+        }
+
+        /// <summary>
+        /// Check if this element contains given point in relative (to parent) space.
+        /// </summary>
+        public bool ContainsRelative(Vector2 point)
+        {
+            Vector2 distance = point - Position;
             return distance.X >= 0 && distance.Y >= 0 && distance.X < Size.X && distance.Y < Size.Y;
         }
 
@@ -238,13 +247,13 @@ namespace VengineX.UI.Elements
             {
                 UIElement child = Children[i];
 
-                if (child.Visible && child.Contains(point - Position))
+                if (child.Visible && child.ContainsRelative(point - Position))
                 {
-                    return child.FindElement(point);
+                    return child.FindElement(point - Position);
                 }
             }
 
-            return Contains(point) && GetType() != typeof(Canvas) ? this : null;
+            return ContainsRelative(point) && GetType() != typeof(Canvas) ? this : null;
         }
 
 
@@ -253,16 +262,16 @@ namespace VengineX.UI.Elements
         /// </summary>
         public virtual void UpdateLayout()
         {
-            if (Layout != null)
-            {
-                Layout.UpdateLayout(this);
-            }
-
+            // Update all children (so their size is usable for own layouting)
             foreach (UIElement child in Children)
             {
                 child.UpdateLayout();
             }
 
+            // Update own layout (layouts all direct children)
+            Layout?.UpdateLayout(this);
+
+            // Update own model matrix
             CalculateModelMatrix();
         }
 
@@ -299,7 +308,7 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// If this is set to true, this element will not receive ui events.
         /// </summary>
-        public bool IgnoreEvents { get; set; } = false;
+        public bool IgnoreInputEvents { get; set; } = false;
 
         /// <summary>
         /// Handler for generic ui events.

@@ -28,9 +28,22 @@ namespace VengineX.UI
         /// <summary>
         /// The topmost element the cursor is currently above.
         /// </summary>
-        public UIElement? CurrentElement { get; private set; } = null;
+        public UIElement? CurrentElement
+        {
+            get => _currentElement;
+            private set
+            {
+                _previousElement = _currentElement;
+                _currentElement = value;
+            }
+        }
+        private UIElement? _currentElement = null;
 
-        private UIElement? _prevCurrentElement;
+        /// <summary>
+        /// Topmost UIElement the cursor was above before.
+        /// </summary>
+        private UIElement? _previousElement = null;
+        //private UIElement? _prevCurrentElement;
 
         /// <summary>
         /// Creates a new event system with the given input manager.
@@ -56,15 +69,15 @@ namespace VengineX.UI
             
             foreach (UIElement child in Canvas.AllChildren())
             {
-                if (child.IgnoreEvents) { continue; }
+                if (child.IgnoreInputEvents) { continue; }
 
                 // Mouse entered / left
-                if (child.Contains(position) && !child.MouseOver)
+                if (child.ContainsAbsolute(position) && !child.MouseOver)
                 {
                     child.MouseOver = true;
                     child.InvokeEntered(args);
                 }
-                else if (!child.Contains(position) && child.MouseOver)
+                else if (!child.ContainsAbsolute(position) && child.MouseOver)
                 {
                     child.MouseOver = false;
                     child.MouseDown = false;
@@ -79,15 +92,10 @@ namespace VengineX.UI
 
             if (CurrentElement != null)
             {
-                if (_prevCurrentElement != null)
+                if (_previousElement != null)
                 {
-                    _prevCurrentElement.ClickInitiated = false;
+                    _previousElement.ClickInitiated = false;
                 }
-
-                CurrentElement.ClickInitiated = true;
-                _prevCurrentElement = CurrentElement;
-                CurrentElement.InvokeMouseButtonPressed(args);
-                CurrentElement.MouseDown = true;
 
                 if (FocusedElement != null && FocusedElement.Focused)
                 {
@@ -95,15 +103,21 @@ namespace VengineX.UI
                     FocusedElement.Focused = false;
                 }
 
+                if (CurrentElement.IgnoreInputEvents) { return; }
+
+                CurrentElement.ClickInitiated = true;
+                CurrentElement.InvokeMouseButtonPressed(args);
+                CurrentElement.MouseDown = true;
+
                 FocusedElement = CurrentElement;
                 CurrentElement.Focused = true;
                 CurrentElement.InvokeGainedFocus();
             }
             else
             {
-                if (_prevCurrentElement != null)
+                if (_previousElement != null)
                 {
-                    _prevCurrentElement.ClickInitiated = false;
+                    _previousElement.ClickInitiated = false;
                 }
 
                 if (FocusedElement != null && FocusedElement.Focused)
@@ -122,6 +136,8 @@ namespace VengineX.UI
 
             if (CurrentElement != null)
             {
+                if (CurrentElement.IgnoreInputEvents) { return; }
+
                 CurrentElement.InvokeMouseButtonReleased(args);
                 CurrentElement.MouseDown = false;
 
@@ -136,7 +152,11 @@ namespace VengineX.UI
         private void Window_MouseWheel(MouseWheelEventArgs args)
         {
             CurrentElement = Canvas.FindElement(Input.MouseState.Position);
-            CurrentElement?.InvokeScrolled(args);
+            
+            if (CurrentElement != null && !CurrentElement.IgnoreInputEvents)
+            {
+                CurrentElement.InvokeScrolled(args);
+            }
         }
 
 
