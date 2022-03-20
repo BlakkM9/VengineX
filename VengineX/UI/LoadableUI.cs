@@ -14,12 +14,12 @@ namespace VengineX.UI
     /// Base class for a group of UIElements that can be loaded from an XML file.<br/>
     /// This will be the root element of the loaded UI. For loading the UI use <see cref="UISerializer.LoadFromXML{T}(UIElement, string)"/>.
     /// </summary>
-    public abstract class LoadableUI : UIElement
+    public abstract class LoadableUITemplate : UIElement
     {
-        protected LoadableUI(UIElement parent) : base(parent) { }
+        protected LoadableUITemplate(UIElement parent) : base(parent) { }
 
         /// <summary>
-        /// This function is calld when the <see cref="LoadableUI"/> was initialized after loading.
+        /// This function is calld when the <see cref="LoadableUITemplate"/> was initialized after loading.
         /// </summary>
         protected abstract void Initialized();
     }
