@@ -98,7 +98,7 @@ namespace VengineX.UI.Elements
 
         public Label(UIElement parent, BitmapFont font, string text, float textSize, Vector4 color) : this(parent)
         {
-            TextSize = textSize;
+            _textSize = textSize;
             _font = font;
             _text = text;
             _color = color;
@@ -120,7 +120,6 @@ namespace VengineX.UI.Elements
                 ViewMatrixLocation = BitmapFontShader.GetUniformLocation("V");
                 ColorLocation = BitmapFontShader.GetUniformLocation("uColor");
             }
-
         }
 
 
