@@ -31,7 +31,7 @@ namespace VengineX.UI.Layouts
         }
 
         /// <summary>
-        /// Horizontal and vertical alignments.<br/>
+        /// Horizontal and vertical alignments.<br/> Example:
         /// If <see cref="Orientation"/> is horizontal, element at 0 is <see cref="HorizontalAlignment"/><br/>
         /// And the other way around.
         /// </summary>
@@ -109,10 +109,12 @@ namespace VengineX.UI.Layouts
             int axis1 = (int)Orientation;
             int axis2 = ((int)Orientation + 1) % 2;
 
+
             float pos1 = _alignments[0] switch
             {
                 Alignment.Start => 0,
                 Alignment.Center => (containerSize[axis1] - preferedSize[axis1]) / 2,
+                Alignment.Stretch => (containerSize[axis1] - preferedSize[axis1]) / 2,
                 Alignment.End => containerSize[axis1] - preferedSize[axis1],
                 _ => throw new NotImplementedException(),
             };
@@ -135,12 +137,23 @@ namespace VengineX.UI.Layouts
                 {
                     Alignment.Start => 0,
                     Alignment.Center => (containerSize[axis2] - childSize[axis2]) / 2,
+                    Alignment.Stretch => 0,
                     Alignment.End => containerSize[axis2] - childSize[axis2],
                     _ => throw new NotImplementedException(),
                 };
                 targetPos[axis2] = pos2;
 
                 child.Position = targetPos;
+
+                // Strech on non alignment axis
+                if (_alignments[1] == Alignment.Stretch)
+                {
+                    Vector2 targetSize = Vector2.Zero;
+                    targetSize[axis1] = child.Size[axis1];
+                    targetSize[axis2] = containerSize[axis2];
+                    child.Size = targetSize;
+                    child.UpdateLayout();
+                }
             }
         }
     }
