@@ -13,6 +13,9 @@ namespace VengineX.UI.Elements.Panels
     /// </summary>
     public class AlignPane : Pane
     {
+        /// <summary>
+        /// Horizontal layout of the children in this pane.
+        /// </summary>
         public HorizontalAlignment HorizontalAlignment
         {
             get => _horizontalAlignment;
@@ -22,8 +25,14 @@ namespace VengineX.UI.Elements.Panels
                 Layout = new AlignLayout(_horizontalAlignment, _verticalAlignment);
             }
         }
+        /// <summary>
+        /// Internal field for <see cref="HorizontalAlignment"/>.
+        /// </summary>
         protected HorizontalAlignment _horizontalAlignment;
-        
+
+        /// <summary>
+        /// Vertical layout of the children in this pane.
+        /// </summary>
         public VerticalAlignment VerticalAlignment
         {
             get => _verticalAlignment;
@@ -33,6 +42,9 @@ namespace VengineX.UI.Elements.Panels
                 Layout = new AlignLayout(_horizontalAlignment, _verticalAlignment);
             }
         }
+        /// <summary>
+        /// Internal field for <see cref="VerticalAlignment"/>.
+        /// </summary>
         protected VerticalAlignment _verticalAlignment;
 
         /// <summary>

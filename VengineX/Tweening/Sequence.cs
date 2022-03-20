@@ -84,9 +84,14 @@ namespace VengineX.Tweening
         }
 
 
+        /// <summary>
+        /// Creates a new sequence with given iterations and given <see cref="Tween"/>s.
+        /// </summary>
         public Sequence(int iterations, params Tween[] tweens) : this(Direction.Normal, iterations, tweens) { }
 
-
+        /// <summary>
+        /// Creates a new sequence with given tweens and one iteration.
+        /// </summary>
         public Sequence(params Tween[] tweens) : this(Direction.Normal, 1, tweens) { }
 
 

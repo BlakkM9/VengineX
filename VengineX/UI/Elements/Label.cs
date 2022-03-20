@@ -19,6 +19,10 @@ namespace VengineX.UI.Elements
     // TODO: Label layout is not properly updated when text changed.
     // The workaround is to call update twice on the parent element.
     // but there is proabably some edge case that needs to be fixed.
+    /// <summary>
+    /// UIElement that is used to render text.<br/>
+    /// No background, just the text itself.
+    /// </summary>
     public class Label : UIElement, IDisposable
     {
         /// <summary>
@@ -182,6 +186,9 @@ namespace VengineX.UI.Elements
 
         private bool _disposedValue;
 
+        /// <summary>
+        /// Disposable pattern
+        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
@@ -205,6 +212,9 @@ namespace VengineX.UI.Elements
         //     Dispose(disposing: false);
         // }
 
+        /// <summary>
+        /// Disposable pattern
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

@@ -8,7 +8,6 @@ using VengineX.Debugging.Logging;
 
 namespace VengineX.Graphics.Rendering.Textures
 {
-    // TODO implement smart texture binding to reduce gl calls and check if faster (bind texture only when needed)
     /// <summary>
     /// Base class for more specific textures
     /// </summary>

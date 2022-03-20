@@ -39,7 +39,7 @@ namespace VengineX.Debugging.Logging
         }
 
 
-        // TODO implementation.
+        // TODO check if working.
         /// <summary>
         /// OpenGL debug message callback.
         /// </summary>

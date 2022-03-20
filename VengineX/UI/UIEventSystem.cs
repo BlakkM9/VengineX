@@ -18,8 +18,14 @@ namespace VengineX.UI
     /// </summary>
     public class UIEventSystem
     {
+        /// <summary>
+        /// <see cref="InputManager"/> providing the input events for the <see cref="UIEventSystem"/>.
+        /// </summary>
         public InputManager Input { get; }
 
+        /// <summary>
+        /// Canvas holding all the UIElement that should be handled by this event system.
+        /// </summary>
         public Canvas Canvas { get; }
 
         /// <summary>
