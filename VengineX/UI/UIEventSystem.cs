@@ -43,7 +43,6 @@ namespace VengineX.UI
         /// Topmost UIElement the cursor was above before.
         /// </summary>
         private UIElement? _previousElement = null;
-        //private UIElement? _prevCurrentElement;
 
         /// <summary>
         /// Creates a new event system with the given input manager.
@@ -75,6 +74,7 @@ namespace VengineX.UI
                 if (child.ContainsAbsolute(position) && !child.MouseOver)
                 {
                     child.MouseOver = true;
+                    if (Input.MouseState.IsAnyButtonDown) { child.MouseDown = true; }
                     child.InvokeEntered(args);
                 }
                 else if (!child.ContainsAbsolute(position) && child.MouseOver)
@@ -88,7 +88,7 @@ namespace VengineX.UI
 
         private void Window_MouseDown(MouseButtonEventArgs args)
         {
-            CurrentElement = Canvas.FindElement(Input.MouseState.Position);
+            CurrentElement = FindTopmostElement(Input.MouseState.Position);
 
             if (CurrentElement != null)
             {
@@ -132,7 +132,7 @@ namespace VengineX.UI
 
         private void Window_MouseUp(MouseButtonEventArgs args)
         {
-            CurrentElement = Canvas.FindElement(Input.MouseState.Position);
+            CurrentElement = FindTopmostElement(Input.MouseState.Position);
 
             if (CurrentElement != null)
             {
@@ -151,9 +151,9 @@ namespace VengineX.UI
 
         private void Window_MouseWheel(MouseWheelEventArgs args)
         {
-            CurrentElement = Canvas.FindElement(Input.MouseState.Position);
+            CurrentElement = FindTopmostElement(Input.MouseState.Position);
             
-            if (CurrentElement != null && !CurrentElement.IgnoreInputEvents)
+            if (CurrentElement != null)
             {
                 CurrentElement.InvokeScrolled(args);
             }
@@ -175,6 +175,27 @@ namespace VengineX.UI
         private void Window_KeyUp(KeyboardKeyEventArgs args)
         {
             FocusedElement?.InvokeKeyReleased(args);
+        }
+
+
+        /// <summary>
+        /// Findes the topmost element at given position that is not ignoring input events.
+        /// </summary>
+        /// <param name="point">Absolute position to check from.</param>
+        /// <returns>null if none found.</returns>
+        private UIElement? FindTopmostElement(Vector2 point)
+        {
+            foreach (UIElement child in Canvas.AllChildren().Reverse())
+            {
+                if (child.ContainsAbsolute(point) && !child.IgnoreInputEvents)
+                {
+                    Console.WriteLine(child.GetType());
+                    return child;
+                }
+            }
+
+
+            return null;
         }
     }
 }

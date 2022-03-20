@@ -239,27 +239,7 @@ namespace VengineX.UI.Elements
 
 
         /// <summary>
-        /// Finds and returns the element at the given position (recursive).<br/>
-        /// Null if didn't find any.
-        /// </summary>
-        public UIElement? FindElement(Vector2 point)
-        {
-            for (int i = ChildCount - 1; i >= 0; i--)
-            {
-                UIElement child = Children[i];
-
-                if (child.ContainsRelative(point - Position))
-                {
-                    return child.FindElement(point - Position);
-                }
-            }
-
-            return ContainsRelative(point) && GetType() != typeof(Canvas) ? this : null;
-        }
-
-
-        /// <summary>
-        /// Performs layouting for this element and updates the model matrix (recursive).
+        /// Updates the layouting for this element and updates the model matrix (recursive).
         /// </summary>
         public virtual void UpdateLayout()
         {
