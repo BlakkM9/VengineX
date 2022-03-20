@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -83,24 +84,37 @@ namespace VengineX.UI.Serialization
 
 
         /// <summary>
-        /// Loads the given <see cref="LoadableUI"/> from given file path.
+        /// Loads the given <see cref="LoadableUITemplate"/> from given file path.
         /// </summary>
         /// <param name="filePath">The file path to load this UI from.</param>
         /// <param name="parent">The element to attach the loaded UI as child.</param>
-        /// <returns>The loaded <see cref="LoadableUI"/></returns>
-        public T LoadFromXML<T>(UIElement parent, string filePath) where T : LoadableUI
+        /// <returns>The loaded <see cref="LoadableUITemplate"/></returns>
+        public T LoadFromXML<T>(UIElement parent, string filePath) where T : LoadableUITemplate
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             XDocument doc = XDocument.Load(filePath);
+
+            sw.Stop();
+            Logger.Log(Severity.Debug, Tag.Profiling, $"Loaded from file: {sw.ElapsedMilliseconds}ms");
 
             // Create the root element
             Type type = typeof(T);
 
+            sw.Restart();
+
             T rootElement = ProcessNode<T>(null, parent, doc.Root);
+
+            sw.Stop();
+            Logger.Log(Severity.Debug, Tag.Profiling, $"Inflated ui tree: {sw.ElapsedMilliseconds}ms");
 
             parent.UpdateLayout();
 
             MethodInfo initMethod = typeof(T).GetMethod("Initialized", ANY_INSTANCED);
             initMethod.Invoke(rootElement, null);
+
+
 
             return rootElement;
         }
