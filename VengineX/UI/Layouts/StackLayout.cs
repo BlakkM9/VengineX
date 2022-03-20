@@ -84,13 +84,13 @@ namespace VengineX.UI.Layouts
             {
                 if (child.IgnoreLayout) { continue; }
 
-                Vector2 childPreferred = child.PreferredSize;
+                Vector2 childTotalSize = child.TotalSize;
 
                 if (first) { first = false; }
                 else { preferredSize[axis1] += Spacing; }
-                preferredSize[axis1] += childPreferred[axis1];
+                preferredSize[axis1] += childTotalSize[axis1];
 
-                if (childPreferred[axis2] > maxAxis2) { maxAxis2 = childPreferred[axis2]; }
+                if (childTotalSize[axis2] > maxAxis2) { maxAxis2 = childTotalSize[axis2]; }
             }
 
             preferredSize[axis2] = maxAxis2;
@@ -130,15 +130,20 @@ namespace VengineX.UI.Layouts
 
                 Vector2 childSize = child.Size;
                 Vector2 targetPos = Vector2.Zero;
-                targetPos[axis1] = pos1;
-                pos1 += childSize[axis1];
+                float marginAxis1Start = child.Margin[axis1];
+                float marginAxis1End = child.Margin[axis1 + 2];
+                float marginAxis2Start = child.Margin[axis2];
+                float marginAxis2End = child.Margin[axis2 + 2];
+
+                targetPos[axis1] = pos1 + marginAxis1Start;
+                pos1 += childSize[axis1] + marginAxis1End;
 
                 float pos2 = _alignments[1] switch
                 {
-                    Alignment.Start => 0,
-                    Alignment.Center => (containerSize[axis2] - childSize[axis2]) / 2,
-                    Alignment.Stretch => 0,
-                    Alignment.End => containerSize[axis2] - childSize[axis2],
+                    Alignment.Start => marginAxis2Start,
+                    Alignment.Center => (containerSize[axis2] - childSize[axis2]) / 2 + marginAxis2Start - marginAxis2End,
+                    Alignment.Stretch => marginAxis2Start,
+                    Alignment.End => containerSize[axis2] - childSize[axis2] - marginAxis2End,
                     _ => throw new NotImplementedException(),
                 };
                 targetPos[axis2] = pos2;
@@ -150,7 +155,7 @@ namespace VengineX.UI.Layouts
                 {
                     Vector2 targetSize = Vector2.Zero;
                     targetSize[axis1] = child.Size[axis1];
-                    targetSize[axis2] = containerSize[axis2];
+                    targetSize[axis2] = containerSize[axis2] - marginAxis2Start - marginAxis2End;
                     child.Size = targetSize;
                     child.UpdateLayout();
                 }

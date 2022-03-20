@@ -64,7 +64,8 @@ namespace VengineX.UI.Elements
 
         /// <summary>
         /// Margin of this element. Order is Left, Top, Right, Down.<br/>
-        /// Margin is used to offset this elements position and size when layouting.
+        /// Margin is used to offset this elements position and size when layouting.<br/>
+        /// If this element is <see cref="IgnoreLayout"/> margin is ignored aswell.<br/>
         /// </summary>
         public Vector4 Margin { get; set; } = Vector4.Zero;
 
@@ -116,6 +117,11 @@ namespace VengineX.UI.Elements
         /// Size of this element.
         /// </summary>
         public Vector2 Size { get; set; } = Vector2.Zero;
+
+        /// <summary>
+        /// Size of this element including margin.
+        /// </summary>
+        public Vector2 TotalSize => Size + new Vector2(MarginLeft + MarginRight, MarginTop + MarginBottom);
 
         /// <summary>
         /// Width of this element. Shortcut for <see cref="Size"/>.
@@ -173,7 +179,7 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// Number of child elements.
         /// </summary>
-        public int ChildCount { get => Children.Count; }
+        public int ChildCount => Children.Count;
 
         /// <summary>
         /// List holding all the children of this ui element.
@@ -184,7 +190,7 @@ namespace VengineX.UI.Elements
         /// Calculates the preferred size of this element.<br/>
         /// Preferred size is the size of this element needed to fit all its layouted children.
         /// </summary>
-        public Vector2 PreferredSize { get => Layout == null ? Size : Layout.PreferredSize(this); }
+        public Vector2 PreferredSize => Layout == null ? Size : Layout.PreferredSize(this);
 
 
         /// <summary>
