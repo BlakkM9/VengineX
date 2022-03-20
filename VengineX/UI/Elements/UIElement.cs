@@ -136,6 +136,16 @@ namespace VengineX.UI.Elements
         }
 
         /// <summary>
+        /// Width of this element including margin.
+        /// </summary>
+        public float TotalWidth => Width + MarginLeft + MarginRight;
+
+        /// <summary>
+        /// Width of this element including the margin.
+        /// </summary>
+        public float TotalHeight => Height + MarginTop + MarginBottom;
+
+        /// <summary>
         /// If set to true, this element will ignore all layouting.<br/>
         /// Children of this element will still be layouted (if their <see cref="IgnoreLayout"/> is true).
         /// </summary>

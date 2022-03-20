@@ -47,8 +47,11 @@ namespace VengineX.UI.Layouts
             {
                 if (child.IgnoreLayout) { continue; }
 
-                if (child.Width > maxWidth) { maxWidth = child.Width; }
-                if (child.Height > maxHeight) { maxHeight = child.Height; }
+                float childTotalW = child.TotalWidth;
+                float childTotalH = child.TotalHeight;
+
+                if (childTotalW > maxWidth) { maxWidth = childTotalW; }
+                if (childTotalH > maxHeight) { maxHeight = childTotalH; }
             }
 
             return new Vector2(maxWidth, maxHeight);
@@ -64,22 +67,23 @@ namespace VengineX.UI.Layouts
             {
                 if (child.IgnoreLayout) { continue; }
 
+
                 float posX = HorizontalAlignment switch
                 {
-                    HorizontalAlignment.Left => 0,
-                    HorizontalAlignment.Center => (element.Width - child.Width) / 2,
-                    HorizontalAlignment.Stretch =>  0,
-                    HorizontalAlignment.Right => element.Width - child.Width,
+                    HorizontalAlignment.Left => child.MarginLeft,
+                    HorizontalAlignment.Center => (element.Width - child.Width) / 2 + child.MarginLeft - child.MarginRight,
+                    HorizontalAlignment.Stretch =>  child.MarginLeft,
+                    HorizontalAlignment.Right => element.Width - child.Width - child.MarginRight,
                     _ => throw new NotImplementedException(),
                 };
 
 
                 float posY = VerticalAlignment switch
                 {
-                    VerticalAlignment.Top => 0,
-                    VerticalAlignment.Center => (element.Height - child.Height) / 2,
-                    VerticalAlignment.Stretch => 0,
-                    VerticalAlignment.Bottom => element.Height - child.Height,
+                    VerticalAlignment.Top => child.MarginTop,
+                    VerticalAlignment.Center => (element.Height - child.Height) / 2 + child.MarginLeft - child.MarginRight,
+                    VerticalAlignment.Stretch => child.MarginTop,
+                    VerticalAlignment.Bottom => element.Height - child.Height - child.MarginBottom,
                     _ => throw new NotImplementedException(),
                 };
 
@@ -89,12 +93,12 @@ namespace VengineX.UI.Layouts
                 // Stretch to parent size. Children need to update layout again if size changed.
                 if (HorizontalAlignment == HorizontalAlignment.Stretch)
                 {
-                    child.Width = element.Width;
+                    child.Width = element.Width - child.MarginLeft - child.MarginRight;
                     child.UpdateLayout();
                 }
                 if (VerticalAlignment == VerticalAlignment.Stretch)
                 {
-                    child.Height = element.Height;
+                    child.Height = element.Height - child.MarginTop - child.MarginBottom;
                     child.UpdateLayout();
                 }
             }
