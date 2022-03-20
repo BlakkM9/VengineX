@@ -65,6 +65,7 @@ namespace VengineX.Tweening
             Direction = direction;
             IterationCount = iterations;
             CurrentIterationCount = IterationCount;
+            Paused = true;
 
             _currentTweenIndex = Reversed ? _tweens.Count - 1 : 0;
             _currentSequenceCount = 0;

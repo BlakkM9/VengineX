@@ -97,7 +97,8 @@ namespace VengineX.Tweening
             Duration = duration;
 
             Direction = direction;
-            IsRunningReversed = base.Reversed;
+            IsRunningReversed = Reversed;
+            Paused = true;
 
             IterationCount = iterations;
             CurrentIterationCount = IterationCount;
