@@ -63,6 +63,48 @@ namespace VengineX.UI.Elements
         }
 
         /// <summary>
+        /// Margin of this element. Order is Left, Top, Right, Down.<br/>
+        /// Margin is used to offset this elements position and size when layouting.
+        /// </summary>
+        public Vector4 Margin { get; set; } = Vector4.Zero;
+
+        /// <summary>
+        /// Left margin. Shortcut for <see cref="Margin"/>.
+        /// </summary>
+        public float MarginLeft
+        {
+            get => Margin.X;
+            set => Margin = new Vector4(value, Margin.Y, Margin.Z, Margin.W);
+        }
+
+        /// <summary>
+        /// Top margin. Shortcut for <see cref="Margin"/>.
+        /// </summary>
+        public float MarginTop
+        {
+            get => Margin.Y;
+            set => Margin = new Vector4(Margin.X, value, Margin.Z, Margin.W);
+        }
+
+        /// <summary>
+        /// Right margin. Shortcut for <see cref="Margin"/>.
+        /// </summary>
+        public float MarginRight
+        {
+            get => Margin.Z;
+            set => Margin = new Vector4(Margin.X, Margin.Y, value, Margin.W);
+        }
+
+        /// <summary>
+        /// Bottom margin. Shortcut for <see cref="Margin"/>.
+        /// </summary>
+        public float MarginBottom
+        {
+            get => Margin.W;
+            set => Margin = new Vector4(Margin.X, Margin.Y, Margin.Z, value);
+        }
+
+        /// <summary>
         /// Absolute position of the ui element (on the ui canvas).
         /// </summary>
         public Vector2 AbsolutePosition
