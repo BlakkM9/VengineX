@@ -54,6 +54,16 @@ namespace VengineX.UI
 
 
         /// <summary>
+        /// Call every frame to update mouse move events<br/>
+        /// for the elements in this canvas.
+        /// </summary>
+        public void UpdateEvents()
+        {
+            EventSystem.UpdateMouseMove();
+        }
+
+
+        /// <summary>
         /// Resizes the canvas.
         /// </summary>
         public void Resize(float newWidth, float newHeight)

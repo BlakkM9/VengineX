@@ -1,8 +1,10 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,7 +55,6 @@ namespace VengineX.UI
             Canvas = canvas;
 
             // Register listeners to native input events
-            input.Window.MouseMove += Window_MouseMove;
             input.Window.MouseDown += Window_MouseDown;
             input.Window.MouseUp += Window_MouseUp;
             input.Window.MouseWheel += Window_MouseWheel;
@@ -62,31 +63,47 @@ namespace VengineX.UI
             input.Window.TextInput += Window_TextInput;
         }
 
-        private void Window_MouseMove(MouseMoveEventArgs args)
-        {
-            Vector2 position = new Vector2(args.X, args.Y);
-            
-            foreach (UIElement child in Canvas.AllChildren())
-            {
-                if (child.IgnoreInputEvents) { continue; }
 
-                // Mouse entered / left
-                if (child.ContainsAbsolute(position) && !child.MouseOver)
+        /// <summary>
+        /// Call this every frame update. <br/>
+        /// This will update the elements enter and left events<br/>
+        /// way more resource friendly than doing that from <see cref="NativeWindow.MouseMove"/><br/>,
+        /// because like this it is at most checked once per frame, otherwise on every mouse movement.
+        /// </summary>
+        public virtual void UpdateMouseMove()
+        {
+
+            MouseMoveEventArgs args = new MouseMoveEventArgs(Input.MouseState.Position, Input.MouseState.Delta);
+
+            // Could probably be done more efficient by using a quadtree or something like that
+            // but it would be hard to get the same behavior with a quadtree implementation i think.
+            if (args.Delta.X > 0 || args.DeltaY > 0)
+            {
+                Vector2 position = new Vector2(args.X, args.Y);
+
+                foreach (UIElement child in Canvas.AllChildren())
                 {
-                    child.MouseOver = true;
-                    if (Input.MouseState.IsAnyButtonDown) { child.MouseDown = true; }
-                    child.InvokeEntered(args);
-                }
-                else if (!child.ContainsAbsolute(position) && child.MouseOver)
-                {
-                    child.MouseOver = false;
-                    child.MouseDown = false;
-                    child.InvokeLeft(args);
+                    if (child.IgnoreInputEvents) { continue; }
+
+                    // Mouse entered / left
+                    if (child.ContainsAbsolute(position) && !child.MouseOver)
+                    {
+                        child.MouseOver = true;
+                        if (Input.MouseState.IsAnyButtonDown) { child.MouseDown = true; }
+                        child.InvokeEntered(args);
+                    }
+                    else if (!child.ContainsAbsolute(position) && child.MouseOver)
+                    {
+                        child.MouseOver = false;
+                        child.MouseDown = false;
+                        child.InvokeLeft(args);
+                    }
                 }
             }
         }
 
-        private void Window_MouseDown(MouseButtonEventArgs args)
+
+        protected virtual void Window_MouseDown(MouseButtonEventArgs args)
         {
             CurrentElement = FindTopmostElement(Input.MouseState.Position);
 
@@ -130,7 +147,7 @@ namespace VengineX.UI
         }
 
 
-        private void Window_MouseUp(MouseButtonEventArgs args)
+        protected virtual void Window_MouseUp(MouseButtonEventArgs args)
         {
             CurrentElement = FindTopmostElement(Input.MouseState.Position);
 
@@ -149,7 +166,7 @@ namespace VengineX.UI
         }
 
 
-        private void Window_MouseWheel(MouseWheelEventArgs args)
+        protected virtual void Window_MouseWheel(MouseWheelEventArgs args)
         {
             CurrentElement = FindTopmostElement(Input.MouseState.Position);
             
@@ -160,19 +177,19 @@ namespace VengineX.UI
         }
 
 
-        private void Window_TextInput(TextInputEventArgs args)
+        protected virtual void Window_TextInput(TextInputEventArgs args)
         {
             FocusedElement?.InvokeTextInput(args);
         }
 
 
-        private void Window_KeyDown(KeyboardKeyEventArgs args)
+        protected virtual void Window_KeyDown(KeyboardKeyEventArgs args)
         {
             FocusedElement?.InvokeKeyPressed(args);
         }
 
 
-        private void Window_KeyUp(KeyboardKeyEventArgs args)
+        protected virtual void Window_KeyUp(KeyboardKeyEventArgs args)
         {
             FocusedElement?.InvokeKeyReleased(args);
         }
@@ -183,17 +200,12 @@ namespace VengineX.UI
         /// </summary>
         /// <param name="point">Absolute position to check from.</param>
         /// <returns>null if none found.</returns>
-        private UIElement? FindTopmostElement(Vector2 point)
+        protected virtual UIElement? FindTopmostElement(Vector2 point)
         {
             foreach (UIElement child in Canvas.AllChildren().Reverse())
             {
-                if (child.ContainsAbsolute(point) && !child.IgnoreInputEvents)
-                {
-                    Console.WriteLine(child.GetType());
-                    return child;
-                }
+                if (child.ContainsAbsolute(point) && !child.IgnoreInputEvents) { return child; }
             }
-
 
             return null;
         }
