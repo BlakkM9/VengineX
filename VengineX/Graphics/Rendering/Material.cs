@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using VengineX.Graphics.Rendering.Textures;
 
 namespace VengineX.Graphics.Rendering
 {
-    public class Material : IBindable
+    public class Material : IBindable, IEquatable<Material>
     {
         public Shader Shader { get; }
         public Texture2D[] Textures { get; }
@@ -36,16 +37,16 @@ namespace VengineX.Graphics.Rendering
         }
 
 
-        public void UpdateCameraMatrixUniforms(Camera camera)
+        public void UpdateCameraMatrixUniforms(ref Matrix4 viewMatrix, ref Matrix4 projectionMatrix)
         {
-            Shader.SetUniformMat4(ViewMatrixLocation, ref camera.ViewMatrix);
-            Shader.SetUniformMat4(ProjectionMatrixLocation, ref camera.ProjectionMatrix);
+            Shader.SetUniformMat4(ViewMatrixLocation, ref viewMatrix);
+            Shader.SetUniformMat4(ProjectionMatrixLocation, ref projectionMatrix);
         }
 
 
-        public virtual void UpdateRenderableUniforms(IRenderable renderable)
+        public virtual void UpdateModelMatrix(ref Matrix4 modelMatrix)
         {
-            Shader.SetUniformMat4(ModelMatrixLocation, ref renderable.ModelMatrix);
+            Shader.SetUniformMat4(ModelMatrixLocation, ref modelMatrix);
         }
 
 
@@ -63,6 +64,20 @@ namespace VengineX.Graphics.Rendering
         public void Unbind()
         {
 
+        }
+
+
+        public bool Equals(Material? other)
+        {
+            if (other == this) { return true; }
+            if (other == null) { return false; }
+
+            for (int i = 0; i < Textures.Length; i++)
+            {
+                if (other.Textures[i].Handle != Textures[i].Handle) { return false; }
+            }
+
+            return Shader.Handle == other.Shader.Handle;
         }
     }
 }
