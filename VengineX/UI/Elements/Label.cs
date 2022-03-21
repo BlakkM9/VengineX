@@ -15,10 +15,6 @@ using VengineX.Utils;
 
 namespace VengineX.UI.Elements
 {
-
-    // TODO: Label layout is not properly updated when text changed.
-    // The workaround is to call update twice on the parent element.
-    // but there is proabably some edge case that needs to be fixed.
     /// <summary>
     /// UIElement that is used to render text.<br/>
     /// No background, just the text itself.
