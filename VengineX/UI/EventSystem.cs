@@ -16,10 +16,10 @@ namespace VengineX.UI
     /// <summary>
     /// Controls all the ui events within a canvas.
     /// </summary>
-    public class UIEventSystem
+    public class EventSystem
     {
         /// <summary>
-        /// <see cref="InputManager"/> providing the input events for the <see cref="UIEventSystem"/>.
+        /// <see cref="InputManager"/> providing the input events for the <see cref="EventSystem"/>.
         /// </summary>
         public InputManager Input { get; }
 
@@ -31,12 +31,12 @@ namespace VengineX.UI
         /// <summary>
         /// The element that currently has keyboard focus
         /// </summary>
-        public UIElement? FocusedElement { get; private set; } = null;
+        public Element? FocusedElement { get; private set; } = null;
 
         /// <summary>
         /// The topmost element the cursor is currently above.
         /// </summary>
-        public UIElement? CurrentElement
+        public Element? CurrentElement
         {
             get => _currentElement;
             private set
@@ -45,17 +45,17 @@ namespace VengineX.UI
                 _currentElement = value;
             }
         }
-        private UIElement? _currentElement = null;
+        private Element? _currentElement = null;
 
         /// <summary>
         /// Topmost UIElement the cursor was above before.
         /// </summary>
-        private UIElement? _previousElement = null;
+        private Element? _previousElement = null;
 
         /// <summary>
         /// Creates a new event system with the given input manager.
         /// </summary>
-        public UIEventSystem(InputManager input, Canvas canvas)
+        public EventSystem(InputManager input, Canvas canvas)
         {
             Input = input;
             Canvas = canvas;
@@ -83,22 +83,22 @@ namespace VengineX.UI
 
             Vector2 position = new Vector2(args.X, args.Y);
 
-            foreach (UIElement child in Canvas.EnumerateChildren(true))
+            foreach (Element child in Canvas.EnumerateChildren(true))
             {
                 if (child.IgnoreInputEvents) { continue; }
 
                 // Mouse entered / left
-                if (child.ContainsAbsolute(position) && !child.MouseOver)
+                if (child.ContainsAbsolute(position) && !child.Events.MouseOver)
                 {
-                    child.MouseOver = true;
-                    if (Input.MouseState.IsAnyButtonDown) { child.MouseDown = true; }
-                    child.InvokeEntered(args);
+                    child.Events.MouseOver = true;
+                    if (Input.MouseState.IsAnyButtonDown) { child.Events.MouseDown = true; }
+                    child.Events.InvokeEntered(args);
                 }
-                else if (!child.ContainsAbsolute(position) && child.MouseOver)
+                else if (!child.ContainsAbsolute(position) && child.Events.MouseOver)
                 {
-                    child.MouseOver = false;
-                    child.MouseDown = false;
-                    child.InvokeLeft(args);
+                    child.Events.MouseOver = false;
+                    child.Events.MouseDown = false;
+                    child.Events.InvokeLeft(args);
                 }
             }
         }
@@ -113,36 +113,36 @@ namespace VengineX.UI
             {
                 if (_previousElement != null)
                 {
-                    _previousElement.ClickInitiated = false;
+                    _previousElement.Events.ClickInitiated = false;
                 }
 
-                if (FocusedElement != null && FocusedElement.Focused)
+                if (FocusedElement != null && FocusedElement.Events.Focused)
                 {
-                    FocusedElement.InvokeLostFocus();
-                    FocusedElement.Focused = false;
+                    FocusedElement.Events.InvokeLostFocus();
+                    FocusedElement.Events.Focused = false;
                 }
 
                 if (CurrentElement.IgnoreInputEvents) { return; }
 
-                CurrentElement.ClickInitiated = true;
-                CurrentElement.InvokeMouseButtonPressed(args);
-                CurrentElement.MouseDown = true;
+                CurrentElement.Events.ClickInitiated = true;
+                CurrentElement.Events.InvokeMouseButtonPressed(args);
+                CurrentElement.Events.MouseDown = true;
 
                 FocusedElement = CurrentElement;
-                CurrentElement.Focused = true;
-                CurrentElement.InvokeGainedFocus();
+                CurrentElement.Events.Focused = true;
+                CurrentElement.Events.InvokeGainedFocus();
             }
             else
             {
                 if (_previousElement != null)
                 {
-                    _previousElement.ClickInitiated = false;
+                    _previousElement.Events.ClickInitiated = false;
                 }
 
-                if (FocusedElement != null && FocusedElement.Focused)
+                if (FocusedElement != null && FocusedElement.Events.Focused)
                 {
-                    FocusedElement.Focused = false;
-                    FocusedElement.InvokeLostFocus();
+                    FocusedElement.Events.Focused = false;
+                    FocusedElement.Events.InvokeLostFocus();
                     FocusedElement = null;
                 }
             }
@@ -158,12 +158,12 @@ namespace VengineX.UI
             {
                 if (CurrentElement.IgnoreInputEvents) { return; }
 
-                CurrentElement.InvokeMouseButtonReleased(args);
-                CurrentElement.MouseDown = false;
+                CurrentElement.Events.InvokeMouseButtonReleased(args);
+                CurrentElement.Events.MouseDown = false;
 
-                if (CurrentElement.ClickInitiated)
+                if (CurrentElement.Events.ClickInitiated)
                 {
-                    CurrentElement.InvokeClicked(args);
+                    CurrentElement.Events.InvokeClicked(args);
                 }
             }
         }
@@ -176,7 +176,7 @@ namespace VengineX.UI
             
             if (CurrentElement != null)
             {
-                CurrentElement.InvokeScrolled(args);
+                CurrentElement.Events.InvokeScrolled(args);
             }
         }
 
@@ -184,21 +184,21 @@ namespace VengineX.UI
         protected virtual void Window_TextInput(TextInputEventArgs args)
         {
             if (Input.MouseCatched) { return; }
-            FocusedElement?.InvokeTextInput(args);
+            FocusedElement?.Events.InvokeTextInput(args);
         }
 
 
         protected virtual void Window_KeyDown(KeyboardKeyEventArgs args)
         {
             if (Input.MouseCatched) { return; }
-            FocusedElement?.InvokeKeyPressed(args);
+            FocusedElement?.Events.InvokeKeyPressed(args);
         }
 
 
         protected virtual void Window_KeyUp(KeyboardKeyEventArgs args)
         {
             if (Input.MouseCatched) { return; }
-            FocusedElement?.InvokeKeyReleased(args);
+            FocusedElement?.Events.InvokeKeyReleased(args);
         }
 
 
@@ -207,9 +207,9 @@ namespace VengineX.UI
         /// </summary>
         /// <param name="point">Absolute position to check from.</param>
         /// <returns>null if none found.</returns>
-        protected virtual UIElement? FindTopmostElement(Vector2 point)
+        protected virtual Element? FindTopmostElement(Vector2 point)
         {
-            foreach (UIElement child in Canvas.EnumerateChildren(true).Reverse())
+            foreach (Element child in Canvas.EnumerateChildren(true).Reverse())
             {
                 if (child.ContainsAbsolute(point) && !child.IgnoreInputEvents) { return child; }
             }
