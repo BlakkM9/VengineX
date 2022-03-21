@@ -4,22 +4,22 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Authors>BlakkM9</Authors>
-    <Version>0.0.5-alpha</Version>
-    <AssemblyVersion></AssemblyVersion>
-    <FileVersion></FileVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
 
   <ItemGroup>
-    <COMReference Include="{215d64d2-031c-33c7-96e3-61794cd1ee61}">
-      <WrapperTool>tlbimp</WrapperTool>
-      <VersionMinor>4</VersionMinor>
-      <VersionMajor>2</VersionMajor>
-      <Guid>215d64d2-031c-33c7-96e3-61794cd1ee61</Guid>
-    </COMReference>
+    <None Remove="_res\fonts\OpenSans.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="_lib\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+	<Content Include="_res\**">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -27,19 +27,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.1.0" />
     <PackageReference Include="OpenTK" Version="4.7.1" />
-    <PackageReference Include="SharpFont.Dependencies" Version="2.6.0" />
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0">
+      <TreatAsUsed>true</TreatAsUsed>
+    </PackageReference>
   </ItemGroup>
-
+	
   <ItemGroup>
-    <ProjectReference Include="..\freetypelib\freetypelib.vcxproj" />
-    <ProjectReference Include="..\stbilib\stbilib.vcxproj" />
+    <ProjectReference Include="..\freetypelib\freetypelib.vcxproj">
+      <TreatAsUsed>true</TreatAsUsed>
+    </ProjectReference>
+    <ProjectReference Include="..\stbilib\stbilib.vcxproj">
+      <TreatAsUsed>true</TreatAsUsed>
+    </ProjectReference>
   </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(ProjectDir)_lib&quot; &quot;$(TargetDir)lib\&quot; /e /y /f&#xD;&#xA;xcopy &quot;$(ProjectDir)_res&quot; &quot;$(TargetDir)res\&quot; /e /y /f" />
-  </Target>
 	
 </Project>
