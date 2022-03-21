@@ -50,8 +50,8 @@ namespace VengineX.Tweening
         public float Duration { get; }
 
         /// <summary>
-        /// The current time normalized time of this tween.<br/>
-        /// This means 0 is tween start and 1 tween end (with linear easing).
+        /// The current time (normalized) of this tween.<br/>
+        /// This means 0 is tween start, 0 is tween mid and 1 tween end.
         /// </summary>
         public float T { get; private set; }
 
@@ -94,6 +94,7 @@ namespace VengineX.Tweening
         /// <param name="updateFunction"><see cref="UpdateFunction"/> function for this tween.</param>
         public Tween(float duration, Direction direction, int iterations, EasingFunction easingFunction, UpdateFunction updateFunction)
         {
+            CurrentTime = 0;
             Duration = duration;
 
             Direction = direction;
@@ -151,9 +152,7 @@ namespace VengineX.Tweening
         /// </summary>
         internal void Update()
         {
-            CurrentTime += (float)Time.DeltaUpdate;
             T = _easingFunction(Duration, CurrentTime);
-
 
             if (IsRunningReversed)
             {
@@ -163,7 +162,9 @@ namespace VengineX.Tweening
             {
                 _updateFunction.Invoke(T);
             }
-            
+
+            CurrentTime += (float)Time.DeltaUpdate;
+
 
             // Check if tween interation is over
             if (CurrentTime > Duration)
