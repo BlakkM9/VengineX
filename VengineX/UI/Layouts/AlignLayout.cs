@@ -38,12 +38,12 @@ namespace VengineX.UI.Layouts
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public override Vector2 PreferredSize(UIElement element)
+        public override Vector2 PreferredSize(Element element)
         {
             float maxWidth = 0;
             float maxHeight = 0;
 
-            foreach (UIElement child in element.EnumerateChildren())
+            foreach (Element child in element.EnumerateChildren())
             {
                 if (child.IgnoreLayout) { continue; }
 
@@ -61,9 +61,9 @@ namespace VengineX.UI.Layouts
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public override void UpdateLayout(UIElement element)
+        public override void UpdateLayout(Element element)
         {
-            foreach (UIElement child in element.EnumerateChildren())
+            foreach (Element child in element.EnumerateChildren())
             {
                 if (child.IgnoreLayout) { continue; }
 

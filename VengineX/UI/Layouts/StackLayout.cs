@@ -72,7 +72,7 @@ namespace VengineX.UI.Layouts
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public override Vector2 PreferredSize(UIElement element)
+        public override Vector2 PreferredSize(Element element)
         {
             int axis1 = (int)Orientation;
             int axis2 = ((int)Orientation + 1) % 2;
@@ -80,7 +80,7 @@ namespace VengineX.UI.Layouts
             Vector2 preferredSize = Vector2.Zero;
             float maxAxis2 = 0;
             bool first = true;
-            foreach (UIElement child in element.EnumerateChildren())
+            foreach (Element child in element.EnumerateChildren())
             {
                 if (child.IgnoreLayout) { continue; }
 
@@ -101,7 +101,7 @@ namespace VengineX.UI.Layouts
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public override void UpdateLayout(UIElement element)
+        public override void UpdateLayout(Element element)
         {
             Vector2 containerSize = element.Size;
             Vector2 preferedSize = element.PreferredSize;
@@ -121,7 +121,7 @@ namespace VengineX.UI.Layouts
 
 
             bool first = true;
-            foreach (UIElement child in element.EnumerateChildren())
+            foreach (Element child in element.EnumerateChildren())
             {
                 if (child.IgnoreLayout) { continue; }
 

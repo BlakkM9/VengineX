@@ -16,7 +16,7 @@ namespace VengineX.UI.Elements.Panels
         /// Creates a new stack pane.
         /// </summary>
         public StackPane(
-            UIElement parent,
+            Element parent,
             HorizontalAlignment horizontalAlignment,
             VerticalAlignment verticalAlignment,
             Orientation orientation, float spacing)

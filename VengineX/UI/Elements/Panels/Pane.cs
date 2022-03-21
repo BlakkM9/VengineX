@@ -9,8 +9,8 @@ namespace VengineX.UI.Elements.Panels
     /// <summary>
     /// Most basic pane that does not have any specified layout.
     /// </summary>
-    public class Pane : UIElement
+    public class Pane : Element
     {
-        public Pane(UIElement parent) : base(parent) { }
+        public Pane(Element parent) : base(parent) { }
     }
 }

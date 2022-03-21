@@ -15,8 +15,13 @@ namespace VengineX.UI
     /// This class is the top element of any ui.<br/>
     /// All ui elements and events are handled from this class downwards.
     /// </summary>
-    public class Canvas : UIElement, IRenderable
+    public class Canvas : Element, IRenderable
     {
+        /// <summary>
+        /// The maximum Z index that is working for canvases.
+        /// </summary>
+        public const float MAX_Z_INDEX = 10000.0f;
+
         /// <summary>
         /// The projection matrix of this canvas
         /// </summary>
@@ -30,10 +35,10 @@ namespace VengineX.UI
         private Matrix4 _viewMatrix = Matrix4.Identity;
 
         /// <summary>
-        /// The <see cref="UIEventSystem"/> that handles (and indirectly invokes) all the<br/>
+        /// The <see cref="UI.EventSystem"/> that handles (and indirectly invokes) all the<br/>
         /// input events for ui elements within this canvas.
         /// </summary>
-        public UIEventSystem EventSystem { get; }
+        public EventSystem EventSystem { get; }
 
         /// <summary>
         /// The quad for rendering all the UI elements (that can be rendered onto a quad).
@@ -46,10 +51,10 @@ namespace VengineX.UI
         /// </summary>
         public Canvas(float width, float height, InputManager input) : base(null)
         {
-            EventSystem = new UIEventSystem(input, this);
+            EventSystem = new EventSystem(input, this);
             Size = new Vector2(width, height);
             Quad = new Quad();
-            _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, -Height, 0, -1.0f, 1.0f);
+            _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, -Height, 0, -MAX_Z_INDEX, 0);
         }
 
 
@@ -63,13 +68,23 @@ namespace VengineX.UI
         }
 
 
+        public override void Render()
+        {
+            int zIndex = 0;
+
+
+
+            base.Render();
+        }
+
+
         /// <summary>
         /// Resizes the canvas.
         /// </summary>
         public void Resize(float newWidth, float newHeight)
         {
             Size = new Vector2(newWidth, newHeight);
-            _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, 0, Height, -1.0f, 1.0f);
+            _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, 0, Height, -MAX_Z_INDEX, 0);
         }
     }
 }

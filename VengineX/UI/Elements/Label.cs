@@ -19,7 +19,7 @@ namespace VengineX.UI.Elements
     /// UIElement that is used to render text.<br/>
     /// No background, just the text itself.
     /// </summary>
-    public class Label : UIElement, IDisposable
+    public class Label : Element, IDisposable
     {
         /// <summary>
         /// The shader that is used to render text.
@@ -96,7 +96,7 @@ namespace VengineX.UI.Elements
         private Mesh<UIVertex>? _textMesh = null;
 
 
-        public Label(UIElement parent, BitmapFont font, string text, float textSize, Vector4 color) : this(parent)
+        public Label(Element parent, BitmapFont font, string text, float textSize, Vector4 color) : this(parent)
         {
             _textSize = textSize;
             _font = font;
@@ -110,7 +110,7 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// Constructor for <see cref="UISerializer"/>.
         /// </summary>
-        public Label(UIElement parent) : base(parent) {
+        public Label(Element parent) : base(parent) {
             // Lazy shader initialization
             if (BitmapFontShader == null)
             {
@@ -143,7 +143,7 @@ namespace VengineX.UI.Elements
         {
             if (Visible)
             {
-                CalculateModelMatrix();
+                CalculateModelMatrix(0);
 
                 BitmapFontShader.Bind();
                 _font.TextureAtlas.Bind();
@@ -164,13 +164,13 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        protected override void CalculateModelMatrix()
+        protected override void CalculateModelMatrix(float zIndex)
         {
             if (_font != null)
             {
                 // Update model matrix
                 ModelMatrix = Matrix4.CreateScale(Height / _font.Size, Height / _font.Size, 0);
-                ModelMatrix *= Matrix4.CreateTranslation(AbsolutePosition.X, -(AbsolutePosition.Y + Height), 0);
+                ModelMatrix *= Matrix4.CreateTranslation(AbsolutePosition.X, -(AbsolutePosition.Y + Height), zIndex);
             }
         }
 

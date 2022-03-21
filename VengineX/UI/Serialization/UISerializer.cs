@@ -45,7 +45,7 @@ namespace VengineX.UI.Serialization
         /// <summary>
         /// Creates a new UI serializer that also takes ui elements in <paramref name="uiNamespace"/> into account.<br/>
         /// </summary>
-        /// <param name="uiNamespace">Namespace where all your <see cref="UIElement"/> are located.</param>
+        /// <param name="uiNamespace">Namespace where all your <see cref="Element"/> are located.</param>
         public UISerializer(string? uiNamespace)
         {
             Assembly? engineAssembly = GetType().Assembly;
@@ -89,7 +89,7 @@ namespace VengineX.UI.Serialization
         /// <param name="filePath">The file path to load this UI from.</param>
         /// <param name="parent">The element to attach the loaded UI as child.</param>
         /// <returns>The loaded <see cref="LoadableUITemplate"/></returns>
-        public T LoadFromXML<T>(UIElement parent, string filePath) where T : LoadableUITemplate
+        public T LoadFromXML<T>(Element parent, string filePath) where T : LoadableUITemplate
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -124,7 +124,7 @@ namespace VengineX.UI.Serialization
         /// Processes the given node recursively.
         /// To process the root element itself, pass <see langword="null"/> as <paramref name="rootUIElement"/>.
         /// </summary>
-        private T ProcessNode<T>(T? rootUIElement, UIElement uiParent, XElement xmlElement) where T : UIElement
+        private T ProcessNode<T>(T? rootUIElement, Element uiParent, XElement xmlElement) where T : Element
         {
             // Create instance of element
             Type? type = StringToType(xmlElement.Name.LocalName);
@@ -132,7 +132,7 @@ namespace VengineX.UI.Serialization
             if (type == null) { throw new Exception(xmlElement.Name.LocalName + " is missing in the current assemblies!"); }
 
 
-            if (Activator.CreateInstance(type, new object[] { uiParent }) is not UIElement uiChild)
+            if (Activator.CreateInstance(type, new object[] { uiParent }) is not Element uiChild)
             {
                 throw new Exception("Failed to create instance of " + type.FullName + "! Check if it is inheriting from UIElement.");
             }
@@ -206,7 +206,7 @@ namespace VengineX.UI.Serialization
         /// <summary>
         /// Sets all the properties for the current element and the name fields in root element.
         /// </summary>
-        private void SetProperties<T>(T rootUIElement, Type type, UIElement element, XElement xmlElement) where T : UIElement
+        private void SetProperties<T>(T rootUIElement, Type type, Element element, XElement xmlElement) where T : Element
         {
             foreach (XAttribute attr in xmlElement.Attributes())
             {

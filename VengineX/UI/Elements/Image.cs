@@ -16,7 +16,7 @@ namespace VengineX.UI.Elements
     /// Class representing an image on the ui.<br/>
     /// This is pretty much always used when there is something to render on the ui.
     /// </summary>
-    public class Image : UIElement
+    public class Image : Element
     {
         /// <summary>
         /// Shader used for ui images.
@@ -90,7 +90,7 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// Constructor for creating instance with <see cref="UISerializer"/>.
         /// </summary>
-        public Image(UIElement parent) : base(parent)
+        public Image(Element parent) : base(parent)
         {
             // Lazy shader initialization
             if (ImageShader == null)
@@ -113,7 +113,7 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// Creates a new image ui element from given parameters.
         /// </summary>
-        public Image(UIElement parent, Texture2D? texture, Vector4 color, Vector4 tint)
+        public Image(Element parent, Texture2D? texture, Vector4 color, Vector4 tint)
             : this(parent)
         {
             Color = color;
@@ -122,21 +122,21 @@ namespace VengineX.UI.Elements
         }
 
         /// <summary>
-        /// Overload for <see cref="Image(UIElement, Texture2D, Vector4, Vector4)"/>.
+        /// Overload for <see cref="Image(Element, Texture2D, Vector4, Vector4)"/>.
         /// </summary>
-        public Image(UIElement parent, Vector4 color)
+        public Image(Element parent, Vector4 color)
             : this(parent, null, color, new Vector4(1, 1, 1, 0)) { }
 
         /// <summary>
-        /// Overload for <see cref="Image(UIElement, Texture2D, Vector4, Vector4)"/>.
+        /// Overload for <see cref="Image(Element, Texture2D, Vector4, Vector4)"/>.
         /// </summary>
-        public Image(UIElement parent, Texture2D texture, Vector4 tint)
+        public Image(Element parent, Texture2D texture, Vector4 tint)
             : this(parent, texture, Vector4.Zero, tint) { }
 
         /// <summary>
-        /// Overload for <see cref="Image(UIElement, Texture2D, Vector4, Vector4)"/>.
+        /// Overload for <see cref="Image(Element, Texture2D, Vector4, Vector4)"/>.
         /// </summary>
-        public Image(UIElement parent, Texture2D texture)
+        public Image(Element parent, Texture2D texture)
             : this(parent, texture, Vector4.Zero, Vector4.One) { }
 
 
@@ -148,7 +148,7 @@ namespace VengineX.UI.Elements
         {
             if (Visible)
             {
-                CalculateModelMatrix();
+                CalculateModelMatrix(0);
 
                 // Render self
                 if (Texture == null)

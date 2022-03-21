@@ -51,7 +51,7 @@ namespace VengineX.UI.Elements.Panels
         /// Creates a new align pane.
         /// </summary>
         public AlignPane(
-            UIElement parent,
+            Element parent,
             HorizontalAlignment horizontalAlignment,
             VerticalAlignment verticalAlignment) : base(parent)
         {
@@ -65,6 +65,6 @@ namespace VengineX.UI.Elements.Panels
         /// Empty constructor for creating the instance with <see cref="UISerializer"/>
         /// </summary>
         /// <param name="parent"></param>
-        public AlignPane(UIElement parent) : base(parent) { }
+        public AlignPane(Element parent) : base(parent) { }
     }
 }
