@@ -309,9 +309,6 @@ namespace VengineX.UI.Elements
 
             // Update own layout (layouts all direct children)
             Layout?.UpdateLayout(this);
-
-            // Update own model matrix
-            CalculateModelMatrix();
         }
 
 

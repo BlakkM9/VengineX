@@ -137,9 +137,6 @@ namespace VengineX.UI.Elements
             vertices.Free();
             indices.Free();
             Width = _font.CalculateWidth(_text, TextSize);
-
-            // HACK: only for update layout only needed to called once after mesh changed.
-            Parent.UpdateLayout();
         }
 
 
@@ -150,6 +147,8 @@ namespace VengineX.UI.Elements
         {
             if (Visible)
             {
+                CalculateModelMatrix();
+
                 BitmapFontShader.Bind();
                 _font.TextureAtlas.Bind();
 
@@ -175,8 +174,7 @@ namespace VengineX.UI.Elements
             if (_font != null)
             {
                 // Update model matrix
-                ModelMatrix = Matrix4.Identity;
-                ModelMatrix *= Matrix4.CreateScale(Height / _font.Size, Height / _font.Size, 0);
+                ModelMatrix = Matrix4.CreateScale(Height / _font.Size, Height / _font.Size, 0);
                 ModelMatrix *= Matrix4.CreateTranslation(AbsolutePosition.X, -(AbsolutePosition.Y + Height), 0);
             }
         }

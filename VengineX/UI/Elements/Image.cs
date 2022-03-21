@@ -123,6 +123,8 @@ namespace VengineX.UI.Elements
         {
             if (Visible)
             {
+                CalculateModelMatrix();
+
                 // Render self
                 ImageShader.Bind();
                 Texture?.Bind();
