@@ -26,27 +26,46 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// Location of the projection matrix uniform in <see cref="ImageShader"/>.
         /// </summary>
-        public static int ProjectionMatrixLocation { get; private set; }
+        public static int ImageProjectionMatrixLocation { get; private set; }
 
         /// <summary>
         /// Location of the model matrix uniform in <see cref="ImageShader"/>.
         /// </summary>
-        public static int ModelMatrixLocation { get; private set; }
+        public static int ImageModelMatrixLocation { get; private set; }
 
         /// <summary>
         /// Location of the view matrix uniform in <see cref="ImageShader"/>.
         /// </summary>
-        public static int ViewMatrixLocation { get; private set; }
-
-        /// <summary>
-        /// Location of the uColor uniform in <see cref="ImageShader"/>.
-        /// </summary>
-        public static int ColorLocation { get; private set; }
+        public static int ImageViewMatrixLocation { get; private set; }
 
         /// <summary>
         /// Location of the uTint uniform in <see cref="ImageShader"/>.
         /// </summary>
         public static int TintLocation { get; private set; }
+
+
+        public static Shader? ColorShader { get; private set; }
+
+        /// <summary>
+        /// Location of the projection matrix uniform in <see cref="ImageShader"/>.
+        /// </summary>
+        public static int ColorProjectionMatrixLocation { get; private set; }
+
+        /// <summary>
+        /// Location of the model matrix uniform in <see cref="ImageShader"/>.
+        /// </summary>
+        public static int ColorModelMatrixLocation { get; private set; }
+
+        /// <summary>
+        /// Location of the view matrix uniform in <see cref="ImageShader"/>.
+        /// </summary>
+        public static int ColorViewMatrixLocation { get; private set; }
+
+        /// <summary>
+        /// Location of the uTint uniform in <see cref="ImageShader"/>.
+        /// </summary>
+        public static int ColorLocation { get; private set; }
+
 
         /// <summary>
         /// The color that is used if there is no texture.<br/>
@@ -77,11 +96,17 @@ namespace VengineX.UI.Elements
             if (ImageShader == null)
             {
                 ImageShader = ResourceManager.GetResource<Shader>("shader.ui.image");
-                ProjectionMatrixLocation = ImageShader.GetUniformLocation("P");
-                ModelMatrixLocation = ImageShader.GetUniformLocation("M");
-                ViewMatrixLocation = ImageShader.GetUniformLocation("V");
-                ColorLocation = ImageShader.GetUniformLocation("uColor");
+                ColorShader = ResourceManager.GetResource<Shader>("shader.ui.color");
+
+                ImageProjectionMatrixLocation = ImageShader.GetUniformLocation("P");
+                ImageModelMatrixLocation = ImageShader.GetUniformLocation("M");
+                ImageViewMatrixLocation = ImageShader.GetUniformLocation("V");
+                ColorProjectionMatrixLocation = ColorShader.GetUniformLocation("P");
+                ColorModelMatrixLocation = ColorShader.GetUniformLocation("M");
+                ColorViewMatrixLocation = ColorShader.GetUniformLocation("V");
+
                 TintLocation = ImageShader.GetUniformLocation("uTint");
+                ColorLocation = ColorShader.GetUniformLocation("uColor");
             }
         }
 
@@ -126,14 +151,23 @@ namespace VengineX.UI.Elements
                 CalculateModelMatrix();
 
                 // Render self
-                ImageShader.Bind();
-                Texture?.Bind();
-
-                ImageShader.SetUniformMat4(ProjectionMatrixLocation, ref ParentCanvas.ProjectionMatrix);
-                ImageShader.SetUniformMat4(ViewMatrixLocation, ref ParentCanvas.ViewMatrix);
-                ImageShader.SetUniformMat4(ModelMatrixLocation, ref ModelMatrix);
-                ImageShader.SetUniformVec4(ColorLocation, ref _color);
-                ImageShader.SetUniformVec4(TintLocation, ref _tint);
+                if (Texture == null)
+                {
+                    ColorShader.Bind();
+                    ColorShader.SetUniformMat4(ColorProjectionMatrixLocation, ref ParentCanvas.ProjectionMatrix);
+                    ColorShader.SetUniformMat4(ColorViewMatrixLocation, ref ParentCanvas.ViewMatrix);
+                    ColorShader.SetUniformMat4(ColorModelMatrixLocation, ref ModelMatrix);
+                    ColorShader.SetUniformVec4(ColorLocation, ref _color);
+                }
+                else
+                {
+                    ImageShader.Bind();
+                    Texture?.Bind();
+                    ImageShader.SetUniformMat4(ImageProjectionMatrixLocation, ref ParentCanvas.ProjectionMatrix);
+                    ImageShader.SetUniformMat4(ImageViewMatrixLocation, ref ParentCanvas.ViewMatrix);
+                    ImageShader.SetUniformMat4(ImageModelMatrixLocation, ref ModelMatrix);
+                    ImageShader.SetUniformVec4(TintLocation, ref _tint);
+                }
 
                 ParentCanvas.Quad.Render();
             }

@@ -237,6 +237,12 @@ namespace VengineX.Core
                 FragmentPath = "res/shaders/ui/image.fs.glsl"
             });
 
+            // UI color shader (used for rendering image elements without texture)
+            ResourceManager.LoadResource<Shader>("shader.ui.color", new ShaderLoadingParameters()
+            {
+                VertexPath = "res/shaders/ui/ui.vs.glsl",
+                FragmentPath = "res/shaders/ui/color.fs.glsl"
+            });
 
             // Bitmap fonts shader
             ResourceManager.LoadResource<Shader>("shader.ui.bmpfont", new ShaderLoadingParameters()
