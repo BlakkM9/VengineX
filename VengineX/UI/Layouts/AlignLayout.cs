@@ -43,7 +43,7 @@ namespace VengineX.UI.Layouts
             float maxWidth = 0;
             float maxHeight = 0;
 
-            foreach (UIElement child in element.Children)
+            foreach (UIElement child in element.EnumerateChildren())
             {
                 if (child.IgnoreLayout) { continue; }
 
@@ -63,7 +63,7 @@ namespace VengineX.UI.Layouts
         /// </summary>
         public override void UpdateLayout(UIElement element)
         {
-            foreach (UIElement child in element.Children)
+            foreach (UIElement child in element.EnumerateChildren())
             {
                 if (child.IgnoreLayout) { continue; }
 

@@ -2,6 +2,7 @@
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -184,7 +185,7 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// List holding all the children of this ui element.
         /// </summary>
-        public List<UIElement> Children { get; }
+        private List<UIElement> Children { get; }
 
         /// <summary>
         /// Calculates the preferred size of this element.<br/>
@@ -220,9 +221,29 @@ namespace VengineX.UI.Elements
 
 
         /// <summary>
+        /// Returns enumerator of <see cref="Children"/>.
+        /// </summary>
+        /// <param name="recursive">
+        /// If set to true, it will recursively enumerate the children. And return all UIElements that are<br/>
+        /// nested in this element.
+        /// </param>
+        public virtual IEnumerable<UIElement> EnumerateChildren(bool recursive = false)
+        {
+            if (recursive)
+            {
+                return AllChildren();
+            }
+            else
+            {
+                return Children;
+            }
+        }
+
+
+        /// <summary>
         /// Iterates over the tree of children.
         /// </summary>
-        public IEnumerable<UIElement> AllChildren()
+        protected virtual IEnumerable<UIElement> AllChildren()
         {
             foreach (UIElement child in Children)
             {
@@ -259,10 +280,7 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// Removes child at given index.
         /// </summary>
-        public void RemoveChild(int index)
-        {
-            Children.RemoveAt(index);
-        }
+        public void RemoveChild(int index) => Children.RemoveAt(index);
 
 
         /// <summary>
@@ -286,6 +304,7 @@ namespace VengineX.UI.Elements
             return distance.X >= 0 && distance.Y >= 0 && distance.X < Size.X && distance.Y < Size.Y;
         }
 
+
         /// <summary>
         /// Check if this element contains given point in relative (to parent) space.
         /// </summary>
@@ -302,7 +321,7 @@ namespace VengineX.UI.Elements
         public virtual void UpdateLayout()
         {
             // Update all children first (so their size is updated for own layouting)
-            foreach (UIElement child in Children)
+            foreach (UIElement child in EnumerateChildren())
             {
                 child.UpdateLayout();
             }
@@ -317,7 +336,7 @@ namespace VengineX.UI.Elements
         /// </summary>
         public virtual void Render()
         {
-            if (Children.Count == 0) { return; }
+            if (ChildCount == 0) { return; }
 
             foreach (UIElement child in Children)
             {
@@ -334,7 +353,6 @@ namespace VengineX.UI.Elements
             ModelMatrix = Matrix4.CreateScale(Width / 2f, Height / 2f, 0);
             ModelMatrix *= Matrix4.CreateTranslation(Width / 2f + AbsolutePosition.X, -(Height / 2f + AbsolutePosition.Y), 0);
         }
-
 
         #region Events
 

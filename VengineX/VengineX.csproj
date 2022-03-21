@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <None Remove="_res\fonts\OpenSans.ttf" />
+    <None Remove="_res\shaders\ui\color.fs.glsl" />
   </ItemGroup>
 
   <ItemGroup>

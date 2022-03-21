@@ -83,7 +83,7 @@ namespace VengineX.UI
 
             Vector2 position = new Vector2(args.X, args.Y);
 
-            foreach (UIElement child in Canvas.AllChildren())
+            foreach (UIElement child in Canvas.EnumerateChildren(true))
             {
                 if (child.IgnoreInputEvents) { continue; }
 
@@ -209,7 +209,7 @@ namespace VengineX.UI
         /// <returns>null if none found.</returns>
         protected virtual UIElement? FindTopmostElement(Vector2 point)
         {
-            foreach (UIElement child in Canvas.AllChildren().Reverse())
+            foreach (UIElement child in Canvas.EnumerateChildren(true).Reverse())
             {
                 if (child.ContainsAbsolute(point) && !child.IgnoreInputEvents) { return child; }
             }

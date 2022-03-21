@@ -80,7 +80,7 @@ namespace VengineX.UI.Layouts
             Vector2 preferredSize = Vector2.Zero;
             float maxAxis2 = 0;
             bool first = true;
-            foreach (UIElement child in element.Children)
+            foreach (UIElement child in element.EnumerateChildren())
             {
                 if (child.IgnoreLayout) { continue; }
 
@@ -121,7 +121,7 @@ namespace VengineX.UI.Layouts
 
 
             bool first = true;
-            foreach (UIElement child in element.Children)
+            foreach (UIElement child in element.EnumerateChildren())
             {
                 if (child.IgnoreLayout) { continue; }
 
