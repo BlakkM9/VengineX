@@ -78,32 +78,27 @@ namespace VengineX.UI
         /// </summary>
         public virtual void UpdateMouseMove()
         {
-
+            if (Input.MouseCatched) { return; }
             MouseMoveEventArgs args = new MouseMoveEventArgs(Input.MouseState.Position, Input.MouseState.Delta);
 
-            // Could probably be done more efficient by using a quadtree or something like that
-            // but it would be hard to get the same behavior with a quadtree implementation i think.
-            if (args.Delta.X > 0 || args.DeltaY > 0)
+            Vector2 position = new Vector2(args.X, args.Y);
+
+            foreach (UIElement child in Canvas.AllChildren())
             {
-                Vector2 position = new Vector2(args.X, args.Y);
+                if (child.IgnoreInputEvents) { continue; }
 
-                foreach (UIElement child in Canvas.AllChildren())
+                // Mouse entered / left
+                if (child.ContainsAbsolute(position) && !child.MouseOver)
                 {
-                    if (child.IgnoreInputEvents) { continue; }
-
-                    // Mouse entered / left
-                    if (child.ContainsAbsolute(position) && !child.MouseOver)
-                    {
-                        child.MouseOver = true;
-                        if (Input.MouseState.IsAnyButtonDown) { child.MouseDown = true; }
-                        child.InvokeEntered(args);
-                    }
-                    else if (!child.ContainsAbsolute(position) && child.MouseOver)
-                    {
-                        child.MouseOver = false;
-                        child.MouseDown = false;
-                        child.InvokeLeft(args);
-                    }
+                    child.MouseOver = true;
+                    if (Input.MouseState.IsAnyButtonDown) { child.MouseDown = true; }
+                    child.InvokeEntered(args);
+                }
+                else if (!child.ContainsAbsolute(position) && child.MouseOver)
+                {
+                    child.MouseOver = false;
+                    child.MouseDown = false;
+                    child.InvokeLeft(args);
                 }
             }
         }
@@ -111,6 +106,7 @@ namespace VengineX.UI
 
         protected virtual void Window_MouseDown(MouseButtonEventArgs args)
         {
+            if (Input.MouseCatched) { return; }
             CurrentElement = FindTopmostElement(Input.MouseState.Position);
 
             if (CurrentElement != null)
@@ -155,6 +151,7 @@ namespace VengineX.UI
 
         protected virtual void Window_MouseUp(MouseButtonEventArgs args)
         {
+            if (Input.MouseCatched) { return; }
             CurrentElement = FindTopmostElement(Input.MouseState.Position);
 
             if (CurrentElement != null)
@@ -174,6 +171,7 @@ namespace VengineX.UI
 
         protected virtual void Window_MouseWheel(MouseWheelEventArgs args)
         {
+            if (Input.MouseCatched) { return; }
             CurrentElement = FindTopmostElement(Input.MouseState.Position);
             
             if (CurrentElement != null)
@@ -185,18 +183,21 @@ namespace VengineX.UI
 
         protected virtual void Window_TextInput(TextInputEventArgs args)
         {
+            if (Input.MouseCatched) { return; }
             FocusedElement?.InvokeTextInput(args);
         }
 
 
         protected virtual void Window_KeyDown(KeyboardKeyEventArgs args)
         {
+            if (Input.MouseCatched) { return; }
             FocusedElement?.InvokeKeyPressed(args);
         }
 
 
         protected virtual void Window_KeyUp(KeyboardKeyEventArgs args)
         {
+            if (Input.MouseCatched) { return; }
             FocusedElement?.InvokeKeyReleased(args);
         }
 
