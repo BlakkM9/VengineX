@@ -49,9 +49,15 @@ namespace VengineX.Graphics.Rendering
         private Matrix4 _modelMatrix;
 
         /// <summary>
-        /// The buffer usage hint for this mesh.
+        /// The buffer usage hint for the vertex buffer of this mesh.
         /// </summary>
-        public BufferUsageHint BufferUsage { get; }
+        public BufferUsageHint VertexBufferUsage { get; }
+
+        /// <summary>
+        /// The buffer usage hint for the index buffer of this mesh.
+        /// </summary>
+        public BufferUsageHint IndexBufferUsage { get; }
+
 
         /// <summary>
         /// Position of this mesh.<br/>
@@ -85,12 +91,13 @@ namespace VengineX.Graphics.Rendering
         /// <param name="bufferUsage"><see cref="BufferUsageHint"/> for the vertex- and indexbuffer of this mesh.</param>
         /// <param name="vertices">Vertices of this mesh.</param>
         /// <param name="indices">Indices of this mesh.</param>
-        public Mesh(Vector3 position, BufferUsageHint bufferUsage, T[] vertices, uint[] indices)
+        public Mesh(Vector3 position, BufferUsageHint vertexBufferUsage, BufferUsageHint indexBufferUsage, T[] vertices, uint[] indices)
         {
             _modelMatrix = Matrix4.CreateTranslation(Position);
 
             Position = position;
-            BufferUsage = bufferUsage;
+            VertexBufferUsage = vertexBufferUsage;
+            IndexBufferUsage = indexBufferUsage;
 
             SetupMesh(vertices, indices);
         }
@@ -103,12 +110,13 @@ namespace VengineX.Graphics.Rendering
         /// <param name="bufferUsage"><see cref="BufferUsageHint"/> for the vertex- and indexbuffer of this mesh.</param>
         /// <param name="vertices">Vertices of this mesh.</param>
         /// <param name="indices">Indices of this mesh.</param>
-        public Mesh(Vector3 position, BufferUsageHint bufferUsage, UnmanagedArray<T> vertices, UnmanagedArray<uint> indices)
+        public Mesh(Vector3 position, BufferUsageHint vertexBufferUsage, BufferUsageHint indexBufferUsage, UnmanagedArray<T> vertices, UnmanagedArray<uint> indices)
         {
             _modelMatrix = Matrix4.CreateTranslation(Position);
 
             Position = position;
-            BufferUsage = bufferUsage;
+            VertexBufferUsage = vertexBufferUsage;
+            IndexBufferUsage = indexBufferUsage;
 
             SetupMesh(vertices, indices);
         }
@@ -122,8 +130,8 @@ namespace VengineX.Graphics.Rendering
             GL.CreateBuffers(1, out _vbo);
             GL.CreateBuffers(1, out _ebo);
 
-            GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices, BufferUsage);
-            GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices, BufferUsage);
+            GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices, VertexBufferUsage);
+            GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices, VertexBufferUsage);
 
             SetupAttribPointers();
         }
@@ -137,8 +145,8 @@ namespace VengineX.Graphics.Rendering
             GL.CreateBuffers(1, out _vbo);
             GL.CreateBuffers(1, out _ebo);
 
-            GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices.Pointer, BufferUsage);
-            GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices.Pointer, BufferUsage);
+            GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices.Pointer, VertexBufferUsage);
+            GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices.Pointer, IndexBufferUsage);
 
             SetupAttribPointers();
         }
@@ -187,26 +195,52 @@ namespace VengineX.Graphics.Rendering
 
 
         /// <summary>
-        /// Updates the vertices and indices for this mesh
+        /// Updates the vertices for this mesh.
         /// </summary>
-        public void UpdateVertices(T[] vertices, uint[] indices)
+        public void BufferData(T[] vertices)
         {
-            _numIndices = indices.Length;
-
-            GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices, BufferUsage);
-            GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices, BufferUsage);
+            GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices, VertexBufferUsage);
         }
 
 
         /// <summary>
-        /// Updates the vertices and indices for this mesh
+        /// Updates the indices for this mesh.
         /// </summary>
-        public void UpdateVertices(UnmanagedArray<T> vertices, UnmanagedArray<uint> indices)
+        public void BufferData(uint[] indices)
         {
             _numIndices = indices.Length;
+            GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices, IndexBufferUsage);
+        }
 
-            GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices.Pointer, BufferUsage);
-            GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices.Pointer, BufferUsage);
+
+        /// <summary>
+        /// Updates the vertices for this mesh.
+        /// </summary>
+        public void BufferData(UnmanagedArray<T> vertices)
+        {
+            GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices.Pointer, VertexBufferUsage);
+        }
+
+
+        /// <summary>
+        /// Updates the indices for this mesh.
+        /// </summary>
+        public void BufferData(UnmanagedArray<uint> indices)
+        {
+            _numIndices = indices.Length;
+            GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices.Pointer, IndexBufferUsage);
+        }
+
+
+        public void BufferSubData(T[] vertices, int size)
+        {
+            GL.NamedBufferSubData(_vbo, IntPtr.Zero, size, vertices);
+        }
+
+
+        public void BufferSubData(UnmanagedArray<T> vertices, int size)
+        {
+            GL.NamedBufferSubData(_vbo, IntPtr.Zero, size, vertices.Pointer);
         }
 
 
@@ -223,8 +257,8 @@ namespace VengineX.Graphics.Rendering
             {
                 if (disposing)
                 {
+                    GL.DeleteVertexArray(_vao);
                     GL.DeleteBuffer(_vbo);
-                    GL.DeleteBuffer(_vao);
                     GL.DeleteBuffer(_ebo);
                 }
 
