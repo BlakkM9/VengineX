@@ -88,10 +88,11 @@ namespace VengineX.Graphics.Rendering
         /// Creates a new mesh.
         /// </summary>
         /// <param name="position">Position of the mesh</param>
-        /// <param name="bufferUsage"><see cref="BufferUsageHint"/> for the vertex- and indexbuffer of this mesh.</param>
-        /// <param name="vertices">Vertices of this mesh.</param>
-        /// <param name="indices">Indices of this mesh.</param>
-        public Mesh(Vector3 position, BufferUsageHint vertexBufferUsage, BufferUsageHint indexBufferUsage, T[] vertices, uint[] indices)
+        /// <param name="vertexBufferUsage"><see cref="BufferUsageHint"/> for the vertex buffer of this mesh.</param>
+        /// <param name="indexBufferUsage"><see cref="BufferUsageHint"/> for the index buffer of this mesh.</param>
+        /// <param name="vertices">Vertices of this mesh. Empty initialization if null.</param>
+        /// <param name="indices">Indices of this mesh. Empty initialization if null.</param>
+        public Mesh(Vector3 position, BufferUsageHint vertexBufferUsage, BufferUsageHint indexBufferUsage, T[]? vertices, uint[]? indices)
         {
             _modelMatrix = Matrix4.CreateTranslation(Position);
 
@@ -102,14 +103,22 @@ namespace VengineX.Graphics.Rendering
             SetupMesh(vertices, indices);
         }
 
+        /// <summary>
+        /// Creates a new empty mesh.
+        /// </summary>
+        /// <param name="vertexBufferUsage"><see cref="BufferUsageHint"/> for the vertex buffer of this mesh.</param>
+        /// <param name="indexBufferUsage"><see cref="BufferUsageHint"/> for the index buffer of this mesh.</param>
+        public Mesh(BufferUsageHint vertexBufferUsage, BufferUsageHint indexBufferUsage) : this(Vector3.Zero, vertexBufferUsage, indexBufferUsage, null, null) { }
+
 
         /// <summary>
         /// Creates a new mesh.
         /// </summary>
         /// <param name="position">Position of the mesh</param>
-        /// <param name="bufferUsage"><see cref="BufferUsageHint"/> for the vertex- and indexbuffer of this mesh.</param>
-        /// <param name="vertices">Vertices of this mesh.</param>
-        /// <param name="indices">Indices of this mesh.</param>
+        /// <param name="vertexBufferUsage"><see cref="BufferUsageHint"/> for the vertex buffer of this mesh.</param>
+        /// <param name="indexBufferUsage"><see cref="BufferUsageHint"/> for the index buffer of this mesh.</param>
+        /// <param name="vertices">Vertices of this mesh. Empty initialization if null.</param>
+        /// <param name="indices">Indices of this mesh. Empty initialization if null.</param>
         public Mesh(Vector3 position, BufferUsageHint vertexBufferUsage, BufferUsageHint indexBufferUsage, UnmanagedArray<T> vertices, UnmanagedArray<uint> indices)
         {
             _modelMatrix = Matrix4.CreateTranslation(Position);
@@ -122,16 +131,22 @@ namespace VengineX.Graphics.Rendering
         }
 
 
-        private void SetupMesh(T[] vertices, uint[] indices)
+        private void SetupMesh(T[]? vertices, uint[]? indices)
         {
-            _numIndices = indices.Length;
-
             GL.CreateVertexArrays(1, out _vao);
             GL.CreateBuffers(1, out _vbo);
             GL.CreateBuffers(1, out _ebo);
 
-            GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices, VertexBufferUsage);
-            GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices, VertexBufferUsage);
+            if (vertices != null)
+            {
+                GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices, VertexBufferUsage);
+            }
+
+            if (indices != null)
+            {
+                _numIndices = indices.Length;
+                GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices, VertexBufferUsage);
+            }
 
             SetupAttribPointers();
         }
