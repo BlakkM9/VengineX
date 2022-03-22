@@ -68,7 +68,7 @@ namespace VengineX.UI.Elements
         private BitmapFont? _font = null;
 
         
-        private Mesh<UIVertex>? _textMesh = null;
+        private Mesh<UIVertex> _textMesh;
 
 
         public Label(Element parent, BitmapFont font, string text, float textSize, Vector4 color) : this(parent)
@@ -85,7 +85,10 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// Constructor for <see cref="UISerializer"/>.
         /// </summary>
-        public Label(Element parent) : base(parent) { }
+        public Label(Element parent) : base(parent)
+        {
+            _textMesh = new Mesh<UIVertex>(BufferUsageHint.DynamicDraw, BufferUsageHint.DynamicDraw);
+        }
 
 
         /// <summary>
@@ -94,7 +97,8 @@ namespace VengineX.UI.Elements
         private void UpdateTextMesh()
         {
             _font.CreateMeshData(_text, out UnmanagedArray<UIVertex> vertices, out UnmanagedArray<uint> indices);
-            _textMesh = new Mesh<UIVertex>(Vector3.Zero, BufferUsageHint.DynamicDraw, BufferUsageHint.DynamicDraw, vertices, indices);
+            _textMesh.BufferData(vertices);
+            _textMesh.BufferData(indices);
             vertices.Free();
             indices.Free();
             Width = _font.CalculateWidth(_text, TextSize);
