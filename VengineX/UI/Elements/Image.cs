@@ -80,7 +80,7 @@ namespace VengineX.UI.Elements
         {
             if (Visible)
             {
-                CalculateModelMatrix(0);
+                CalculateModelMatrix();
 
                 // Render self
                 if (Texture == null)

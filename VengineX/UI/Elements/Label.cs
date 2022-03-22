@@ -112,7 +112,7 @@ namespace VengineX.UI.Elements
         {
             if (Visible)
             {
-                CalculateModelMatrix(0);
+                CalculateModelMatrix();
 
                 Canvas.BitmapFontShader.Bind();
                 _font.TextureAtlas.Bind();
@@ -133,13 +133,13 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        protected override void CalculateModelMatrix(float zIndex)
+        protected override void CalculateModelMatrix()
         {
             if (_font != null)
             {
                 // Update model matrix
                 ModelMatrix = Matrix4.CreateScale(Height / _font.Size, Height / _font.Size, 0);
-                ModelMatrix *= Matrix4.CreateTranslation(AbsolutePosition.X, -(AbsolutePosition.Y + Height), zIndex);
+                ModelMatrix *= Matrix4.CreateTranslation(AbsolutePosition.X, -(AbsolutePosition.Y + Height), 0);
             }
         }
     }

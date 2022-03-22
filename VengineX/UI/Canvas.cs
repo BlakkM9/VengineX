@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VengineX.Graphics.Rendering;
+using VengineX.Graphics.Rendering.Batching;
 using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.UnitModels;
 using VengineX.Input;
@@ -21,11 +22,6 @@ namespace VengineX.UI
     /// </summary>
     public class Canvas : Element, IRenderable
     {
-        /// <summary>
-        /// The maximum Z index that is working for canvases.
-        /// </summary>
-        public const float MAX_Z_INDEX = 10000.0f;
-
         #region UI Shaders
 
         /// <summary>
@@ -103,6 +99,8 @@ namespace VengineX.UI
 
         #endregion
 
+        private UIBatchRenderer _batchRenderer;
+
         /// <summary>
         /// The projection matrix of this canvas
         /// </summary>
@@ -154,10 +152,11 @@ namespace VengineX.UI
                 FontColorUniform = BitmapFontShader.GetUniform("uColor");
             }
 
+            _batchRenderer = new UIBatchRenderer(1000);
             EventSystem = new EventSystem(input, this);
             Size = new Vector2(width, height);
             Quad = new Quad();
-            _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, -Height, 0, -MAX_Z_INDEX, 0);
+            _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, -Height, 0, -1, 1);
 
             font = ResourceManager.GetResource<BitmapFont>("font.opensans");
         }
@@ -176,8 +175,6 @@ namespace VengineX.UI
         BitmapFont font;
         public override void Render()
         {
-            int zIndex = 0;
-
 
 
             base.Render();
@@ -190,7 +187,7 @@ namespace VengineX.UI
         public void Resize(float newWidth, float newHeight)
         {
             Size = new Vector2(newWidth, newHeight);
-            _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, 0, Height, -MAX_Z_INDEX, 0);
+            _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, 0, Height, -1, 1);
         }
     }
 }

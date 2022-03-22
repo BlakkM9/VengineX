@@ -356,10 +356,10 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// Calculates the model matrix of this element, based on <see cref="Size"/> and <see cref="AbsolutePosition"/><br/>
         /// </summary>
-        protected virtual void CalculateModelMatrix(float zIndex)
+        protected virtual void CalculateModelMatrix()
         {
             ModelMatrix = Matrix4.CreateScale(Width / 2f, Height / 2f, 0);
-            ModelMatrix *= Matrix4.CreateTranslation(Width / 2f + AbsolutePosition.X, -(Height / 2f + AbsolutePosition.Y), zIndex);
+            ModelMatrix *= Matrix4.CreateTranslation(Width / 2f + AbsolutePosition.X, -(Height / 2f + AbsolutePosition.Y), 0);
         }
 
         //#region Events
