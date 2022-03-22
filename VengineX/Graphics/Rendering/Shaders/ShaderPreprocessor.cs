@@ -9,6 +9,7 @@ using VengineX.Debugging.Logging;
 
 namespace VengineX.Graphics.Rendering.Shaders {
 
+    // TODO implement variables that can be set on compilation that will be replaced in the shader source
     /// <summary>
     /// Parses a shader file and processes preprocess directives that are not supported by GLSL.
     /// Supported preprocessor directives:
