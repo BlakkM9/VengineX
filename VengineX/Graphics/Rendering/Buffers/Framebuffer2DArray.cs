@@ -9,36 +9,21 @@ using VengineX.Graphics.Rendering.Textures;
 
 namespace VengineX.Graphics.Rendering.Buffers
 {
-    /// <summary>
-    /// Class representing a framebuffer with a 2D output texture.<br/>
-    /// There is also a renderbuffer attached with <see cref="RenderbufferStorage.Depth24Stencil8"/>.
-    /// </summary>
-    public class Framebuffer2D : Framebuffer<Texture2D>, IBindable, IDisposable
+    public class Framebuffer2DArray : Framebuffer<Texture2DArray>, IDisposable, IBindable
     {
-
-        protected uint _rbo;
-
-        /// <summary>
-        /// Creates a new framebuffer with a 2D output texture <see cref="FramebufferAttachment.ColorAttachment0"/>.
-        /// </summary>
-        /// <param name="width">Width of the framebuffers output texture.</param>
-        /// <param name="height">Height of the framebuffers output texture.</param>
-        /// <param name="internalFormat">Internal pixel format of the framebuffers output texture.</param>
-        /// <param name="pixelFormat">Pixel format of the framebuffers output texture.</param>
-        /// <param name="attachDepthAndStenchil">Wether or not to attach an Renderbuffer to save stencil and depth aswell.</param>
-        public Framebuffer2D(
-            int width, int height,
+        public Framebuffer2DArray(
+            int width, int height, int layers,
             SizedInternalFormat internalFormat,
-            PixelFormat pixelFormat,
-            bool attachDepthAndStenchil) :base()
+            PixelFormat pixelFormat)
         {
             GL.CreateFramebuffers(1, out _fbo);
 
             // Create output texture
-            Texture2DParameters parameters = new Texture2DParameters()
+            Texture2DArrayParameters parameters = new Texture2DArrayParameters()
             {
                 Width = width,
                 Height = height,
+                Layers = layers,
                 InternalFormat = internalFormat,
                 PixelFormat = pixelFormat,
                 PixelType = PixelType.UnsignedByte,
@@ -46,29 +31,14 @@ namespace VengineX.Graphics.Rendering.Buffers
                 MagFilter = TextureMagFilter.Linear,
                 WrapModeS = TextureWrapMode.ClampToBorder,
                 WrapModeT = TextureWrapMode.ClampToBorder,
+                WrapModeR = TextureWrapMode.ClampToBorder,
                 GenerateMipmaps = false,
             };
 
-            OutputTexture = new Texture2D(ref parameters);
+            OutputTexture = new Texture2DArray(ref parameters);
             OutputTexture.Bind();
 
-
-            // Bind output texture to framebuffer
-            GL.NamedFramebufferTexture(
-                _fbo,
-                FramebufferAttachment.ColorAttachment0,
-                OutputTexture.Handle,
-                0);
-
-
-            
-            if (attachDepthAndStenchil)
-            {
-                // Create and attach renderbuffer for depth and stencil.
-                GL.CreateRenderbuffers(1, out _rbo);
-                GL.NamedRenderbufferStorage(_fbo, RenderbufferStorage.Depth24Stencil8, width, height);
-                GL.NamedFramebufferRenderbuffer(_fbo, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, _rbo);
-            }
+            GL.NamedFramebufferTextureLayer(_fbo, FramebufferAttachment.ColorAttachment0, OutputTexture.Handle, 0, 0);
 
 
             // Check for completion
@@ -88,71 +58,55 @@ namespace VengineX.Graphics.Rendering.Buffers
         }
 
 
-
-        #region IBindable
-
-        /// <summary>
-        /// Binds this framebuffer to the current renderer state.
-        /// </summary>
-        public void Bind()
+        public void Bind(int layer)
         {
             // Save viewport dimensions before bind
             GL.GetInteger(GetPName.Viewport, _viewportBeforeBind);
 
             GL.Viewport(0, 0, OutputTexture.Width, OutputTexture.Height);
+
+            GL.NamedFramebufferTextureLayer(_fbo, FramebufferAttachment.ColorAttachment0, OutputTexture.Handle, 0, layer);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, _fbo);
         }
 
 
-        /// <summary>
-        /// Unbind this framebuffer from the current renderer state (binds default framebuffer again).
-        /// </summary>
+        public void Bind() => Bind(0);
+
+
         public void Unbind()
         {
             GL.Viewport(_viewportBeforeBind[0], _viewportBeforeBind[1], _viewportBeforeBind[2], _viewportBeforeBind[3]);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
 
-        #endregion
-
-
         #region IDisposable
 
         private bool _disposedValue;
 
-        /// <summary>
-        /// Disposable pattern.
-        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
             {
                 if (disposing)
                 {
+                    // Dispose managed state (managed objects)
                     if (!IsTextureDetached) { OutputTexture.Dispose(); }
                 }
 
-                GL.DeleteFramebuffer(_fbo);
-                if (_rbo != 0)
-                {
-                    GL.DeleteRenderbuffer(_rbo);
-                }
+                // Free unmanaged resources (unmanaged objects) and override finalizer
+                GL.DeleteBuffer(_fbo);
+                // Set large fields to null
                 _disposedValue = true;
             }
         }
 
-        /// <summary>
-        /// Disposable pattern.
-        /// </summary>
-        ~Framebuffer2D()
+        // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~Framebuffer2DArray()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: false);
         }
 
-        /// <summary>
-        /// Disposable pattern.
-        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
@@ -160,6 +114,6 @@ namespace VengineX.Graphics.Rendering.Buffers
             GC.SuppressFinalize(this);
         }
 
-        #endregion
+        #endregion  
     }
 }
