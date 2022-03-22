@@ -17,17 +17,27 @@ namespace VengineX.Graphics.Rendering.Shaders
         /// </summary>
         public static int CurrentBoundShader { get; protected set; }
 
-        /// <summary>
-        /// OpenGL handle of this shader program.
-        /// </summary>
-        public int Handle { get; private set; }
-
 
         /// <summary>
         /// ResourcePath of this shader program (<see cref="ResourceManager"/> for more details on resource paths.
         /// </summary>
         public string ResourcePath { get; set; } = "";
 
+
+        /// <summary>
+        /// OpenGL handle of this shader program.
+        /// </summary>
+        public int Handle { get; private set; }
+
+        /// <summary>
+        /// Maps string uniform names to uniform locations.
+        /// </summary>
+        private Dictionary<string, int> _uniformLocations;
+
+        /// <summary>
+        /// Maps uniform locations to uniforms.
+        /// </summary>
+        private Dictionary<int, Uniform> _uniforms;
 
         /// <summary>
         /// Loads the shader program (vert and frag) from disc, preprocesses, compiles and links vert and frag.<br/>
@@ -56,6 +66,21 @@ namespace VengineX.Graphics.Rendering.Shaders
             GL.DetachShader(Handle, fragmentID);
             GL.DeleteShader(vertexID);
             GL.DeleteShader(fragmentID);
+
+
+            // Get all uniforms in this shader
+            GL.GetProgram(Handle, GetProgramParameterName.ActiveUniforms, out int uniformCount);
+
+            _uniformLocations = new Dictionary<string, int>();
+            _uniforms = new Dictionary<int, Uniform>();
+
+            for (int i = 0; i < uniformCount; i++)
+            {
+                string uniformName = GL.GetActiveUniform(Handle, i, out int size, out ActiveUniformType type);
+                int uniformLocation = GL.GetUniformLocation(Handle, uniformName);
+                _uniformLocations.Add(uniformName, uniformLocation);
+                _uniforms.Add(uniformLocation, new Uniform(this, uniformLocation, size, type));
+            }
         }
 
 
@@ -84,132 +109,46 @@ namespace VengineX.Graphics.Rendering.Shaders
         }
 
 
+
         #region Uniform access
+
 
         public int GetUniformLocation(string uniformName)
         {
-            int uniformLocation = GL.GetUniformLocation(Handle, uniformName);
-            if (uniformLocation == -1)
-            {
-                Logger.Log(Severity.Error, Tag.Shader, $"Failed to find uniform {uniformName} in shader");
-            }
-
-            return uniformLocation;
+            return _uniformLocations[uniformName];
         }
 
 
-        public void SetUniformMat4(int uniformLocation, ref Matrix4 value)
+        public Uniform GetUniform(string uniformName)
         {
-            Bind();
-            GL.UniformMatrix4(uniformLocation, false, ref value);
+            return _uniforms[GetUniformLocation(uniformName)];
         }
 
-
-        /// <summary>
-        /// Only use this function if uniforms are only set once.
-        /// It performs a <see cref="GL.GetUniformLocation(int, string)"/> call!<br/>
-        /// Cache the uniform location and use <see cref="SetUniformMat4(int, ref Matrix4)"/> if you're using it more than once!
-        /// </summary>
-        public void SetUniformMat4(string uniformName, ref Matrix4 value)
+        public Uniform GetUniform(int uniformIndex)
         {
-            int uniformLocation = GetUniformLocation(uniformName);
-            if (uniformLocation == -1)
-            {
-                Logger.Log(Severity.Error, Tag.Shader, $"Failed to find uniform {uniformName} in shader");
-            }
-            else
-            {
-                SetUniformMat4(uniformLocation, ref value);
-            }
+            return _uniforms[uniformIndex];
         }
 
+        public void SetUniform1(string uniformName, ref float value) => GetUniform(uniformName).Set1(ref value);
 
-        public void SetUniform1(int uniformLocation, bool value)
-        {
-            Bind();
-            GL.Uniform1(uniformLocation, value ? 1 : 0);
-        }
+        public void SetUniform1(int uniformLocation, ref float value) => GetUniform(uniformLocation).Set1(ref value);
 
+        public void SetUniform2(string uniformName, ref Vector2 value) => GetUniform(uniformName).Set2(ref value);
 
-        public void SetUniform1(string uniformName, bool value)
-        {
-            int uniformLocation = GetUniformLocation(uniformName);
-            if (uniformLocation == -1)
-            {
-                Logger.Log(Severity.Error, Tag.Shader, $"Failed to find uniform {uniformName} in shader");
-            }
-            else
-            {
-                SetUniform1(uniformLocation, value);
-            }
-        }
+        public void SetUniform2(int uniformLocation, ref Vector2 value) => GetUniform(uniformLocation).Set2(ref value);
 
+        public void SetUniform3(string uniformName, ref Vector3 value) => GetUniform(uniformName).Set3(ref value);
 
-        public void SetUniform1(int uniformLocation, int value)
-        {
-            Bind();
-            GL.Uniform1(uniformLocation, value);
-        }
+        public void SetUniform3(int uniformLocation, ref Vector3 value) => GetUniform(uniformLocation).Set3(ref value);
 
+        public void SetUniform4(string uniformName, ref Vector4 value) => GetUniform(uniformName).Set4(ref value);
 
-        /// <summary>
-        /// Only use this function if uniforms are only set once.<br/>
-        /// It performs a <see cref="GL.GetUniformLocation(int, string)"/> call!<br/>
-        /// Cache the uniform location and use <see cref="SetUniform1(int, int)"/> if you're using it more than once!
-        /// </summary>
-        public void SetUniform1(string uniformName, int value)
-        {
+        public void SetUniform4(int uniformLocation, ref Vector4 value) => GetUniform(uniformLocation).Set4(ref value);
 
-            int uniformLocation = GetUniformLocation(uniformName);
-            if (uniformLocation == -1)
-            {
-                Logger.Log(Severity.Error, Tag.Shader, $"Failed to find uniform {uniformName} in shader");
-            }
-            else
-            {
-                SetUniform1(uniformLocation, value);
-            }
-        }
+        public void SetUniformMat4(string uniformName, ref Matrix4 value) => GetUniform(uniformName).SetMat4(ref value);
 
+        public void SetUniformMat4(int uniformLocation, ref Matrix4 value) => GetUniform(uniformLocation).SetMat4(ref value);
 
-        public void SetUniform1(int uniformLocation, float value)
-        {
-            Bind();
-            GL.Uniform1(uniformLocation, value);
-        }
-
-
-        public void SetUniformVec3(int uniformLoaction, ref Vector3 value)
-        {
-            Bind();
-            GL.Uniform3(uniformLoaction, value);
-        }
-
-
-        public void SetUniformVec4(int uniformLoaction, ref Vector4 value)
-        {
-            Bind();
-            GL.Uniform4(uniformLoaction, value);
-        }
-
-
-        /// <summary>
-        /// Only use this function if uniforms are only set once.<br/>
-        /// It performs a <see cref="GL.GetUniformLocation(int, string)"/> call!<br/>
-        /// Cache the uniform location and use <see cref="SetUniformVec4(int, ref Vector4)"/> if you're using it more than once!
-        /// </summary>
-        public void SetUniformVec4(string uniformName, ref Vector4 value)
-        {
-            int uniformLocation = GetUniformLocation(uniformName);
-            if (uniformLocation == -1)
-            {
-                Logger.Log(Severity.Error, Tag.Shader, $"Failed to find uniform {uniformName} in shader");
-            }
-            else
-            {
-                SetUniformVec4(uniformLocation, ref value);
-            }
-        }
 
         #endregion
 

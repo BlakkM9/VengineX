@@ -16,17 +16,17 @@ namespace VengineX.Graphics.Rendering
         public Shader Shader { get; }
         public Texture2D[] Textures { get; }
 
-        public int ModelMatrixLocation { get; }
-        public int ViewMatrixLocation { get; }
-        public int ProjectionMatrixLocation { get; }
+        public Uniform ModelMatrixUniform { get; }
+        public Uniform ViewMatrixUniform { get; }
+        public Uniform ProjectionMatrixUniform { get; }
 
 
         public Material(Shader shader, params Texture2D[] textures)
         {
             Shader = shader;
-            ModelMatrixLocation = Shader.GetUniformLocation("M");
-            ViewMatrixLocation = Shader.GetUniformLocation("V");
-            ProjectionMatrixLocation = Shader.GetUniformLocation("P");
+            ModelMatrixUniform = Shader.GetUniform("M");
+            ViewMatrixUniform = Shader.GetUniform("V");
+            ProjectionMatrixUniform = Shader.GetUniform("P");
 
             Textures = new Texture2D[32];
 
@@ -39,14 +39,16 @@ namespace VengineX.Graphics.Rendering
 
         public void UpdateCameraMatrixUniforms(ref Matrix4 viewMatrix, ref Matrix4 projectionMatrix)
         {
-            Shader.SetUniformMat4(ViewMatrixLocation, ref viewMatrix);
-            Shader.SetUniformMat4(ProjectionMatrixLocation, ref projectionMatrix);
+            //Shader.SetUniformMat4(ViewMatrixUniform, ref viewMatrix);
+            //Shader.SetUniformMat4(ProjectionMatrixUniform, ref projectionMatrix);
+            ProjectionMatrixUniform.SetMat4(ref projectionMatrix);
+            ViewMatrixUniform.SetMat4(ref viewMatrix);
         }
 
 
         public virtual void UpdateModelMatrix(ref Matrix4 modelMatrix)
         {
-            Shader.SetUniformMat4(ModelMatrixLocation, ref modelMatrix);
+            ModelMatrixUniform.SetMat4(ref modelMatrix);
         }
 
 
