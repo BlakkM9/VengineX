@@ -109,48 +109,15 @@ namespace VengineX.Graphics.Rendering.Shaders
         }
 
 
-
-        #region Uniform access
-
-
         public int GetUniformLocation(string uniformName)
         {
             return _uniformLocations[uniformName];
         }
 
-
         public Uniform GetUniform(string uniformName)
         {
             return _uniforms[GetUniformLocation(uniformName)];
         }
-
-        public Uniform GetUniform(int uniformIndex)
-        {
-            return _uniforms[uniformIndex];
-        }
-
-        public void SetUniform1(string uniformName, ref float value) => GetUniform(uniformName).Set1(ref value);
-
-        public void SetUniform1(int uniformLocation, ref float value) => GetUniform(uniformLocation).Set1(ref value);
-
-        public void SetUniform2(string uniformName, ref Vector2 value) => GetUniform(uniformName).Set2(ref value);
-
-        public void SetUniform2(int uniformLocation, ref Vector2 value) => GetUniform(uniformLocation).Set2(ref value);
-
-        public void SetUniform3(string uniformName, ref Vector3 value) => GetUniform(uniformName).Set3(ref value);
-
-        public void SetUniform3(int uniformLocation, ref Vector3 value) => GetUniform(uniformLocation).Set3(ref value);
-
-        public void SetUniform4(string uniformName, ref Vector4 value) => GetUniform(uniformName).Set4(ref value);
-
-        public void SetUniform4(int uniformLocation, ref Vector4 value) => GetUniform(uniformLocation).Set4(ref value);
-
-        public void SetUniformMat4(string uniformName, ref Matrix4 value) => GetUniform(uniformName).SetMat4(ref value);
-
-        public void SetUniformMat4(int uniformLocation, ref Matrix4 value) => GetUniform(uniformLocation).SetMat4(ref value);
-
-
-        #endregion
 
 
         #region IBindable

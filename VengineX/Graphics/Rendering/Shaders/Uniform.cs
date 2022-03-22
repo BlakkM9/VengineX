@@ -37,17 +37,19 @@ namespace VengineX.Graphics.Rendering.Shaders
         }
 
 
-        public void Set1(ref float value) => GL.ProgramUniform1(Shader.Handle, Location, value); 
+        public void Set1(float value) => GL.ProgramUniform1(Shader.Handle, Location, value); 
 
+        public void Set1(int count, float[] values) => GL.ProgramUniform1(Shader.Handle, Location, count, values);
+
+        public void Set1(int value) => GL.ProgramUniform1(Shader.Handle, Location, value);
+
+        public void Set1(int count, int[] value) => GL.ProgramUniform1(Shader.Handle, Location, count, value);
 
         public void Set2(ref Vector2 value) => GL.ProgramUniform2(Shader.Handle, Location, ref value);
 
-
         public void Set3(ref Vector3 value) => GL.ProgramUniform3(Shader.Handle, Location, ref value);
 
-
         public void Set4(ref Vector4 value) => GL.ProgramUniform4(Shader.Handle, Location, ref value);
-
 
         public void SetMat4(ref Matrix4 value) => GL.ProgramUniformMatrix4(Shader.Handle, Location, false, ref value);
     }

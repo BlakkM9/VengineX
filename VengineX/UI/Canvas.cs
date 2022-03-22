@@ -5,9 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VengineX.Graphics.Rendering;
+using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.UnitModels;
 using VengineX.Input;
+using VengineX.Resources;
 using VengineX.UI.Elements;
+using VengineX.UI.Fonts;
+using VengineX.Wrappers.FreeType;
 
 namespace VengineX.UI
 {
@@ -21,6 +25,83 @@ namespace VengineX.UI
         /// The maximum Z index that is working for canvases.
         /// </summary>
         public const float MAX_Z_INDEX = 10000.0f;
+
+        #region UI Shaders
+
+        /// <summary>
+        /// Shader used for ui images.
+        /// </summary>
+        public static Shader? ImageShader { get; private set; }
+
+        /// <summary>
+        /// Location of the projection matrix uniform in <see cref="ImageShader"/>.
+        /// </summary>
+        public static Uniform ImageProjectionMatrixUniform { get; private set; }
+
+        /// <summary>
+        /// Location of the model matrix uniform in <see cref="ImageShader"/>.
+        /// </summary>
+        public static Uniform ImageModelMatrixUniform { get; private set; }
+
+        /// <summary>
+        /// Location of the view matrix uniform in <see cref="ImageShader"/>.
+        /// </summary>
+        public static Uniform ImageViewMatrixUniform { get; private set; }
+
+        /// <summary>
+        /// Location of the uTint uniform in <see cref="ImageShader"/>.
+        /// </summary>
+        public static Uniform TintLocationUniform { get; private set; }
+
+
+        public static Shader? ColorShader { get; private set; }
+
+        /// <summary>
+        /// Location of the projection matrix uniform in <see cref="ImageShader"/>.
+        /// </summary>
+        public static Uniform ColorProjectionMatrixUniform { get; private set; }
+
+        /// <summary>
+        /// Location of the model matrix uniform in <see cref="ImageShader"/>.
+        /// </summary>
+        public static Uniform ColorModelMatrixUniform { get; private set; }
+
+        /// <summary>
+        /// Location of the view matrix uniform in <see cref="ImageShader"/>.
+        /// </summary>
+        public static Uniform ColorViewMatrixUniform { get; private set; }
+
+        /// <summary>
+        /// Location of the uTint uniform in <see cref="ImageShader"/>.
+        /// </summary>
+        public static Uniform ColorUniform { get; private set; }
+
+        /// <summary>
+        /// The shader that is used to render text.
+        /// </summary>
+        public static Shader BitmapFontShader { get; private set; }
+
+        /// <summary>
+        /// Project matrix uniform location of the font shader.
+        /// </summary>
+        public static Uniform FontProjectionMatrixUniform { get; private set; }
+
+        /// <summary>
+        /// Model matrix uniform location of the font shader.
+        /// </summary>
+        public static Uniform FontModelMatrixUniform { get; private set; }
+
+        /// <summary>
+        /// View matrix uniform location of the font shader.
+        /// </summary>
+        public static Uniform FontViewMatrixUniform { get; private set; }
+
+        /// <summary>
+        /// uColor uniform location of the font shader.
+        /// </summary>
+        public static Uniform FontColorUniform { get; private set; }
+
+        #endregion
 
         /// <summary>
         /// The projection matrix of this canvas
@@ -51,10 +132,34 @@ namespace VengineX.UI
         /// </summary>
         public Canvas(float width, float height, InputManager input) : base(null)
         {
+            // Lazy shader initialization
+            if (ImageShader == null)
+            {
+                ImageShader = ResourceManager.GetResource<Shader>("shader.ui.image");
+                ColorShader = ResourceManager.GetResource<Shader>("shader.ui.color");
+                BitmapFontShader = ResourceManager.GetResource<Shader>("shader.ui.bmpfont");
+
+                ImageProjectionMatrixUniform = ImageShader.GetUniform("P");
+                ImageModelMatrixUniform = ImageShader.GetUniform("M");
+                ImageViewMatrixUniform = ImageShader.GetUniform("V");
+                ColorProjectionMatrixUniform = ColorShader.GetUniform("P");
+                ColorModelMatrixUniform = ColorShader.GetUniform("M");
+                ColorViewMatrixUniform = ColorShader.GetUniform("V");
+                FontProjectionMatrixUniform = BitmapFontShader.GetUniform("P");
+                FontModelMatrixUniform = BitmapFontShader.GetUniform("M");
+                FontViewMatrixUniform = BitmapFontShader.GetUniform("V");
+
+                TintLocationUniform = ImageShader.GetUniform("uTint");
+                ColorUniform = ColorShader.GetUniform("uColor");
+                FontColorUniform = BitmapFontShader.GetUniform("uColor");
+            }
+
             EventSystem = new EventSystem(input, this);
             Size = new Vector2(width, height);
             Quad = new Quad();
             _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, -Height, 0, -MAX_Z_INDEX, 0);
+
+            font = ResourceManager.GetResource<BitmapFont>("font.opensans");
         }
 
 
@@ -68,6 +173,7 @@ namespace VengineX.UI
         }
 
 
+        BitmapFont font;
         public override void Render()
         {
             int zIndex = 0;

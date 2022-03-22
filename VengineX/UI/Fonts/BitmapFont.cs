@@ -140,10 +140,10 @@ namespace VengineX.UI.Fonts
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
             imageShader.Bind(); 
-            imageShader.SetUniformMat4("P", ref proj);
-            imageShader.SetUniformMat4("V", ref view);
-            imageShader.SetUniformVec4("uTint", ref tint);
-
+            imageShader.GetUniform("P").SetMat4(ref proj);
+            imageShader.GetUniform("V").SetMat4(ref view);
+            imageShader.GetUniform("uTint").Set4(ref tint);
+            Uniform modelMatixUniform = imageShader.GetUniform("M");
 
             int rowSpaceUsed = 0;
             int x = 0;
@@ -156,7 +156,7 @@ namespace VengineX.UI.Fonts
                 Matrix4 m = Matrix4.Identity;
                 m *= Matrix4.CreateScale(glyph.width / 2f, glyph.height / -2f, 0);
                 m *= Matrix4.CreateTranslation(glyph.width / 2f + x, -(glyph.height / 2f + y), 0);
-                imageShader.SetUniformMat4("M", ref m);
+                modelMatixUniform.SetMat4(ref m);
 
                 // Bind the glyphs texture
                 textures[glyph.charCode]?.Bind();
