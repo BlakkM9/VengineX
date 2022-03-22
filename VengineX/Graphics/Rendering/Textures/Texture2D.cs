@@ -38,45 +38,14 @@ namespace VengineX.Graphics.Rendering.Textures
 
 
         /// <summary>
-        /// Create a new empty texture.
+        /// Create a new texture from given parameters.
         /// </summary>
         /// <param name="parameters">Parameters for creating the texture.</param>
-        public Texture2D(ref Texture2DParameters parameters) : base(TextureTarget.Texture2D)
+        public Texture2D(ref Texture2DParameters parameters) : this()
         {
             // Update textures size properties
             Width = parameters.Width;
             Height = parameters.Height;
-
-            //GL.BindTexture(TextureTarget, Handle);
-
-            //GL.TexImage2D(
-            //    TextureTarget,
-            //    0,
-            //    parameters.PixelInternalFormat,
-            //    parameters.Width,
-            //    parameters.Height,
-            //    0,
-            //    parameters.PixelFormat,
-            //    parameters.PixelType,
-            //    parameters.PixelData
-            //);
-
-            //// Set parameters
-            //// Min/Mag
-            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)parameters.MinFilter);
-            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)parameters.MagFilter);
-
-
-            //// WrapS/WrapT
-            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)parameters.WrapModeS);
-            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)parameters.WrapModeT);
-
-
-            //// Mipmaps
-            //if (parameters.GenerateMipmaps)
-            //{
-            //    GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-            //}
 
             // Min/Mag
             GL.TextureParameter(Handle, TextureParameterName.TextureMinFilter, (int)parameters.MinFilter);
@@ -95,8 +64,6 @@ namespace VengineX.Graphics.Rendering.Textures
             {
                 GL.GenerateTextureMipmap(Handle);
             }
-
-            //Bind();
         }
 
 
