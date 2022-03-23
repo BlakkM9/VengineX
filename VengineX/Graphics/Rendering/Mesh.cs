@@ -209,19 +209,31 @@ namespace VengineX.Graphics.Rendering
         }
 
 
+        public void Render(int indexCount)
+        {
+            GL.BindVertexArray(_vao);
+            GL.DrawElements(BeginMode.Triangles, indexCount, DrawElementsType.UnsignedInt, 0);
+        }
+
+
         /// <summary>
         /// Updates the vertices for this mesh.
         /// </summary>
-        public void BufferData(T[] vertices)
+        public void BufferVertices(T[] vertices)
         {
             GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices, VertexBufferUsage);
         }
 
 
+        public void BufferVertices(T[]? vertices, int size)
+        {
+            GL.NamedBufferData(_vbo, size, vertices, VertexBufferUsage);
+        }
+
         /// <summary>
         /// Updates the indices for this mesh.
         /// </summary>
-        public void BufferData(uint[] indices)
+        public void BufferIndices(uint[] indices)
         {
             _numIndices = indices.Length;
             GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices, IndexBufferUsage);
@@ -231,7 +243,7 @@ namespace VengineX.Graphics.Rendering
         /// <summary>
         /// Updates the vertices for this mesh.
         /// </summary>
-        public void BufferData(UnmanagedArray<T> vertices)
+        public void BufferVertices(UnmanagedArray<T> vertices)
         {
             GL.NamedBufferData(_vbo, vertices.Length * Marshal.SizeOf(typeof(T)), vertices.Pointer, VertexBufferUsage);
         }
@@ -240,7 +252,7 @@ namespace VengineX.Graphics.Rendering
         /// <summary>
         /// Updates the indices for this mesh.
         /// </summary>
-        public void BufferData(UnmanagedArray<uint> indices)
+        public void BufferIndices(UnmanagedArray<uint> indices)
         {
             _numIndices = indices.Length;
             GL.NamedBufferData(_ebo, indices.Length * sizeof(uint), indices.Pointer, IndexBufferUsage);
