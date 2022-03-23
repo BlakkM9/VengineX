@@ -13,6 +13,7 @@ namespace VengineX.UI.Fonts
     /// </summary>
     public abstract class Font : IDisposable, IResource, ILoadableResource
     {
+
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
@@ -57,53 +58,6 @@ namespace VengineX.UI.Fonts
             return width * (size / Size);
         }
 
-
-        /// <summary>
-        /// Use to dispose managed objects in classes that derive from this <see cref="Font"/>.
-        /// </summary>
-        protected abstract void DisposeManaged();
-
-
-        #region IDisposabele
-
-        private bool _disposedValue;
-
-        /// <summary>
-        /// Disposable pattern.
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposedValue)
-            {
-                if (disposing)
-                {
-                    // Dispose managed state (managed objects)
-                    DisposeManaged();
-                }
-
-                // Free unmanaged resources (unmanaged objects) and override finalizer
-                // Set large fields to null
-                _disposedValue = true;
-            }
-        }
-
-        // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~Font()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
-
-        /// <summary>
-        /// Disposable pattern.
-        /// </summary>
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
+        public abstract void Dispose();
     }
 }
