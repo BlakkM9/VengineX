@@ -44,13 +44,12 @@ namespace VengineX.Graphics.Rendering.Buffers
                 PixelType = PixelType.UnsignedByte,
                 MinFilter = TextureMinFilter.Linear,
                 MagFilter = TextureMagFilter.Linear,
-                WrapModeS = TextureWrapMode.ClampToBorder,
-                WrapModeT = TextureWrapMode.ClampToBorder,
+                WrapModeS = TextureWrapMode.Repeat,
+                WrapModeT = TextureWrapMode.Repeat,
                 GenerateMipmaps = false,
             };
 
             OutputTexture = new Texture2D(ref parameters);
-            OutputTexture.Bind();
 
 
             // Bind output texture to framebuffer
@@ -61,7 +60,7 @@ namespace VengineX.Graphics.Rendering.Buffers
                 0);
 
 
-            
+
             if (attachDepthAndStenchil)
             {
                 // Create and attach renderbuffer for depth and stencil.
@@ -87,6 +86,10 @@ namespace VengineX.Graphics.Rendering.Buffers
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
 
+        public void Clear(ClearBuffer clearBuffer, float[] value)
+        {
+            GL.ClearNamedFramebuffer(_fbo, clearBuffer, 0, value);
+        }
 
 
         #region IBindable
