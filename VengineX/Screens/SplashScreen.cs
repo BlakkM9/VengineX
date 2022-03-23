@@ -32,7 +32,6 @@ namespace VengineX.Screens
 
         private Sequence _splashSequence;
         private Texture2D _logo;
-        //private Image _logoImage;
 
 
         /// <summary>
