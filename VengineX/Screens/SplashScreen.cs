@@ -10,7 +10,7 @@ using VengineX.Tweening;
 using VengineX.UI;
 using VengineX.UI.Layouts;
 using VengineX.Wrappers.Stbi;
-using Image = VengineX.UI.Elements.Image;
+using Image = VengineX.UI.Elements.Basic.Image;
 
 namespace VengineX.Screens
 {
@@ -52,7 +52,7 @@ namespace VengineX.Screens
             // Logo
             _logo = ResourceManager.LoadResource<Texture2D>("texture2d.logo", new Texture2DLoadingParameters()
             {
-                FilePath = "res/textures/VengineX.png",
+                FilePath = "res/texture/VengineX.png",
                 LoadingFunction = LoadingFunction.Load,
                 TextureParameters = new Texture2DParameters()
                 {
