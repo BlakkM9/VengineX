@@ -111,8 +111,14 @@ namespace VengineX.Graphics.Rendering.Shaders
 
         public int GetUniformLocation(string uniformName)
         {
-            return _uniformLocations[uniformName];
+            if (!_uniformLocations.TryGetValue(uniformName, out int uniformLocation))
+            {
+                Logger.Log(Severity.Error, Tag.Shader, $"Failed to find uniform {uniformName} in {ResourcePath}");
+            }
+
+            return uniformLocation;
         }
+
 
         public Uniform GetUniform(string uniformName)
         {
