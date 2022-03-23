@@ -9,79 +9,48 @@ using System.Threading.Tasks;
 using VengineX.Debugging.Logging;
 using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Textures;
+using VengineX.Graphics.Rendering.Vertices;
 using VengineX.Resources;
 using VengineX.Utils;
 
 namespace VengineX.Graphics.Rendering.Batching
 {
-    public struct Vertex
-    {
-        public Vector3 position;
-        public Vector4 color;
-        public Vector2 uvs;
-        public float textureIndex;
-
-        public override string ToString()
-        {
-            return $"pos: {position} col: {color} uvs: {uvs} texIndex: {textureIndex}";
-        }
-    }
-
-    public struct UIQuad
-    {
-        public Vector2 size;
-        public Vector2 positon;
-        public Vector2[] uvs;
-        public Vector4 color;
-        public Texture2D? texture;
-    }
-
     public class UIBatchRenderer : IBatchRenderer
     {
 
-        private static Shader _uiBatchShader;
-        public static Uniform ViewMatrixUniform { get; private set; }
-        public static Uniform ProjMatrixUniform { get; private set; }
+        private Shader _batchShader;
+        private Uniform _viewMatrixUniform;
+        private Uniform _projMatrixUniform;
 
-        private static int _maxTextureCount;
-        private readonly int _maxQuadCount;
+        //public Matrix4 ViewMatrix { set => _viewMatrixUniform.SetMat4(ref value); }
+        //public Matrix4 ProjectionMatrix { set => _viewMatrixUniform.SetMat4(ref value); }
+
+
         private readonly int _maxVertexCount;
         private readonly int _maxIndexCount;
 
-        private readonly Mesh<Vertex> _mesh;
+        private readonly Mesh<UIVertex> _mesh;
 
-        private readonly Texture2D _whiteTexture;
-        private readonly uint _whiteTextureSlot = 0;
+        private Texture2D _whiteTexture;
 
         private int _indexCount = 0;
 
-        private Vertex[] _vertices;
+        private UIVertex[] _vertices;
         private int _vertexIndex = 0;
 
-        private readonly Texture2D[] _textures;
-        private int _textureSlotIndex = 1;
+        private Texture2D _nextTexture;
+        private Texture2D _currentTexture;
 
-        public UIBatchRenderer(int maxQuadCount)
+        public UIBatchRenderer(int maxQuadCount, Shader batchShader)
         {
-            // Lazy shader init
-            if (_uiBatchShader == null)
-            {
-                _maxTextureCount = GL.GetInteger(GetPName.MaxTextureImageUnits);
-
-                _uiBatchShader = ResourceManager.GetResource<Shader>("shader.ui.batch");
-
-                int[] samplers = new int[_maxTextureCount];
-                for (int i = 0; i < samplers.Length; i++) { samplers[i] = i; }
-                _uiBatchShader.GetUniform("uTextures[0]").Set1(samplers);
-
-                ViewMatrixUniform = _uiBatchShader.GetUniform("V");
-                ProjMatrixUniform = _uiBatchShader.GetUniform("P");
-            }
+            _batchShader = batchShader;
+            _batchShader.GetUniform("uTexture").Set1(0);
+            _viewMatrixUniform = _batchShader.GetUniform("V");
+            _projMatrixUniform = _batchShader.GetUniform("P");
 
             _maxVertexCount = maxQuadCount * 4;
             _maxIndexCount = maxQuadCount * 6;
-            _vertices = new Vertex[_maxVertexCount];
-
+            _vertices = new UIVertex[_maxVertexCount];
 
             uint[] indices = new uint[_maxIndexCount];
             uint offset = 0;
@@ -99,107 +68,94 @@ namespace VengineX.Graphics.Rendering.Batching
                 offset += 4;
             }
 
-            _mesh = new Mesh<Vertex>(Vector3.Zero, BufferUsageHint.DynamicDraw, BufferUsageHint.StaticDraw, null, indices);
-            _mesh.BufferVertices(null, Marshal.SizeOf<Vertex>() * _maxVertexCount);
+            _mesh = new Mesh<UIVertex>(Vector3.Zero, BufferUsageHint.DynamicDraw, BufferUsageHint.StaticDraw, null, indices);
+            // Create new empty buffer
+            _mesh.BufferVertices(null, Marshal.SizeOf<UIVertex>() * _maxVertexCount);
 
 
-            unsafe
+            //_whiteTexture = ResourceManager.GetResource<Texture2D>("texture2d.white");
+            //Console.WriteLine(_whiteTexture.Handle);
+
+            byte[] white = new byte[]
             {
-                byte[] white = new byte[]
-                {
-                    0xff, 0xff, 0xff, 0xff
-                };
+                0xff, 0xff, 0xff, 0xff
+            };
+            GCHandle pinned = GCHandle.Alloc(white, GCHandleType.Pinned);
 
-                fixed (byte* pWhite = white)
-                {
-                    Texture2DParameters texParams = new Texture2DParameters()
-                    {
-                        Height = 1,
-                        Width = 1,
-                        PixelFormat = PixelFormat.Rgba,
-                        InternalFormat = SizedInternalFormat.Rgba8,
-                        PixelType = PixelType.UnsignedByte,
-                        WrapModeS = TextureWrapMode.Repeat,
-                        WrapModeT = TextureWrapMode.Repeat,
-                        GenerateMipmaps = false,
-                        PixelData = (IntPtr)pWhite
+            Texture2DParameters texParams = new Texture2DParameters()
+            {
+                Height = 1,
+                Width = 1,
+                PixelFormat = PixelFormat.Rgba,
+                InternalFormat = SizedInternalFormat.Rgba8,
+                PixelType = PixelType.UnsignedByte,
+                WrapModeS = TextureWrapMode.Repeat,
+                WrapModeT = TextureWrapMode.Repeat,
+                GenerateMipmaps = false,
+                PixelData = pinned.AddrOfPinnedObject(),
 
-                    };
+            };
+            _whiteTexture = new Texture2D(ref texParams);
+            pinned.Free();
 
-                    _whiteTexture = new Texture2D(ref texParams);
-                }
-            }
+            _currentTexture = _whiteTexture;
+            _nextTexture = _whiteTexture;
+        }
 
-            _textures = new Texture2D[_maxTextureCount];
-            _textures[0] = _whiteTexture;
+
+        public UIBatchRenderer(int maxQuadCount) : this(maxQuadCount, ResourceManager.GetResource<Shader>("shader.ui.batch")) { }
+
+
+        public void SetMatrices(ref Matrix4 projMatrix, ref Matrix4 viewMatrix)
+        {
+            _viewMatrixUniform.SetMat4(ref viewMatrix);
+            _projMatrixUniform.SetMat4(ref projMatrix);
         }
 
 
         /// <summary>
         /// Adds a quad to the batch.
         /// </summary>
-        public void Add(UIQuad element)
+        public void Add(UIBatchQuad quad)
         {
-            if (_indexCount + 6 > _maxIndexCount || _textureSlotIndex > _maxTextureCount - 1)
+            if (quad.texture == null) { _nextTexture = _whiteTexture; }
+            else { _nextTexture = quad.texture; }
+
+            if (_indexCount + 6 > _maxIndexCount || _currentTexture.Handle != _nextTexture.Handle)
             {
                 End();
                 Flush();
                 Begin();
             }
-
-
-            float textureIndex = 0.0f;
-
-            if (element.texture != null)
-            {
-                for (int i = 1; i < _textureSlotIndex; i++)
-                {
-                    if (_textures[i].Handle == element.texture.Handle)
-                    {
-                        _textureSlotIndex = i;
-                        break;
-                    }
-                }
-
-                if (textureIndex == 0.0f)
-                {
-                    textureIndex = _textureSlotIndex;
-                    _textures[_textureSlotIndex] = element.texture;
-                    _textureSlotIndex++;
-                }
-            }
+            _currentTexture = _nextTexture;
 
             // bottom left
-            _vertices[_vertexIndex + 0] = new Vertex()
+            _vertices[_vertexIndex + 0] = new UIVertex()
             {
-                position = new Vector3(element.positon.X, element.positon.Y + element.size.Y, 0),
-                color = element.color,
-                uvs = element.uvs[0],
-                textureIndex = textureIndex,
+                position = new Vector3(quad.positon.X, quad.positon.Y + quad.size.Y, 0),
+                color = quad.color,
+                uvs = quad.uv0,
             };
             // top left
-            _vertices[_vertexIndex + 1] = new Vertex()
+            _vertices[_vertexIndex + 1] = new UIVertex()
             {
-                position = new Vector3(element.positon.X, element.positon.Y, 0),
-                color = element.color,
-                uvs = element.uvs[1],
-                textureIndex = textureIndex,
+                position = new Vector3(quad.positon.X, quad.positon.Y, 0),
+                color = quad.color,
+                uvs = quad.uv1,
             };
             // bottom right
-            _vertices[_vertexIndex + 2] = new Vertex()
+            _vertices[_vertexIndex + 2] = new UIVertex()
             {
-                position = new Vector3(element.positon.X + element.size.X, element.positon.Y + element.size.Y, 0),
-                color = element.color,
-                uvs = element.uvs[2],
-                textureIndex = textureIndex,
+                position = new Vector3(quad.positon.X + quad.size.X, quad.positon.Y + quad.size.Y, 0),
+                color = quad.color,
+                uvs = quad.uv2,
             };
             // top right
-            _vertices[_vertexIndex + 3] = new Vertex()
+            _vertices[_vertexIndex + 3] = new UIVertex()
             {
-                position = new Vector3(element.positon.X + element.size.X, element.positon.Y, 0),
-                color = element.color,
-                uvs = element.uvs[3],
-                textureIndex = textureIndex,
+                position = new Vector3(quad.positon.X + quad.size.X, quad.positon.Y, 0),
+                color = quad.color,
+                uvs = quad.uv3,
             };
 
             _vertexIndex += 4;
@@ -215,23 +171,18 @@ namespace VengineX.Graphics.Rendering.Batching
 
         public void End()
         {
-            int size = _vertexIndex * Marshal.SizeOf<Vertex>();
+            int size = _vertexIndex * Marshal.SizeOf<UIVertex>();
             _mesh.BufferSubData(_vertices, size);
         }
 
 
         public void Flush()
         {
-            _uiBatchShader.Bind();
-            for (uint i = 0; i < _textureSlotIndex; i++)
-            {
-                _textures[i]?.Bind(i);
-            }
-            //_textures[0].Bind(0);
+            _currentTexture.Bind();
+            _batchShader.Bind();
 
             _mesh.Render(_indexCount);
             _indexCount = 0;
-            _textureSlotIndex = 1;
         }
 
 
@@ -239,6 +190,9 @@ namespace VengineX.Graphics.Rendering.Batching
 
         private bool _disposedValue;
 
+        /// <summary>
+        /// Disposable pattern.
+        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
@@ -264,6 +218,9 @@ namespace VengineX.Graphics.Rendering.Batching
         //    Dispose(disposing: false);
         //}
 
+        /// <summary>
+        /// Disposable pattern
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

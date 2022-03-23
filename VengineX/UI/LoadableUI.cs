@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VengineX.Graphics.Rendering.Batching;
 using VengineX.UI.Elements;
 using VengineX.UI.Elements.Panels;
 using VengineX.UI.Layouts;
@@ -17,6 +18,11 @@ namespace VengineX.UI
     public abstract class LoadableUITemplate : Element
     {
         protected LoadableUITemplate(Element parent) : base(parent) { }
+
+        public override IEnumerable<UIBatchQuad> EnumerateQuads()
+        {
+            yield break;
+        }
 
         /// <summary>
         /// This function is calld when the <see cref="LoadableUITemplate"/> was initialized after loading.

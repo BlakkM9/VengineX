@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VengineX.Graphics.Rendering;
+using VengineX.Graphics.Rendering.Batching;
 using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Vertices;
 using VengineX.Resources;
@@ -56,7 +57,7 @@ namespace VengineX.UI.Elements
         }
         private string _text = string.Empty;
 
-        public BitmapFont? Font
+        public BitmapFont Font
         {
             get => _font;
             set
@@ -65,10 +66,7 @@ namespace VengineX.UI.Elements
                 UpdateTextMesh();
             }
         }
-        private BitmapFont? _font = null;
-
-        
-        private Mesh<UIVertex> _textMesh;
+        private BitmapFont _font;
 
 
         public Label(Element parent, BitmapFont font, string text, float textSize, Vector4 color) : this(parent)
@@ -87,7 +85,8 @@ namespace VengineX.UI.Elements
         /// </summary>
         public Label(Element parent) : base(parent)
         {
-            _textMesh = new Mesh<UIVertex>(BufferUsageHint.DynamicDraw, BufferUsageHint.DynamicDraw);
+            // Fallback font
+            _font = ResourceManager.GetResource<BitmapFont>("font.opensans");
         }
 
 
@@ -96,51 +95,16 @@ namespace VengineX.UI.Elements
         /// </summary>
         private void UpdateTextMesh()
         {
-            _font.CreateMeshData(_text, out UnmanagedArray<UIVertex> vertices, out UnmanagedArray<uint> indices);
-            _textMesh.BufferData(vertices);
-            _textMesh.BufferData(indices);
-            vertices.Free();
-            indices.Free();
             Width = _font.CalculateWidth(_text, TextSize);
         }
 
 
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        public override void Render()
+        public override IEnumerable<UIBatchQuad> EnumerateQuads()
         {
-            if (Visible)
-            {
-                CalculateModelMatrix();
-
-                Canvas.BitmapFontShader.Bind();
-                _font.TextureAtlas.Bind();
-
-                Canvas.FontProjectionMatrixUniform.SetMat4(ref ParentCanvas.ProjectionMatrix);
-                Canvas.FontViewMatrixUniform.SetMat4(ref ParentCanvas.ViewMatrix);
-                Canvas.FontModelMatrixUniform.SetMat4(ref ModelMatrix);
-                Canvas.FontColorUniform.Set4(ref _color);
-
-                _textMesh.Render();
-            }
-
-
-            base.Render();
-        }
-
-
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        protected override void CalculateModelMatrix()
-        {
-            if (_font != null)
-            {
-                // Update model matrix
-                ModelMatrix = Matrix4.CreateScale(Height / _font.Size, Height / _font.Size, 0);
-                ModelMatrix *= Matrix4.CreateTranslation(AbsolutePosition.X, -(AbsolutePosition.Y + Height), 0);
-            }
+            return _font.CreateQuads(
+                Text,
+                new Vector2(AbsolutePosition.X, Canvas.Height - AbsolutePosition.Y - Height),
+                TextSize, Color);
         }
     }
 }

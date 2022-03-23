@@ -1,6 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using VengineX.Debugging.Logging;
+using VengineX.Graphics.Rendering.Batching;
 using VengineX.Graphics.Rendering.Buffers;
 using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Textures;
@@ -93,8 +94,8 @@ namespace VengineX.UI.Fonts
                 PixelType = PixelType.UnsignedByte,
                 MinFilter = TextureMinFilter.Linear,
                 MagFilter = TextureMagFilter.Linear,
-                WrapModeS = TextureWrapMode.ClampToEdge,
-                WrapModeT = TextureWrapMode.ClampToEdge,
+                WrapModeS = TextureWrapMode.Repeat,
+                WrapModeT = TextureWrapMode.Repeat,
                 GenerateMipmaps = false,
             };
 
@@ -124,57 +125,54 @@ namespace VengineX.UI.Fonts
             int textureSize = MathUtils.CeilPoT(MathHelper.Sqrt((double)length * size * size));
 
             // Create framebuffer to render to.
-            Framebuffer2D fb = new Framebuffer2D(textureSize, textureSize, SizedInternalFormat.R8, PixelFormat.Red, false);
+            Framebuffer2D fb = new Framebuffer2D(textureSize, textureSize, SizedInternalFormat.Rgba8, PixelFormat.Rgba, false);
             TextureAtlas = fb.DetachTexture();
 
             // Get shader, create quad and uniforms required for rendering
-            Quad quad = new Quad();
-            Shader imageShader = ResourceManager.GetResource<Shader>("shader.ui.image");
-            Matrix4 proj = Matrix4.CreateOrthographicOffCenter(0, textureSize, -textureSize, 0, -1.0f, 1.0f);
-            Matrix4 view = Matrix4.Identity;
-            Vector4 tint = Vector4.One;
+            Shader bmpFontShader = ResourceManager.GetResource<Shader>("shader.ui.bmpfont");
+
 
             // Render all the textures
             fb.Bind();
-            GL.ClearColor(0, 0, 0, 1);
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            UIBatchRenderer br = new UIBatchRenderer(1000, bmpFontShader);
+            fb.Clear(ClearBuffer.Color, new float[] { 0, 0, 0, 0 });
 
-            imageShader.Bind(); 
-            imageShader.GetUniform("P").SetMat4(ref proj);
-            imageShader.GetUniform("V").SetMat4(ref view);
-            imageShader.GetUniform("uTint").Set4(ref tint);
-            Uniform modelMatixUniform = imageShader.GetUniform("M");
+            Matrix4 proj = Matrix4.CreateOrthographicOffCenter(0, textureSize, 0, textureSize, -1.0f, 1.0f);
+            Matrix4 view = Matrix4.Identity;
+            br.SetMatrices(ref proj, ref view);
 
             int rowSpaceUsed = 0;
             int x = 0;
             int y = 0;
+
+            br.Begin();
+
             for (int i = 0; i < length; i++)
             {
                 FreeTypeGlyph glyph = glyphs[i];
 
-                // Update model matrix.
-                Matrix4 m = Matrix4.Identity;
-                m *= Matrix4.CreateScale(glyph.width / 2f, glyph.height / -2f, 0);
-                m *= Matrix4.CreateTranslation(glyph.width / 2f + x, -(glyph.height / 2f + y), 0);
-                modelMatixUniform.SetMat4(ref m);
-
-                // Bind the glyphs texture
-                textures[glyph.charCode]?.Bind();
-
-                // Render on quad.
-                quad.Render();
-
-
                 float w = glyph.width;
                 float h = glyph.height;
+
+
+                UIBatchQuad q = new UIBatchQuad();
+                q.positon = new Vector2(x, textureSize - y - h);
+                q.size = new Vector2(w, h);
+                q.texture = textures[glyph.charCode];
+                q.uv0 = new Vector2(0, 0);
+                q.uv1 = new Vector2(0, 1);
+                q.uv2 = new Vector2(1, 0);
+                q.uv3 = new Vector2(1, 1);
+                br.Add(q);
+
 
                 // Calculate uvs: upper-left, upper-right, lower-left, lower-right.
                 Vector2[] uvs = new Vector2[]
                 {
-                    new Vector2((float)x / textureSize,         (float)(y + h) / textureSize),
-                    new Vector2((float)(x + w) / textureSize,   (float)(y + h) / textureSize),
-                    new Vector2((float)x / textureSize,         (float)y / textureSize),
-                    new Vector2((float)(x + w) / textureSize,   (float)y / textureSize),
+                    new Vector2((float)x / textureSize,         1 - (float)y / textureSize),
+                    new Vector2((float)x / textureSize,         1 - (float)(y + h) / textureSize),
+                    new Vector2((float)(x + w) / textureSize,   1 - (float)y / textureSize),
+                    new Vector2((float)(x + w) / textureSize,   1 - (float)(y + h) / textureSize),
                 };
 
 
@@ -187,6 +185,7 @@ namespace VengineX.UI.Fonts
                     Advance = glyph.advance,
                     UVs = uvs,
                 });
+
 
                 // Don't update to next pos if no texture was rendered in that position.
                 if (!Characters[glyph.charCode].HasTexture) { continue; }
@@ -207,34 +206,30 @@ namespace VengineX.UI.Fonts
             }
 
 
-            fb.Unbind();
-
+            br.End();
+            br.Flush();
 
             // Dispose stuff that is no longer needed.
+            br.Dispose();
+            fb.Unbind();
             fb.Dispose();
-            quad.Dispose();
         }
 
 
-        /// <summary>
-        /// Creates indices and vertices for the given text.
-        /// </summary>
-        public void CreateMeshData(string text, out UnmanagedArray<UIVertex> vertices, out UnmanagedArray<uint> indices)
+        public UIBatchQuad[] CreateQuads(string text, Vector2 position, float size, Vector4 color)
         {
             // Calculate quad count
-            int quads = 0;
+            int quadCount = 0;
             foreach (char c in text)
             {
                 Character ch = Characters[c];
-                if (ch.HasTexture) { quads++; }
+                if (ch.HasTexture) { quadCount++; }
             }
 
-            vertices = new UnmanagedArray<UIVertex>(quads * 4);
-            indices = new UnmanagedArray<uint>(quads * 6);
-
-            uint x = 0;
-            uint vertIndex = 0;
-            uint indIndex = 0;
+            UIBatchQuad[] quads = new UIBatchQuad[quadCount];
+            int index = 0;
+            float scale = size / Size;
+            float x = position.X;
 
             foreach (char c in text)
             {
@@ -244,60 +239,73 @@ namespace VengineX.UI.Fonts
                 if (ch.HasTexture)
                 {
                     // Dimensions
-                    float xPos = x + ch.Bearing.X;
-                    float yPos = -(ch.Size.Y - ch.Bearing.Y);
+                    float xPos = x + ch.Bearing.X * scale;
+                    float yPos = position.Y - (ch.Size.Y - ch.Bearing.Y) * scale;
 
-                    float w = ch.Size.X;
-                    float h = ch.Size.Y;
+                    float w = ch.Size.X * scale;
+                    float h = ch.Size.Y * scale;
 
 
-                    // Vertices
-                    vertices[vertIndex + 0] = new UIVertex()
+                    quads[index++] = new UIBatchQuad()
                     {
-                        position = new Vector3(xPos, yPos, 0),
-                        uv = ch.UVs[0],
+                        positon = new Vector2(xPos, yPos),
+                        size = new Vector2(w, h),
+                        uv0 = ch.UVs[0],
+                        uv1 = ch.UVs[1],
+                        uv2 = ch.UVs[2],
+                        uv3 = ch.UVs[3],
+                        texture = TextureAtlas,
+                        color = color,
                     };
-                    vertices[vertIndex + 1] = new UIVertex()
-                    {
-                        position = new Vector3(xPos + w, yPos, 0),
-                        uv = ch.UVs[1],
-                    };
-                    vertices[vertIndex + 2] = new UIVertex()
-                    {
-                        position = new Vector3(xPos, yPos + h, 0),
-                        uv = ch.UVs[2],
-                    };
-                    vertices[vertIndex + 3] = new UIVertex()
-                    {
-                        position = new Vector3(xPos + w, yPos + h, 0),
-                        uv = ch.UVs[3],
-                    };
-
-
-                    // Indices
-                    indices[indIndex + 0] = vertIndex + 0;
-                    indices[indIndex + 1] = vertIndex + 1;
-                    indices[indIndex + 2] = vertIndex + 2;
-
-                    indices[indIndex + 3] = vertIndex + 2;
-                    indices[indIndex + 4] = vertIndex + 1;
-                    indices[indIndex + 5] = vertIndex + 3;
-
-                    vertIndex += 4;
-                    indIndex += 6;
                 }
 
-                x += ch.Advance >> 6;
+                x += (ch.Advance >> 6) * scale;
+            }
+
+            return quads;
+        }
+
+
+        #region IDisposable
+
+        private bool _disposedValue;
+
+        /// <summary>
+        /// Disposable pattern
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    // Dispose managed state (managed objects)
+                    TextureAtlas?.Dispose();
+                }
+
+                // Free unmanaged resources (unmanaged objects) and override finalizer
+                // Set large fields to null
+                _disposedValue = true;
             }
         }
 
+        // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~Font()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
 
         /// <summary>
-        /// <inheritdoc/>
+        /// Disposable pattern
         /// </summary>
-        protected override void DisposeManaged()
+        public override void Dispose()
         {
-            TextureAtlas?.Dispose();
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
+
+        #endregion
     }
 }

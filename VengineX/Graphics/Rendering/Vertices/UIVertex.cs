@@ -15,6 +15,12 @@ namespace VengineX.Graphics.Rendering.Vertices
     public struct UIVertex
     {
         public Vector3 position;
-        public Vector2 uv;
+        public Vector4 color;
+        public Vector2 uvs;
+
+        public override string ToString()
+        {
+            return $"pos: {position} col: {color} uvs: {uvs}";
+        }
     }
 }

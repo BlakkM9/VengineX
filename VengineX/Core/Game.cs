@@ -5,6 +5,7 @@ using OpenTK.Windowing.Desktop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using VengineX.Config;
@@ -229,26 +230,50 @@ namespace VengineX.Core
         /// </summary>
         protected virtual void LoadBaseResources()
         {
+
+
+
+
+            //// White texture
+            //byte[] white = new byte[]
+            //{
+            //    0xff, 0xff, 0xff, 0xff
+            //};
+            //GCHandle pinned = GCHandle.Alloc(white, GCHandleType.Pinned);
+
+            //Texture2DParameters texParams = new Texture2DParameters()
+            //{
+            //    Height = 1,
+            //    Width = 1,
+            //    PixelFormat = PixelFormat.Rgba,
+            //    InternalFormat = SizedInternalFormat.Rgba8,
+            //    PixelType = PixelType.UnsignedByte,
+            //    WrapModeS = TextureWrapMode.Repeat,
+            //    WrapModeT = TextureWrapMode.Repeat,
+            //    GenerateMipmaps = false,
+            //    PixelData = pinned.AddrOfPinnedObject(),
+
+            //};
+            //Texture2D whiteTexture = new Texture2D(ref texParams);
+            //ResourceManager.CacheResource("texture2d.white", whiteTexture);
+            //Console.WriteLine(whiteTexture.Handle);
+            //pinned.Free();
+
+
             // Shaders
-            // UI image shader (needed for loading bmp font and UI.Elements.Image)
-            ResourceManager.LoadResource<Shader>("shader.ui.image", new ShaderLoadingParameters()
-            {
-                VertexPath = "res/shaders/ui/ui.vs.glsl",
-                FragmentPath = "res/shaders/ui/image.fs.glsl"
-            });
-
-            // UI color shader (used for rendering image elements without texture)
-            ResourceManager.LoadResource<Shader>("shader.ui.color", new ShaderLoadingParameters()
-            {
-                VertexPath = "res/shaders/ui/ui.vs.glsl",
-                FragmentPath = "res/shaders/ui/color.fs.glsl"
-            });
-
             // Bitmap fonts shader
             ResourceManager.LoadResource<Shader>("shader.ui.bmpfont", new ShaderLoadingParameters()
             {
                 VertexPath = "res/shaders/ui/ui.vs.glsl",
                 FragmentPath = "res/shaders/ui/bmpfont.fs.glsl"
+            });
+
+
+            // Shader for batch ui rendering
+            ResourceManager.LoadResource<Shader>("shader.ui.batch", new ShaderLoadingParameters()
+            {
+                VertexPath = "res/shaders/ui/ui.vs.glsl",
+                FragmentPath = "res/shaders/ui/batch.fs.glsl"
             });
 
 
@@ -267,8 +292,6 @@ namespace VengineX.Core
 
                     CharacterRange.Cyrillic,
                     CharacterRange.CyrillicSupplementary,
-
-                    //CharacterRange.CJKUnifiedIdeographs
                 }
             });
         }

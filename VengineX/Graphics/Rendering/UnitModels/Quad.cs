@@ -19,22 +19,26 @@ namespace VengineX.Graphics.Rendering.UnitModels
             new UIVertex()
             {
                 position = new Vector3(-1, 1, 0),
-                uv = new Vector2(0, 1)
+                uvs = new Vector2(0, 1),
+                color = Vector4.One
             },
             new UIVertex()
             {
                 position = new Vector3(-1, -1, 0),
-                uv = new Vector2(0, 0)
+                uvs = new Vector2(0, 0),
+                color = Vector4.One
             },
             new UIVertex()
             {
                 position = new Vector3(1, 1, 0),
-                uv = new Vector2(1, 1)
+                uvs = new Vector2(1, 1),
+                color = Vector4.One
             },
             new UIVertex()
             {
                 position = new Vector3(1, -1, 0),
-                uv = new Vector2(1, 0)
+                uvs = new Vector2(1, 0),
+                color = Vector4.One
             }
         };
 

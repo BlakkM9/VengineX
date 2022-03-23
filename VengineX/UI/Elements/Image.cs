@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VengineX.Graphics.Rendering.Batching;
 using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Textures;
 using VengineX.Resources;
@@ -73,39 +74,14 @@ namespace VengineX.UI.Elements
             : this(parent, texture, Vector4.Zero, Vector4.One) { }
 
 
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        public override void Render()
+        public override IEnumerable<UIBatchQuad> EnumerateQuads()
         {
-            if (Visible)
-            {
-                CalculateModelMatrix();
-
-                // Render self
-                if (Texture == null)
-                {
-                    Canvas.ColorShader.Bind();
-                    Canvas.ColorProjectionMatrixUniform.SetMat4(ref ParentCanvas.ProjectionMatrix);
-                    Canvas.ColorViewMatrixUniform.SetMat4(ref ParentCanvas.ViewMatrix);
-                    Canvas.ColorModelMatrixUniform.SetMat4(ref ModelMatrix);
-                    Canvas.ColorUniform.Set4(ref _color);
-                }
-                else
-                {
-                    Canvas.ImageShader.Bind();
-                    Texture?.Bind();
-                    Canvas.ImageProjectionMatrixUniform.SetMat4(ref ParentCanvas.ProjectionMatrix);
-                    Canvas.ImageViewMatrixUniform.SetMat4(ref ParentCanvas.ViewMatrix);
-                    Canvas.ImageModelMatrixUniform.SetMat4(ref ModelMatrix);
-                    Canvas.ImageModelMatrixUniform.Set4(ref _tint);
-                }
-
-                ParentCanvas.Quad.Render();
-            }
-
-
-            base.Render();
+            UIBatchQuad q = new UIBatchQuad();
+            q.positon = new Vector2(AbsolutePosition.X, Canvas.Height - AbsolutePosition.Y - Height);
+            q.size = Size;
+            q.texture = Texture;
+            q.color = Texture == null ? Color : Tint;
+            yield return q;
         }
     }
 }

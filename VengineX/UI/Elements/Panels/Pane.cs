@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VengineX.Graphics.Rendering.Batching;
 
 namespace VengineX.UI.Elements.Panels
 {
@@ -12,5 +13,10 @@ namespace VengineX.UI.Elements.Panels
     public class Pane : Element
     {
         public Pane(Element parent) : base(parent) { }
+
+        public override IEnumerable<UIBatchQuad> EnumerateQuads()
+        {
+            yield break;
+        }
     }
 }
