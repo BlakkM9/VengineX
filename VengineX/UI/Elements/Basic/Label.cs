@@ -14,7 +14,7 @@ using VengineX.UI.Fonts;
 using VengineX.UI.Serialization;
 using VengineX.Utils;
 
-namespace VengineX.UI.Elements
+namespace VengineX.UI.Elements.Basic
 {
     /// <summary>
     /// UIElement that is used to render text.<br/>

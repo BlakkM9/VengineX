@@ -11,7 +11,7 @@ using VengineX.Graphics.Rendering.Textures;
 using VengineX.Resources;
 using VengineX.UI.Serialization;
 
-namespace VengineX.UI.Elements
+namespace VengineX.UI.Elements.Basic
 {
     /// <summary>
     /// Class representing an image on the ui.<br/>

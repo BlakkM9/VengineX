@@ -10,7 +10,7 @@ using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.UnitModels;
 using VengineX.Input;
 using VengineX.Resources;
-using VengineX.UI.Elements;
+using VengineX.UI.Elements.Basic;
 using VengineX.UI.Fonts;
 using VengineX.Wrappers.FreeType;
 

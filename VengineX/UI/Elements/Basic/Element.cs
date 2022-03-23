@@ -11,7 +11,7 @@ using VengineX.Graphics.Rendering;
 using VengineX.Graphics.Rendering.Batching;
 using VengineX.UI.Layouts;
 
-namespace VengineX.UI.Elements
+namespace VengineX.UI.Elements.Basic
 {
     /// <summary>
     /// Abstract base class for all ui elements.<br/>
@@ -46,7 +46,8 @@ namespace VengineX.UI.Elements
         /// <summary>
         /// X positon relative to its parent. Shortcut for <see cref="Position"/>
         /// </summary>
-        public float X {
+        public float X
+        {
             get => Position.X;
             set => Position = new Vector2(value, Position.Y);
         }
