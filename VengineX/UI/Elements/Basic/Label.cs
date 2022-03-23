@@ -11,7 +11,6 @@ using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Vertices;
 using VengineX.Resources;
 using VengineX.UI.Fonts;
-using VengineX.UI.Serialization;
 using VengineX.Utils;
 
 namespace VengineX.UI.Elements.Basic

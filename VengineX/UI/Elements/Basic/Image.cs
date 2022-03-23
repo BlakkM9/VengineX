@@ -9,7 +9,6 @@ using VengineX.Graphics.Rendering.Batching;
 using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Textures;
 using VengineX.Resources;
-using VengineX.UI.Serialization;
 
 namespace VengineX.UI.Elements.Basic
 {

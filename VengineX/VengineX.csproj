@@ -10,8 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="_res\fonts\OpenSans.ttf" />
-    <None Remove="_res\shaders\ui\batch.fs.glsl" />
+    <None Remove="gui\Button.xml" />
+    <None Remove="gui\defs.xml" />
+    <None Remove="gui\Test.xml" />
+    <None Remove="_res\font\OpenSans.ttf" />
+    <None Remove="_res\gui\Button.xml" />
+    <None Remove="_res\gui\defs.xml" />
+    <None Remove="_res\shader\ui\batch.fs.glsl" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +46,18 @@
     <ProjectReference Include="..\stbilib\stbilib.vcxproj">
       <TreatAsUsed>true</TreatAsUsed>
     </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="..\..\VengineX\SourceGenerators\SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+  
+  <ItemGroup>
+  	<AdditionalFiles Include="_res\gui\**"></AdditionalFiles>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Remove="_res\gui\defs.xml" />
   </ItemGroup>
 	
 </Project>
