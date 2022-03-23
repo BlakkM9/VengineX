@@ -31,7 +31,7 @@ namespace VengineX.Graphics.Rendering.Batching
 
         private readonly Mesh<UIVertex> _mesh;
 
-        private Texture2D _whiteTexture;
+        private readonly Texture2D _whiteTexture;
 
         private int _indexCount = 0;
 
