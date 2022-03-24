@@ -1,4 +1,4 @@
-﻿<Button Namespace="VengineX.UI.Elements.Advanced"
+﻿<Button Namespace="VengineX.UI.Elements.Composite"
 		Layout="AlignLayout HorizontalAlignment.Stretch VerticalAlignment.Stretch">
 
 	<Image Name="image"></Image>

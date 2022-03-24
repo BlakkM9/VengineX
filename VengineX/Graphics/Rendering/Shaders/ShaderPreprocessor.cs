@@ -65,6 +65,7 @@ namespace VengineX.Graphics.Rendering.Shaders {
         /// <summary>
         /// Processes directives
         /// </summary>
+        /// <param name="shaderPath">Path to the shader file.</param>
         /// <param name="rawSource">Unprocessed shader source</param>
         /// <returns>Processed shader code</returns>
         private static string ProcessDirectives(string shaderPath, string rawSource) {

@@ -56,6 +56,9 @@ namespace VengineX.UI.Elements.Basic
         }
         private string _text = string.Empty;
 
+        /// <summary>
+        /// The font that is used for this label
+        /// </summary>
         public BitmapFont Font
         {
             get => _font;
@@ -68,24 +71,15 @@ namespace VengineX.UI.Elements.Basic
         private BitmapFont _font;
 
 
-        public Label(Element parent, BitmapFont font, string text, float textSize, Vector4 color) : this(parent)
-        {
-            _textSize = textSize;
-            _font = font;
-            _text = text;
-            _color = color;
-
-            UpdateTextMesh();
-        }
-
-
         /// <summary>
-        /// Constructor for <see cref="UISerializer"/>.
+        /// Creates a new label.
         /// </summary>
         public Label(Element parent) : base(parent)
         {
             // Fallback font
             _font = ResourceManager.GetResource<BitmapFont>("font.opensans");
+
+            UpdateTextMesh();
         }
 
 
@@ -98,6 +92,9 @@ namespace VengineX.UI.Elements.Basic
         }
 
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public override IEnumerable<UIBatchQuad> EnumerateQuads()
         {
             return _font.CreateQuads(

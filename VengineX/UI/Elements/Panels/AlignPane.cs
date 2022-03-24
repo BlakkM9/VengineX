@@ -47,24 +47,10 @@ namespace VengineX.UI.Elements.Panels
         /// </summary>
         protected VerticalAlignment _verticalAlignment;
 
+
         /// <summary>
         /// Creates a new align pane.
         /// </summary>
-        public AlignPane(
-            Element parent,
-            HorizontalAlignment horizontalAlignment,
-            VerticalAlignment verticalAlignment) : base(parent)
-        {
-            _horizontalAlignment = horizontalAlignment;
-            _verticalAlignment = verticalAlignment;
-            Layout = new AlignLayout(_horizontalAlignment, _verticalAlignment);
-        }
-
-
-        /// <summary>
-        /// Empty constructor for creating the instance with <see cref="UISerializer"/>
-        /// </summary>
-        /// <param name="parent"></param>
         public AlignPane(Element parent) : base(parent) { }
     }
 }

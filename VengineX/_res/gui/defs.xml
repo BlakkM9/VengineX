@@ -17,10 +17,10 @@
 			<AlignLayout></AlignLayout>
 			<StackLayout></StackLayout>
 		</VengineX.UI.Layouts>
-		
-		<VengienX.UI.Elements.Advanced>
+
+		<VengineX.UI.Elements.Composite>
 			<Button></Button>
-		</VengienX.UI.Elements.Advanced>
+		</VengineX.UI.Elements.Composite>
 	</Types>
 	
 	<Resources>

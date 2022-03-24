@@ -22,6 +22,9 @@ namespace VengineX.UI
     /// </summary>
     public class Canvas : Element, IRenderable, IDisposable
     {
+        /// <summary>
+        /// Model matrix of this canvas. Currently not in use but could be used to create a worldspace canvas.
+        /// </summary>
         public ref Matrix4 ModelMatrix => ref _modelMatrix;
         private Matrix4 _modelMatrix = Matrix4.Identity;
 
@@ -73,7 +76,9 @@ namespace VengineX.UI
         }
 
 
-
+        /// <summary>
+        /// Renders all the ui elements with the <see cref="BatchRenderer"/>
+        /// </summary>
         public void Render()
         {
             BatchRenderer.Begin();

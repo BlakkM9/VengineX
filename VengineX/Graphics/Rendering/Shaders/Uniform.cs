@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace VengineX.Graphics.Rendering.Shaders
 {
+    /// <summary>
+    /// Class that represents a uniform of a shader.
+    /// </summary>
     public class Uniform
     {
         /// <summary>
@@ -20,19 +23,28 @@ namespace VengineX.Graphics.Rendering.Shaders
         /// </summary>
         public int Location { get; }
 
-        public int Count { get; }
+        /// <summary>
+        /// Size of this uniform.
+        /// </summary>
+        public int Size { get; }
 
         /// <summary>
         /// The uniform type.
         /// </summary>
         public ActiveUniformType Type { get; }
 
-
-        public Uniform(Shader shader, int location, int count, ActiveUniformType type)
+        /// <summary>
+        /// Creates a new uniform..
+        /// </summary>
+        /// <param name="shader">Shader this uniform is located in.</param>
+        /// <param name="location">The uniform location.</param>
+        /// <param name="size">The size of this uniform.</param>
+        /// <param name="type">The type of this uniform.</param>
+        public Uniform(Shader shader, int location, int size, ActiveUniformType type)
         {
             Shader = shader;
             Location = location;
-            Count = count;
+            Size = size;
             Type = type;
         }
 

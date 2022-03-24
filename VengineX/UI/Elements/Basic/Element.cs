@@ -19,6 +19,9 @@ namespace VengineX.UI.Elements.Basic
     /// </summary>
     public abstract class Element
     {
+        /// <summary>
+        /// Handles all events of this element.
+        /// </summary>
         public EventEmitter Events { get; }
 
         /// <summary>
@@ -228,7 +231,7 @@ namespace VengineX.UI.Elements.Basic
         /// If set to true, it will recursively enumerate the children. And return all UIElements that are<br/>
         /// nested in this element.
         /// </param>
-        public virtual IEnumerable<Element> EnumerateChildren(bool recursive = false)
+        public IEnumerable<Element> EnumerateChildren(bool recursive = false)
         {
             if (recursive)
             {
@@ -332,6 +335,10 @@ namespace VengineX.UI.Elements.Basic
         }
 
 
+        /// <summary>
+        /// Generates and returns the <see cref="UIBatchQuad"/>s for this element.
+        /// </summary>
+        /// <returns></returns>
         public abstract IEnumerable<UIBatchQuad> EnumerateQuads();
     }
 }

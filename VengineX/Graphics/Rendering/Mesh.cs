@@ -208,7 +208,9 @@ namespace VengineX.Graphics.Rendering
             GL.DrawElements(PrimitiveType.Triangles, _numIndices, DrawElementsType.UnsignedInt, 0);
         }
 
-
+        /// <summary>
+        /// Renders the elements of this mesh until the given index.
+        /// </summary>
         public void Render(int indexCount)
         {
             GL.BindVertexArray(_vao);
