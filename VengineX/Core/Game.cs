@@ -2,23 +2,16 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using VengineX.Config;
 using VengineX.Debugging.Logging;
+using VengineX.ECS;
 using VengineX.Graphics.Rendering.Shaders;
-using VengineX.Graphics.Rendering.Textures;
 using VengineX.Input;
 using VengineX.Resources;
 using VengineX.Tweening;
 using VengineX.UI.Fonts;
 using VengineX.Utils;
 using VengineX.Wrappers.FreeType;
-using VengineX.Wrappers.Stbi;
 using CharacterRange = VengineX.Wrappers.FreeType.CharacterRange;
 
 namespace VengineX.Core
@@ -41,12 +34,17 @@ namespace VengineX.Core
         /// <summary>
         /// The <see cref="InputManager"/> for this game.
         /// </summary>
-        public static InputManager Input { get; private set;}
+        public static InputManager Input { get; private set; }
 
         /// <summary>
         /// The <see cref="ScreenManager"/> for this game.
         /// </summary>
         public static ScreenManager ScreenManager { get; private set; }
+
+        /// <summary>
+        /// Registry that handles all the entities and components in the game.
+        /// </summary>
+        public static Registry Registry { get; private set; }
 
         /// <summary>
         /// Default constructor, intialising game's window with settings file and default logger configuration.<br/>
@@ -128,6 +126,9 @@ namespace VengineX.Core
             // Create screen manager
             ScreenManager = new ScreenManager();
 
+            // Create registry
+            Registry = new Registry();
+
             // Create input manager
             Input = new InputManager(Window);
         }
@@ -175,7 +176,7 @@ namespace VengineX.Core
         /// <summary>
         /// EventHandler for <see cref="GameWindow.UpdateFrame"/>.
         /// </summary>
-        private void Window_UpdateFrame(FrameEventArgs args) 
+        private void Window_UpdateFrame(FrameEventArgs args)
         {
             Time.Update(args.Time);
             Input.Update();
