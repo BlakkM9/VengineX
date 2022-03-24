@@ -83,6 +83,8 @@ namespace {nameSpace}
                 // Unnamed element, generate name
                 elementName = "e" + index;
 
+                index++;
+
                 // Create anonym instance of element object, attached to parent.
                 initCode += $@"
             {elementFullType} {elementName} = new {elementFullType}({parentName});";
@@ -96,7 +98,6 @@ namespace {nameSpace}
             // Process children
             foreach (XElement child in element.Elements())
             {
-                index++;
                 ProcessElement(child, elementName, ref index, ref fieldsCode, ref initCode);
             }
         }
