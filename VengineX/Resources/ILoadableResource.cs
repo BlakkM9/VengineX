@@ -1,6 +1,5 @@
-﻿using System;
-
-namespace VengineX.Resources {
+﻿namespace VengineX.Resources
+{
 
     /// <summary>
     /// Interface that represents a resource that can be loaded from file.<br/>
@@ -8,7 +7,7 @@ namespace VengineX.Resources {
     /// (aswell as <see cref="IDisposable"/> and <see cref="IResource"/>)
     /// </summary>
     public interface ILoadableResource
-    {    
+    {
         /// <summary>
         /// Used to load this resource by <see cref="ResourceManager"/>.
         /// </summary>

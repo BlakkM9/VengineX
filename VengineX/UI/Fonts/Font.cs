@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VengineX.Resources;
+﻿using VengineX.Resources;
 using VengineX.Wrappers.FreeType;
 
 namespace VengineX.UI.Fonts
@@ -23,7 +18,7 @@ namespace VengineX.UI.Fonts
         /// Dictionary holding all the <see cref="Character"/> that are loaded.
         /// </summary>
         protected Dictionary<char, Character> Characters { get; }
-        
+
         /// <summary>
         /// The size (height) of the font that was loaded in pixels.
         /// </summary>

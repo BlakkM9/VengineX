@@ -1,11 +1,9 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
 namespace VengineX.SourceGenerators
@@ -222,7 +220,7 @@ namespace {nameSpace}
 
             foreach (XElement element in doc.Root.Element("Types").Elements())
             {
-                foreach(XElement value in element.Elements())
+                foreach (XElement value in element.Elements())
                 {
                     TypeDefinitions.Add(value.Name.LocalName, element.Name.LocalName + "." + value.Name.LocalName);
                 }

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using VengineX.Debugging.Logging;
+﻿using VengineX.Debugging.Logging;
 
 namespace VengineX.Resources
 {
     /// <summary>
     /// Caches and manages all the resources for the game.
     /// </summary>
-    public static class ResourceManager 
+    public static class ResourceManager
     {
 
         private static readonly Dictionary<Type, Dictionary<string, IDisposable>> _resourceMap = new Dictionary<Type, Dictionary<string, IDisposable>>();
@@ -100,7 +98,7 @@ namespace VengineX.Resources
                 }
             }
 
-            Logger.Log(Severity.Fatal, Tag.Loading, "Failed to get resource from cache: " + resourcePath + " (" + type.Name +")");
+            Logger.Log(Severity.Fatal, Tag.Loading, "Failed to get resource from cache: " + resourcePath + " (" + type.Name + ")");
             return default;
         }
 

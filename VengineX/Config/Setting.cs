@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VengineX.Config
+﻿namespace VengineX.Config
 {
     /// <summary>
     /// Represents a settings entry in the xml file, located within a <see cref="SettingsSection"/>.

@@ -1,13 +1,6 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
-using OpenTK.Windowing.GraphicsLibraryFramework;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VengineX.Input;
 using VengineX.UI.Elements.Basic;
 
@@ -173,7 +166,7 @@ namespace VengineX.UI
         {
             if (Input.MouseCatched) { return; }
             CurrentElement = FindTopmostElement(Input.MouseState.Position);
-            
+
             if (CurrentElement != null)
             {
                 CurrentElement.Events.InvokeScrolled(args);

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VengineX.Resources;
+﻿using VengineX.Resources;
 
 namespace VengineX.Graphics.Rendering.Shaders
 {

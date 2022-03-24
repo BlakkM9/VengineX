@@ -1,11 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VengineX.Graphics.Rendering.Cameras;
+﻿using OpenTK.Mathematics;
 using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Textures;
 

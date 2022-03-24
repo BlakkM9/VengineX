@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VengineX.Debugging.Logging;
-
-namespace VengineX.Tweening
+﻿namespace VengineX.Tweening
 {
     /// <summary>
     /// A sequence holding different tweens which are executed one after another.

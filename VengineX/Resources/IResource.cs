@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VengineX.Resources
+﻿namespace VengineX.Resources
 {
     /// <summary>
     /// Interface for classes that can be handled by the <see cref="ResourceManager"/>.<br/>

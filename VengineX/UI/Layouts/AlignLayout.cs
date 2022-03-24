@@ -1,9 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VengineX.UI.Elements.Basic;
 
 namespace VengineX.UI.Layouts
@@ -72,7 +67,7 @@ namespace VengineX.UI.Layouts
                 {
                     HorizontalAlignment.Left => child.MarginLeft,
                     HorizontalAlignment.Center => (element.Width - child.Width) / 2 + child.MarginLeft - child.MarginRight,
-                    HorizontalAlignment.Stretch =>  child.MarginLeft,
+                    HorizontalAlignment.Stretch => child.MarginLeft,
                     HorizontalAlignment.Right => element.Width - child.Width - child.MarginRight,
                     _ => throw new NotImplementedException(),
                 };

@@ -1,9 +1,4 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VengineX.Debugging.Logging;
 
 namespace VengineX.Utils.Extensions
@@ -12,7 +7,8 @@ namespace VengineX.Utils.Extensions
     {
         public static int ChannelCount(this SizedInternalFormat internalFormat)
         {
-            switch ((All)internalFormat) {
+            switch ((All)internalFormat)
+            {
                 case All.Rgba8:
                     return 4;
                 case All.Rgb16f:

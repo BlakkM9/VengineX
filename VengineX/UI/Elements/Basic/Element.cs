@@ -1,13 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using OpenTK.Windowing.Common;
-using OpenTK.Windowing.GraphicsLibraryFramework;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VengineX.Graphics.Rendering;
 using VengineX.Graphics.Rendering.Batching;
 using VengineX.UI.Layouts;
 

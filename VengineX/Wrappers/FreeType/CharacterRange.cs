@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VengineX.Wrappers.FreeType
+﻿namespace VengineX.Wrappers.FreeType
 {
     /// <summary>
     /// Represents a range of characters (UTF-16) to be loaded via free type.

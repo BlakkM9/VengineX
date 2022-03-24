@@ -1,17 +1,10 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using VengineX.Debugging.Logging;
 using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Textures;
 using VengineX.Graphics.Rendering.Vertices;
 using VengineX.Resources;
-using VengineX.Utils;
 
 namespace VengineX.Graphics.Rendering.Batching
 {

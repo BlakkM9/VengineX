@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VengineX.Tweening
+﻿namespace VengineX.Tweening
 {
     /// <summary>
     /// Base class for <see cref="Tween"/> and <see cref="Sequence"/>.

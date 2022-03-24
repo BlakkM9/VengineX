@@ -1,14 +1,8 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using VengineX.Debugging.Logging;
-using VengineX.Graphics.Rendering.Vertices;
 using VengineX.Utils;
 
 namespace VengineX.Graphics.Rendering

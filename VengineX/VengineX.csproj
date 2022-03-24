@@ -16,6 +16,7 @@
     <None Remove="_res\font\OpenSans.ttf" />
     <None Remove="_res\gui\Button.xml" />
     <None Remove="_res\gui\defs.xml" />
+    <None Remove="_res\gui\SplashScreenUI.xml" />
     <None Remove="_res\shader\ui\batch.fs.glsl" />
   </ItemGroup>
 
@@ -58,6 +59,7 @@
   
   <ItemGroup>
     <Content Remove="_res\gui\defs.xml" />
+    <Content Remove="_res\gui\SplashScreenUI.xml" />
   </ItemGroup>
 	
 </Project>

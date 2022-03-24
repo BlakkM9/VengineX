@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VengineX.UI.Layouts
+﻿namespace VengineX.UI.Layouts
 {
     /// <summary>
     /// Generalized alignment

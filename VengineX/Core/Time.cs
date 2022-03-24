@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VengineX.Core
+﻿namespace VengineX.Core
 {
     /// <summary>
     /// Static class, providing properties for timing.

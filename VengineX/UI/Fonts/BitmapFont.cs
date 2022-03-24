@@ -5,8 +5,6 @@ using VengineX.Graphics.Rendering.Batching;
 using VengineX.Graphics.Rendering.Buffers;
 using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Textures;
-using VengineX.Graphics.Rendering.UnitModels;
-using VengineX.Graphics.Rendering.Vertices;
 using VengineX.Resources;
 using VengineX.Utils;
 using VengineX.Wrappers.FreeType;

@@ -12,7 +12,7 @@ namespace VengineX.Graphics.Rendering.Cameras
         /// </summary>
         /// <param name="fov">Field of view in radians.</param>
         public PerspectiveCamera(Vector3 position, float fov, float viewportWidth, float viewportHeight, float nearPlane, float farPlane)
-            :base(position)
+            : base(position)
         {
             ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(fov / 2.0f, viewportWidth / viewportHeight, nearPlane, farPlane);
         }

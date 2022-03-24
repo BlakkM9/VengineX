@@ -1,17 +1,7 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VengineX.Graphics.Rendering;
+﻿using OpenTK.Mathematics;
 using VengineX.Graphics.Rendering.Batching;
-using VengineX.Graphics.Rendering.Shaders;
-using VengineX.Graphics.Rendering.Vertices;
 using VengineX.Resources;
 using VengineX.UI.Fonts;
-using VengineX.Utils;
 
 namespace VengineX.UI.Elements.Basic
 {

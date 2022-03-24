@@ -1,9 +1,4 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VengineX.Debugging.Logging;
 using VengineX.Graphics.Rendering.Textures;
 
@@ -30,7 +25,7 @@ namespace VengineX.Graphics.Rendering.Buffers
             int width, int height,
             SizedInternalFormat internalFormat,
             PixelFormat pixelFormat,
-            bool attachDepthAndStenchil) :base()
+            bool attachDepthAndStenchil) : base()
         {
             GL.CreateFramebuffers(1, out _fbo);
 

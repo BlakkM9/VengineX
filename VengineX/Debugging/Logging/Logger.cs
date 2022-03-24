@@ -1,13 +1,8 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VengineX.Debugging.Logging
 {
@@ -178,11 +173,11 @@ namespace VengineX.Debugging.Logging
         {
             return severity switch
             {
-                Severity.Fatal =>   "[ FATAL ] ",
-                Severity.Error =>   "[ ERROR ] ",
+                Severity.Fatal => "[ FATAL ] ",
+                Severity.Error => "[ ERROR ] ",
                 Severity.Warning => "[ WARNING ] ",
-                Severity.Info =>    "[ INFO ] ",
-                Severity.Debug =>   "[ DEBUG ] ",
+                Severity.Info => "[ INFO ] ",
+                Severity.Debug => "[ DEBUG ] ",
                 _ => throw new ArgumentException($"Severity {severity} is unknown to logger.")
             };
         }

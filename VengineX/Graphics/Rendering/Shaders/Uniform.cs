@@ -1,10 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VengineX.Graphics.Rendering.Shaders
 {
@@ -49,7 +44,7 @@ namespace VengineX.Graphics.Rendering.Shaders
         }
 
 
-        public void Set1(float value) => GL.ProgramUniform1(Shader.Handle, Location, value); 
+        public void Set1(float value) => GL.ProgramUniform1(Shader.Handle, Location, value);
 
         public void Set1(float[] values) => GL.ProgramUniform1(Shader.Handle, Location, values.Length, values);
 

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using VengineX.Debugging.Logging;
 
 
-namespace VengineX.Graphics.Rendering.Shaders {
+namespace VengineX.Graphics.Rendering.Shaders
+{
 
     // TODO implement variables that can be set on compilation that will be replaced in the shader source
     /// <summary>
@@ -18,12 +14,13 @@ namespace VengineX.Graphics.Rendering.Shaders {
     /// #endif
     /// #include ...
     /// </summary>
-    public static class ShaderPreprocessor {
+    public static class ShaderPreprocessor
+    {
 
-        private const string IFNDEF     = "#ifndef";
-        private const string DEFINE     = "#define";
-        private const string ENDIF      = "#endif";
-        private const string INCLUDE    = "#include";
+        private const string IFNDEF = "#ifndef";
+        private const string DEFINE = "#define";
+        private const string ENDIF = "#endif";
+        private const string INCLUDE = "#include";
 
 
         private static readonly string[] DIRECTIVES = {
@@ -38,7 +35,8 @@ namespace VengineX.Graphics.Rendering.Shaders {
         /// Loads the shader and processes all preprocess directives
         /// </summary>
         /// <returns>Preprocessed shader source</returns>
-        public static string ParseAndPreprocess(string shaderPath) {
+        public static string ParseAndPreprocess(string shaderPath)
+        {
 
             string source = ParseShader(shaderPath);
             return ProcessDirectives(shaderPath, source);
@@ -50,12 +48,16 @@ namespace VengineX.Graphics.Rendering.Shaders {
         /// </summary>
         /// <param name="shaderPath">Path to shader file</param>
         /// <returns>Shader source code</returns>
-        private static string ParseShader(string shaderPath) {
-            try {
+        private static string ParseShader(string shaderPath)
+        {
+            try
+            {
                 using StreamReader reader = new StreamReader(shaderPath, Encoding.UTF8);
 
                 return reader.ReadToEnd();
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Logger.Log(Severity.Fatal, Tag.Shader, "Failed to read shader file " + shaderPath + ":\n" + e);
                 return "";
             }
@@ -68,7 +70,8 @@ namespace VengineX.Graphics.Rendering.Shaders {
         /// <param name="shaderPath">Path to the shader file.</param>
         /// <param name="rawSource">Unprocessed shader source</param>
         /// <returns>Processed shader code</returns>
-        private static string ProcessDirectives(string shaderPath, string rawSource) {
+        private static string ProcessDirectives(string shaderPath, string rawSource)
+        {
             HashSet<string> defines = new HashSet<string>();
             bool inIf = false;
 
@@ -78,11 +81,14 @@ namespace VengineX.Graphics.Rendering.Shaders {
             string[] lines = rawSource.Split(Environment.NewLine, splitOptions);
 
             // Check every line
-            foreach (string line in lines) {
+            foreach (string line in lines)
+            {
 
                 // Skip lines when in if (only check for endif to toggle)
-                if (inIf) {
-                    if (line.StartsWith(ENDIF)) {
+                if (inIf)
+                {
+                    if (line.StartsWith(ENDIF))
+                    {
                         inIf = false;
                     }
 
@@ -92,14 +98,17 @@ namespace VengineX.Graphics.Rendering.Shaders {
                 bool lineProcessed = false;
 
                 // Check every supported directive
-                for (int i = 0; i < DIRECTIVES.Length; i++) {
+                for (int i = 0; i < DIRECTIVES.Length; i++)
+                {
 
-                    if (line.StartsWith(DIRECTIVES[i])) {
+                    if (line.StartsWith(DIRECTIVES[i]))
+                    {
                         // Split by spaces and use first two (directive and argument)
                         string[] tokens = line.Split(" ", 2, splitOptions);
                         //Console.WriteLine(tokens[0] + " " + (tokens.Length > 1 ? tokens[1] : null));
-                        
-                        switch (tokens[0]) {
+
+                        switch (tokens[0])
+                        {
                             case IFNDEF:
                                 // Check if defined, if so set inIf to true
                                 if (defines.Contains(tokens[1])) { inIf = true; }
@@ -127,7 +136,8 @@ namespace VengineX.Graphics.Rendering.Shaders {
                     }
                 }
 
-                if (!lineProcessed) {
+                if (!lineProcessed)
+                {
                     // Copy line if no known directive found and processed
                     preprocessedSource += line + "\n";
                 }

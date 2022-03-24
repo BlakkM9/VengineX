@@ -14,7 +14,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stbilib", "stbilib\stbilib.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freetypelib", "freetypelib\freetypelib.vcxproj", "{A6006DBF-9C43-4495-92BD-0ED1BE15A7E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceGenerators", "SourceGenerators\SourceGenerators.csproj", "{1178D150-2E9F-4613-8823-9879B1023124}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceGenerators", "SourceGenerators\SourceGenerators.csproj", "{1178D150-2E9F-4613-8823-9879B1023124}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VengineX.Wrappers.Stbi
+﻿namespace VengineX.Wrappers.Stbi
 {
     /// <summary>
     /// Class for images loaded with <see cref="StbiWrapper"/>.
