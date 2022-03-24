@@ -1,13 +1,12 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using VengineX.Core;
+using VengineX.ECS;
 using VengineX.Graphics.Rendering.Pipelines;
 using VengineX.Graphics.Rendering.Textures;
 using VengineX.Input;
 using VengineX.Resources;
 using VengineX.Tweening;
-using VengineX.UI;
 using VengineX.UI.Layouts;
 using VengineX.Wrappers.Stbi;
 using Image = VengineX.UI.Elements.Basic.Image;
@@ -30,8 +29,8 @@ namespace VengineX.Screens
         /// </summary>
         public event Action? Finished;
 
-        private Sequence _splashSequence;
         private Texture2D _logo;
+        private SplashScreenUI _splashScreenUI;
 
 
         /// <summary>
@@ -67,44 +66,19 @@ namespace VengineX.Screens
                 },
             });
 
-            //_logoImage = new Image(0, 0, 512, 512, _logo);
-            _pipeline.OverlayUI.Layout = new AlignLayout(HorizontalAlignment.Center, VerticalAlignment.Center);
-            Image logoImage = new Image(_pipeline.OverlayUI, _logo);
-            logoImage.Size = new Vector2(512, 512);
-            _pipeline.OverlayUI.UpdateLayout();
-
+            _splashScreenUI = new SplashScreenUI(_pipeline.OverlayUI);
+            _splashScreenUI.Finished += () => Finished?.Invoke();
 
             // Clear color
             _pipeline.ClearColor = Vector4.Zero;
-
-
-            // Create logo animation
-            float startSize = logoImage.Size.X;
-            float sizeChange = 40;
-            float aChange = 1;
-            Tween inAnim = new Tween(1.5f, EasingFunction.EaseOutCubic, (t) =>
-                {
-                    logoImage.Tint = new Vector4(1, 1, 1, t * aChange);
-                    logoImage.Width = startSize + t * sizeChange;
-                    logoImage.Height = startSize + t * sizeChange;
-                    _pipeline.OverlayUI.UpdateLayout();
-                });
-            Tween outAnim = new Tween(0.5f, EasingFunction.EaseOutCubic, (t) =>
-            {
-                logoImage.Tint = new Vector4(1, 1, 1, 1 - (t * aChange));
-            });
-
-
-            _splashSequence = new Sequence(inAnim, Tween.Delay(0.5f), outAnim);
-            _splashSequence.Stopped += (_) => Finished?.Invoke();
-            _splashSequence.Start();
         }
 
 
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public void Update(double delta) {
+        public void Update(double delta)
+        {
 
             // Skip splash screen with ESC
             KeyboardState kbs = _input.KeyboardState;
@@ -112,7 +86,7 @@ namespace VengineX.Screens
 
             if (kbs.IsAnyKeyDown || ms.IsAnyButtonDown)
             {
-                _splashSequence.Stop();
+                _splashScreenUI.Skip();
             }
         }
 

@@ -1,18 +1,9 @@
 ﻿using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VengineX.Graphics.Rendering;
 using VengineX.Graphics.Rendering.Batching;
-using VengineX.Graphics.Rendering.Shaders;
-using VengineX.Graphics.Rendering.UnitModels;
 using VengineX.Input;
-using VengineX.Resources;
 using VengineX.UI.Elements.Basic;
-using VengineX.UI.Fonts;
-using VengineX.Wrappers.FreeType;
+using VengineX.UI.Layouts;
 
 namespace VengineX.UI
 {
@@ -63,6 +54,7 @@ namespace VengineX.UI
 
             _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, 0, Height, -1, 1);
             BatchRenderer.SetMatrices(ref ProjectionMatrix, ref ViewMatrix);
+            Layout = new AlignLayout(HorizontalAlignment.Stretch, VerticalAlignment.Stretch);
         }
 
 

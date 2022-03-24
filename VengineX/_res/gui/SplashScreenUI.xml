@@ -1,0 +1,7 @@
+﻿<SplashScreenUI Namespace="VengineX.Screens" 
+			    Layout="AlignLayout HorizontalAlignment.Center VerticalAlignment.Center">
+	<Image Name="logoImage" 
+		   Size="500 500" 
+		   Texture="texture2d.logo">
+	</Image>
+</SplashScreenUI>
