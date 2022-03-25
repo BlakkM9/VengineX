@@ -1,4 +1,6 @@
-﻿namespace VengineX.ECS
+﻿using VengineX.Debugging.Logging;
+
+namespace VengineX.ECS
 {
     /// <summary>
     /// This class handles all the current entites and components.<br/>
@@ -9,7 +11,7 @@
         /// <summary>
         /// IDs that became available because entities were removed.
         /// </summary>
-        private Stack<int> _availableIds;
+        private readonly Stack<int> _availableIds;
 
         /// <summary>
         /// The next entity id to assign.
@@ -20,7 +22,7 @@
         /// Dictionary holding all the components.<br/>
         /// Key is the component type while value is a list of all the components.
         /// </summary>
-        private Dictionary<Type, List<Component>> _components;
+        private readonly Dictionary<Type, List<Component>> _components;
 
 
         /// <summary>
@@ -35,11 +37,11 @@
 
 
         /// <summary>
-        /// Creates a new <see cref="Entity"/> of given type <typeparamref name="E"/>.
+        /// Attaches the given entity and all it's components to this registry.
         /// </summary>
-        public E CreateEntity<E>() where E : Entity, new()
+        public E AttachEntity<E>(E entity) where E : Entity
         {
-            E entity = new E();
+            // Assign registry and id to this entity
             entity.Registry = this;
 
             if (_availableIds.Count > 0)
@@ -49,6 +51,12 @@
             else
             {
                 entity.ID = _nextEntityId++;
+            }
+
+            // Attach the entities components to the registry
+            foreach (KeyValuePair<Type, Component> kvp in entity.EnumerateComponents())
+            {
+                AttachComponent(entity, kvp.Value, kvp.Key);
             }
 
             return entity;
@@ -75,16 +83,6 @@
 
 
         /// <summary>
-        /// Creates and attaches a <see cref="Component"/> of given type <typeparamref name="C"/> to given <see cref="Entity"/>.
-        /// </summary>
-        internal C AttachComponent<C>(Entity entity) where C : Component, new()
-        {
-            C component = new C();
-            return AttachComponent(entity, component);
-        }
-
-
-        /// <summary>
         /// Attaches the given <see cref="Component"/> to given <see cref="Entity"/>.
         /// </summary>
         internal C AttachComponent<C>(Entity entity, C component) where C : Component
@@ -103,23 +101,77 @@
 
 
         /// <summary>
+        /// Attaches the given <see cref="Component"/> to given <see cref="Entity"/>.<br/>
+        /// Non generic version that needs the component type instead.
+        /// </summary>
+        internal Component AttachComponent(Entity entity, Component component, Type componentType)
+        {
+            component.EntityID = entity.ID;
+
+            // Create list if new component type
+            if (!_components.ContainsKey(componentType))
+            {
+                _components.Add(componentType, new List<Component>());
+            }
+
+            _components[componentType].Add(component);
+            return component;
+        }
+
+
+        /// <summary>
         /// Removes the component of given type from given entity.
         /// </summary>
         internal void RemoveComponent<C>(Entity entity) where C : Component
         {
-            C component = entity.GetComponent<C>();
-            _components[typeof(C)].Remove(component);
+            C? component = entity.GetComponent<C>();
+
+            if (component != null)
+            {
+                if (_components.TryGetValue(typeof(C), out List<Component>? comps))
+                {
+                    if (comps.Remove(component))
+                    {
+                        return;
+                    }
+                }
+            }
+
+            Logger.Log(Severity.Warning, "Component was not removed because it was not attached to this regitsry.");
+        }
+
+
+        /// <summary>
+        /// Removes the component of given type from given entity.<br/>
+        /// Non generic version that takes the component type instead.
+        /// </summary>
+        internal void RemoveComponent(Entity entity, Type componentType)
+        {
+            Component? component = entity.GetComponent(componentType);
+
+            if (component != null)
+            {
+                if (_components.TryGetValue(componentType, out List<Component>? comps))
+                {
+                    if (comps.Remove(component))
+                    {
+                        return;
+                    }
+                }
+            }
+
+            Logger.Log(Severity.Warning, "Component was not removed because it was not attached to this regitsry.");
         }
 
 
         /// <summary>
         /// Enumerates all present <see cref="Component"/>s in this registry of given type <typeparamref name="C"/>.
         /// </summary>
-        internal IEnumerable<C> EnumerateComponents<C>() where C : Component
+        public IEnumerable<C> EnumerateComponents<C>() where C : Component
         {
             if (_components.TryGetValue(typeof(C), out List<Component>? components))
             {
-                return (IEnumerable<C>)components;
+                return Enumerable.Cast<C>(components);
             }
             else
             {
