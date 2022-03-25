@@ -8,7 +8,7 @@ using VengineX.Resources;
 
 namespace VengineX.Graphics.Rendering.Batching
 {
-    public class UIBatchRenderer : IBatchRenderer
+    public class BatchRenderer2D : Renderer
     {
 
         private Shader _batchShader;
@@ -34,7 +34,7 @@ namespace VengineX.Graphics.Rendering.Batching
         private Texture2D _nextTexture;
         private Texture2D _currentTexture;
 
-        public UIBatchRenderer(int maxQuadCount, Shader batchShader)
+        public BatchRenderer2D(int maxQuadCount, Shader batchShader)
         {
             _batchShader = batchShader;
             _batchShader.GetUniform("uTexture").Set1(0);
@@ -61,14 +61,12 @@ namespace VengineX.Graphics.Rendering.Batching
                 offset += 4;
             }
 
-            _mesh = new Mesh<UIVertex>(Vector3.Zero, BufferUsageHint.DynamicDraw, BufferUsageHint.StaticDraw, null, indices);
+            _mesh = new Mesh<UIVertex>(BufferUsageHint.DynamicDraw, BufferUsageHint.StaticDraw, null, indices);
             // Create new empty buffer
             _mesh.BufferVertices(null, Marshal.SizeOf<UIVertex>() * _maxVertexCount);
 
 
-            //_whiteTexture = ResourceManager.GetResource<Texture2D>("texture2d.white");
-            //Console.WriteLine(_whiteTexture.Handle);
-
+            // TODO find out why this cannot be done in game load and received from cache
             byte[] white = new byte[]
             {
                 0xff, 0xff, 0xff, 0xff
@@ -96,7 +94,7 @@ namespace VengineX.Graphics.Rendering.Batching
         }
 
 
-        public UIBatchRenderer(int maxQuadCount) : this(maxQuadCount, ResourceManager.GetResource<Shader>("shader.ui.batch")) { }
+        public BatchRenderer2D(int maxQuadCount) : this(maxQuadCount, ResourceManager.GetResource<Shader>("shader.ui.batch")) { }
 
 
         public void SetMatrices(ref Matrix4 projMatrix, ref Matrix4 viewMatrix)
@@ -109,7 +107,7 @@ namespace VengineX.Graphics.Rendering.Batching
         /// <summary>
         /// Adds a quad to the batch.
         /// </summary>
-        public void Add(UIBatchQuad quad)
+        public void Add(QuadVertex quad)
         {
             if (quad.texture == null) { _nextTexture = _whiteTexture; }
             else { _nextTexture = quad.texture; }

@@ -1,7 +1,7 @@
 ﻿namespace VengineX.Graphics.Rendering.Batching
 {
 
-    public interface IBatchRenderer : IDisposable
+    public interface Renderer : IDisposable
     {
         public void Begin();
         public void End();

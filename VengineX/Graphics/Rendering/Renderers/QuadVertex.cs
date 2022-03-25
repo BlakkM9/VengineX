@@ -3,7 +3,7 @@ using VengineX.Graphics.Rendering.Textures;
 
 namespace VengineX.Graphics.Rendering.Batching
 {
-    public struct UIBatchQuad
+    public struct QuadVertex
     {
         public Vector2 size = Vector2.One;
         public Vector2 positon = Vector2.Zero;
@@ -14,6 +14,6 @@ namespace VengineX.Graphics.Rendering.Batching
         public Vector4 color = Vector4.One;
         public Texture2D? texture = null;
 
-        public UIBatchQuad() { }
+        public QuadVertex() { }
     }
 }
