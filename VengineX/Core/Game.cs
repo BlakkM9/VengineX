@@ -2,10 +2,12 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+using System.Runtime.InteropServices;
 using VengineX.Config;
 using VengineX.Debugging.Logging;
 using VengineX.ECS;
 using VengineX.Graphics.Rendering.Shaders;
+using VengineX.Graphics.Rendering.Textures;
 using VengineX.Input;
 using VengineX.Resources;
 using VengineX.Tweening;
@@ -231,11 +233,6 @@ namespace VengineX.Core
         /// </summary>
         protected virtual void LoadBaseResources()
         {
-
-
-
-
-            //// White texture
             //byte[] white = new byte[]
             //{
             //    0xff, 0xff, 0xff, 0xff
@@ -255,9 +252,7 @@ namespace VengineX.Core
             //    PixelData = pinned.AddrOfPinnedObject(),
 
             //};
-            //Texture2D whiteTexture = new Texture2D(ref texParams);
-            //ResourceManager.CacheResource("texture2d.white", whiteTexture);
-            //Console.WriteLine(whiteTexture.Handle);
+            //ResourceManager.CacheResource("texture2d.white", new Texture2D(ref texParams));
             //pinned.Free();
 
 
