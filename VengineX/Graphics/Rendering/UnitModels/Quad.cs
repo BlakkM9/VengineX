@@ -54,7 +54,7 @@ namespace VengineX.Graphics.Rendering.UnitModels
         /// </summary>
         public Quad()
         {
-            _mesh = new Mesh<UIVertex>(Vector3.Zero, BufferUsageHint.StaticDraw, BufferUsageHint.StaticDraw, vertices, indices);
+            _mesh = new Mesh<UIVertex>(BufferUsageHint.StaticDraw, BufferUsageHint.StaticDraw, vertices, indices);
         }
 
         /// <summary>
