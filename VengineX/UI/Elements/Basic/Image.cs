@@ -65,9 +65,9 @@ namespace VengineX.UI.Elements.Basic
             : this(parent, texture, Vector4.Zero, Vector4.One) { }
 
 
-        public override IEnumerable<UIBatchQuad> EnumerateQuads()
+        public override IEnumerable<QuadVertex> EnumerateQuads()
         {
-            UIBatchQuad q = new UIBatchQuad();
+            QuadVertex q = new QuadVertex();
             q.positon = new Vector2(AbsolutePosition.X, Canvas.Height - AbsolutePosition.Y - Height);
             q.size = Size;
             q.texture = Texture;

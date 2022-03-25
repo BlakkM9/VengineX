@@ -22,7 +22,7 @@ namespace VengineX.UI
         /// <summary>
         /// The Sprite batch renderer that is used to draw the ui.
         /// </summary>
-        public UIBatchRenderer BatchRenderer { get; private set; }
+        public BatchRenderer2D BatchRenderer { get; private set; }
 
         /// <summary>
         /// The projection matrix of this canvas
@@ -48,7 +48,7 @@ namespace VengineX.UI
         /// </summary>
         public Canvas(float width, float height, InputManager input) : base(null)
         {
-            BatchRenderer = new UIBatchRenderer(1000);
+            BatchRenderer = new BatchRenderer2D(1000);
             EventSystem = new EventSystem(input, this);
             Size = new Vector2(width, height);
 
@@ -79,7 +79,7 @@ namespace VengineX.UI
             {
                 if (child.Visible)
                 {
-                    foreach (UIBatchQuad element in child.EnumerateQuads())
+                    foreach (QuadVertex element in child.EnumerateQuads())
                     {
                         BatchRenderer.Add(element);
                     }
@@ -102,7 +102,7 @@ namespace VengineX.UI
         }
 
 
-        public override IEnumerable<UIBatchQuad> EnumerateQuads()
+        public override IEnumerable<QuadVertex> EnumerateQuads()
         {
             yield break;
         }

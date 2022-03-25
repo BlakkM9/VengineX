@@ -132,7 +132,7 @@ namespace VengineX.UI.Fonts
 
             // Render all the textures
             fb.Bind();
-            UIBatchRenderer br = new UIBatchRenderer(1000, bmpFontShader);
+            BatchRenderer2D br = new BatchRenderer2D(1000, bmpFontShader);
             fb.Clear(ClearBuffer.Color, new float[] { 0, 0, 0, 0 });
 
             Matrix4 proj = Matrix4.CreateOrthographicOffCenter(0, textureSize, 0, textureSize, -1.0f, 1.0f);
@@ -153,7 +153,7 @@ namespace VengineX.UI.Fonts
                 float h = glyph.height;
 
 
-                UIBatchQuad q = new UIBatchQuad();
+                QuadVertex q = new QuadVertex();
                 q.positon = new Vector2(x, textureSize - y - h);
                 q.size = new Vector2(w, h);
                 q.texture = textures[glyph.charCode];
@@ -214,7 +214,7 @@ namespace VengineX.UI.Fonts
         }
 
 
-        public UIBatchQuad[] CreateQuads(string text, Vector2 position, float size, Vector4 color)
+        public QuadVertex[] CreateQuads(string text, Vector2 position, float size, Vector4 color)
         {
             // Calculate quad count
             int quadCount = 0;
@@ -224,7 +224,7 @@ namespace VengineX.UI.Fonts
                 if (ch.HasTexture) { quadCount++; }
             }
 
-            UIBatchQuad[] quads = new UIBatchQuad[quadCount];
+            QuadVertex[] quads = new QuadVertex[quadCount];
             int index = 0;
             float scale = size / Size;
             float x = position.X;
@@ -244,7 +244,7 @@ namespace VengineX.UI.Fonts
                     float h = ch.Size.Y * scale;
 
 
-                    quads[index++] = new UIBatchQuad()
+                    quads[index++] = new QuadVertex()
                     {
                         positon = new Vector2(xPos, yPos),
                         size = new Vector2(w, h),

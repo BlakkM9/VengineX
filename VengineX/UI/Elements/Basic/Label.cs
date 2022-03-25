@@ -29,8 +29,7 @@ namespace VengineX.UI.Elements.Basic
                 Size = new Vector2(_font.CalculateWidth(_text, _textSize), _textSize);
             }
         }
-
-        private float _textSize = 20;
+        private float _textSize;
 
         /// <summary>
         /// Sets and gets the text of this label.
@@ -85,7 +84,7 @@ namespace VengineX.UI.Elements.Basic
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public override IEnumerable<UIBatchQuad> EnumerateQuads()
+        public override IEnumerable<QuadVertex> EnumerateQuads()
         {
             return _font.CreateQuads(
                 Text,

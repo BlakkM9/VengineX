@@ -327,9 +327,9 @@ namespace VengineX.UI.Elements.Basic
 
 
         /// <summary>
-        /// Generates and returns the <see cref="UIBatchQuad"/>s for this element.
+        /// Generates and returns the <see cref="QuadVertex"/>s for this element.
         /// </summary>
         /// <returns></returns>
-        public abstract IEnumerable<UIBatchQuad> EnumerateQuads();
+        public abstract IEnumerable<QuadVertex> EnumerateQuads();
     }
 }

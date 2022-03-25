@@ -20,10 +20,11 @@ namespace VengineX.UI.Elements.Basic
             Canvas.UpdateLayout();
         }
 
+
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public override IEnumerable<UIBatchQuad> EnumerateQuads()
+        public override IEnumerable<QuadVertex> EnumerateQuads()
         {
             yield break;
         }

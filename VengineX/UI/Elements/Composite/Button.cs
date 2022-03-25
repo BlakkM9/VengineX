@@ -12,6 +12,7 @@ namespace VengineX.UI.Elements.Composite
         public Vector4 PressedColor { set => _pressedImage.Color = value; }
         public string Text { set => _label.Text = value; }
         public Vector4 TextColor { set => _label.Color = value; }
+        public float TextSize { set => _label.TextSize = value; }
         public Button(Element? parent) : base(parent) { }
     }
 }
