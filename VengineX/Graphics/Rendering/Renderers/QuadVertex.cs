@@ -15,5 +15,10 @@ namespace VengineX.Graphics.Rendering.Renderers
         public Texture2D? texture = null;
 
         public QuadVertex() { }
+
+        public override string ToString()
+        {
+            return $"size: {size}, pos: {position}, uvs: {uv0}, {uv1}, {uv2}, {uv3}, color: {color}, texture: {texture?.ResourcePath}";
+        }
     }
 }
