@@ -1,22 +1,21 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using System.Runtime.InteropServices;
+using VengineX.Graphics.Rendering.Cameras;
+using VengineX.Graphics.Rendering.Meshes;
 using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Textures;
 using VengineX.Graphics.Rendering.Vertices;
 using VengineX.Resources;
 
-namespace VengineX.Graphics.Rendering.Batching
+namespace VengineX.Graphics.Rendering.Renderers
 {
-    public class BatchRenderer2D : Renderer
+    public class BatchRenderer2D : IDisposable
     {
 
         private Shader _batchShader;
         private Uniform _viewMatrixUniform;
         private Uniform _projMatrixUniform;
-
-        //public Matrix4 ViewMatrix { set => _viewMatrixUniform.SetMat4(ref value); }
-        //public Matrix4 ProjectionMatrix { set => _viewMatrixUniform.SetMat4(ref value); }
 
 
         private readonly int _maxVertexCount;
@@ -33,6 +32,7 @@ namespace VengineX.Graphics.Rendering.Batching
 
         private Texture2D _nextTexture;
         private Texture2D _currentTexture;
+
 
         public BatchRenderer2D(int maxQuadCount, Shader batchShader)
         {
@@ -94,23 +94,48 @@ namespace VengineX.Graphics.Rendering.Batching
         }
 
 
+        /// <summary>
+        /// Creates a new batch renderer 2d with the given max quad count.<br/>
+        /// Uses the default batch ui shader ("shader.ui.batch").
+        /// </summary>
+        /// <param name="maxQuadCount"></param>
         public BatchRenderer2D(int maxQuadCount) : this(maxQuadCount, ResourceManager.GetResource<Shader>("shader.ui.batch")) { }
 
 
-        public void SetMatrices(ref Matrix4 projMatrix, ref Matrix4 viewMatrix)
+        /// <summary>
+        /// Begin the batch renderer. Submit geometry between <see cref="Begin(Camera)"/> and <see cref="End"/><br/>
+        /// Render batch by calling <see cref="Flush"/>.
+        /// </summary>
+        /// <param name="camera">Camera that provides view and proj matrices for this batch.</param>
+        public void Begin(Camera camera)
         {
-            _viewMatrixUniform.SetMat4(ref viewMatrix);
-            _projMatrixUniform.SetMat4(ref projMatrix);
+            _vertexIndex = 0;
+            _viewMatrixUniform.SetMat4(ref camera.ViewMatrix);
+            _projMatrixUniform.SetMat4(ref camera.ProjectionMatrix);
         }
 
 
         /// <summary>
-        /// Adds a quad to the batch.
+        /// Beginning new batch inside of current batch. View and Proj matrices do not need to set again.
         /// </summary>
-        public void Add(QuadVertex quad)
+        private void Begin()
         {
-            if (quad.texture == null) { _nextTexture = _whiteTexture; }
-            else { _nextTexture = quad.texture; }
+            _vertexIndex = 0;
+        }
+
+
+        /// <summary>
+        /// Submits a quad to the renderer with given values.
+        /// </summary>
+        /// <param name="size">Size of the quad.</param>
+        /// <param name="position">Absolute position of the quad.</param>
+        /// <param name="uvs">Array with lengh of 4, containing uvs for quad.</param>
+        /// <param name="color">Color/Tint of the quad.</param>
+        /// <param name="texture">Texture of this quad. Might be null if no texture.</param>
+        public void Submit(Vector2 size, Vector2 position, Vector2[] uvs, Vector4 color, Texture2D? texture)
+        {
+            if (texture == null) { _nextTexture = _whiteTexture; }
+            else { _nextTexture = texture; }
 
             if (_indexCount + 6 > _maxIndexCount || _currentTexture.Handle != _nextTexture.Handle)
             {
@@ -123,30 +148,30 @@ namespace VengineX.Graphics.Rendering.Batching
             // bottom left
             _vertices[_vertexIndex + 0] = new UIVertex()
             {
-                position = new Vector3(quad.positon.X, quad.positon.Y + quad.size.Y, 0),
-                color = quad.color,
-                uvs = quad.uv0,
+                position = new Vector3(position.X, position.Y + size.Y, 0),
+                color = color,
+                uvs = uvs[0],
             };
             // top left
             _vertices[_vertexIndex + 1] = new UIVertex()
             {
-                position = new Vector3(quad.positon.X, quad.positon.Y, 0),
-                color = quad.color,
-                uvs = quad.uv1,
+                position = new Vector3(position.X, position.Y, 0),
+                color = color,
+                uvs = uvs[1],
             };
             // bottom right
             _vertices[_vertexIndex + 2] = new UIVertex()
             {
-                position = new Vector3(quad.positon.X + quad.size.X, quad.positon.Y + quad.size.Y, 0),
-                color = quad.color,
-                uvs = quad.uv2,
+                position = new Vector3(position.X + size.X, position.Y + size.Y, 0),
+                color = color,
+                uvs = uvs[2],
             };
             // top right
             _vertices[_vertexIndex + 3] = new UIVertex()
             {
-                position = new Vector3(quad.positon.X + quad.size.X, quad.positon.Y, 0),
-                color = quad.color,
-                uvs = quad.uv3,
+                position = new Vector3(position.X + size.X, position.Y, 0),
+                color = color,
+                uvs = uvs[3],
             };
 
             _vertexIndex += 4;
@@ -154,12 +179,20 @@ namespace VengineX.Graphics.Rendering.Batching
         }
 
 
-        public void Begin()
+        /// <summary>
+        /// Submits the given quad to the batch.
+        /// </summary>
+        public void Submit(QuadVertex quad)
         {
-            _vertexIndex = 0;
+            Submit(quad.size, quad.position,
+                new Vector2[] { quad.uv0, quad.uv1, quad.uv2, quad.uv3 },
+                quad.color, quad.texture);
         }
 
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public void End()
         {
             int size = _vertexIndex * Marshal.SizeOf<UIVertex>();
@@ -167,6 +200,9 @@ namespace VengineX.Graphics.Rendering.Batching
         }
 
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public void Flush()
         {
             _currentTexture.Bind();

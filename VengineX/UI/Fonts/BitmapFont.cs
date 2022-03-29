@@ -160,7 +160,7 @@ namespace VengineX.UI.Fonts
                 q.uv1 = new Vector2(0, 1);
                 q.uv2 = new Vector2(1, 0);
                 q.uv3 = new Vector2(1, 1);
-                br.Add(q);
+                br.Submit(q);
 
 
                 // Calculate uvs: upper-left, upper-right, lower-left, lower-right.
