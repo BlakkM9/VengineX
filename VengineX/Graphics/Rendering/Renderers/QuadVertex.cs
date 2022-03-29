@@ -1,12 +1,12 @@
 ﻿using OpenTK.Mathematics;
 using VengineX.Graphics.Rendering.Textures;
 
-namespace VengineX.Graphics.Rendering.Batching
+namespace VengineX.Graphics.Rendering.Renderers
 {
     public struct QuadVertex
     {
         public Vector2 size = Vector2.One;
-        public Vector2 positon = Vector2.Zero;
+        public Vector2 position = Vector2.Zero;
         public Vector2 uv0 = new Vector2(0, 1);
         public Vector2 uv1 = new Vector2(0, 0);
         public Vector2 uv2 = new Vector2(1, 1);

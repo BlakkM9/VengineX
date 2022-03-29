@@ -3,10 +3,9 @@ using OpenTK.Mathematics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using VengineX.Debugging.Logging;
-using VengineX.Graphics.Rendering.Meshes;
 using VengineX.Utils;
 
-namespace VengineX.Graphics.Rendering
+namespace VengineX.Graphics.Rendering.Meshes
 {
 
     /// <summary>

@@ -1,8 +1,9 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using VengineX.Debugging.Logging;
-using VengineX.Graphics.Rendering.Batching;
 using VengineX.Graphics.Rendering.Buffers;
+using VengineX.Graphics.Rendering.Cameras;
+using VengineX.Graphics.Rendering.Renderers;
 using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Textures;
 using VengineX.Resources;
@@ -135,15 +136,13 @@ namespace VengineX.UI.Fonts
             BatchRenderer2D br = new BatchRenderer2D(1000, bmpFontShader);
             fb.Clear(ClearBuffer.Color, new float[] { 0, 0, 0, 0 });
 
-            Matrix4 proj = Matrix4.CreateOrthographicOffCenter(0, textureSize, 0, textureSize, -1.0f, 1.0f);
-            Matrix4 view = Matrix4.Identity;
-            br.SetMatrices(ref proj, ref view);
+            OrthographicCamera camera = new OrthographicCamera(textureSize, textureSize, -1, 1);
 
             int rowSpaceUsed = 0;
             int x = 0;
             int y = 0;
 
-            br.Begin();
+            br.Begin(camera);
 
             for (int i = 0; i < length; i++)
             {
@@ -154,7 +153,7 @@ namespace VengineX.UI.Fonts
 
 
                 QuadVertex q = new QuadVertex();
-                q.positon = new Vector2(x, textureSize - y - h);
+                q.position = new Vector2(x, textureSize - y - h);
                 q.size = new Vector2(w, h);
                 q.texture = textures[glyph.charCode];
                 q.uv0 = new Vector2(0, 0);
@@ -246,7 +245,7 @@ namespace VengineX.UI.Fonts
 
                     quads[index++] = new QuadVertex()
                     {
-                        positon = new Vector2(xPos, yPos),
+                        position = new Vector2(xPos, yPos),
                         size = new Vector2(w, h),
                         uv0 = ch.UVs[0],
                         uv1 = ch.UVs[1],
