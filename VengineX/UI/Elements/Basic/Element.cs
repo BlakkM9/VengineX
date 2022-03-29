@@ -333,9 +333,9 @@ namespace VengineX.UI.Elements.Basic
         {
             foreach (Element child in EnumerateChildren())
             {
-                foreach (QuadVertex quadVertex in child.EnumerateQuads())
+                foreach (QuadVertex quad in child.EnumerateQuads())
                 {
-                    yield return quadVertex;
+                    yield return quad;
                 }
             }
         }
