@@ -49,7 +49,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	<ProjectReference Include="..\..\VengineX\SourceGenerators\SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	<ProjectReference Include="..\..\VengineX\SourceGenerators\SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
   </ItemGroup>
   
   <ItemGroup>
@@ -58,10 +58,6 @@
   
   <ItemGroup>
     <Content Remove="_res\gui\defs.xml" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Screens\" />
   </ItemGroup>
 	
 </Project>
