@@ -66,6 +66,7 @@ namespace VengineX.ECS
         /// <summary>
         /// Removes this entity from the registry (and all its components).
         /// </summary>
+        /// <param name="entity">The entity to remove from this registry.</param>
         public void RemoveEntity(Entity entity)
         {
             int id = entity.ID;
@@ -87,16 +88,7 @@ namespace VengineX.ECS
         /// </summary>
         internal C AttachComponent<C>(Entity entity, C component) where C : Component
         {
-            component.EntityID = entity.ID;
-
-            // Create list if new component type
-            if (!_components.ContainsKey(typeof(C)))
-            {
-                _components.Add(typeof(C), new List<Component>());
-            }
-
-            _components[typeof(C)].Add(component);
-            return component;
+            return (C)AttachComponent(entity, component, typeof(C));
         }
 
 
@@ -107,6 +99,13 @@ namespace VengineX.ECS
         internal Component AttachComponent(Entity entity, Component component, Type componentType)
         {
             component.EntityID = entity.ID;
+
+            // We store behavior component all in the same list
+            if (typeof(BehaviorComponent).IsAssignableFrom(componentType))
+            {
+                componentType = typeof(BehaviorComponent);
+            }
+
 
             // Create list if new component type
             if (!_components.ContainsKey(componentType))
@@ -124,20 +123,7 @@ namespace VengineX.ECS
         /// </summary>
         internal void RemoveComponent<C>(Entity entity) where C : Component
         {
-            C? component = entity.GetComponent<C>();
-
-            if (component != null)
-            {
-                if (_components.TryGetValue(typeof(C), out List<Component>? comps))
-                {
-                    if (comps.Remove(component))
-                    {
-                        return;
-                    }
-                }
-            }
-
-            Logger.Log(Severity.Warning, "Component was not removed because it was not attached to this regitsry.");
+            RemoveComponent(entity, typeof(C));
         }
 
 
@@ -149,6 +135,13 @@ namespace VengineX.ECS
         {
             Component? component = entity.GetComponent(componentType);
 
+            // Components inheriting from behavior component are stored in a single list
+            if (typeof(BehaviorComponent).IsAssignableFrom(componentType))
+            {
+                componentType = typeof(BehaviorComponent);
+            }
+
+            // Remove from registry list.
             if (component != null)
             {
                 if (_components.TryGetValue(componentType, out List<Component>? comps))
@@ -185,9 +178,9 @@ namespace VengineX.ECS
         /// </summary>
         public void Clear()
         {
-            foreach (List<Component> comp in _components.Values)
+            foreach (List<Component> components in _components.Values)
             {
-                comp.Clear();
+                components.Clear();
             }
 
             _components.Clear();
