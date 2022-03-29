@@ -8,7 +8,7 @@ namespace VengineX.Graphics.Rendering
     /// <summary>
     /// A material groups a shader and materials together.
     /// </summary>
-    public class Material : IBindable
+    public class Material : IBindable, IEquatable<Material?>
     {
         /// <summary>
         /// The shader used by this material.
@@ -103,9 +103,41 @@ namespace VengineX.Graphics.Rendering
         }
 
 
+        /// <summary>
+        /// Unbinds this material from the current opengl renderer state.<br/>
+        /// Unbinds shader and textures.
+        /// </summary>
         public void Unbind()
         {
-            throw new NotImplementedException();
+            // Unbind shader
+            Shader.Unbind();
+
+            // Unbind each texture
+            for (uint i = 0; i < _textureSlots.Length; i++)
+            {
+                _textureSlots[i]?.Unbind();
+            }
+        }
+
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as Material);
+        }
+
+
+        public bool Equals(Material? other)
+        {
+            return other != null &&
+                   EqualityComparer<Shader>.Default.Equals(Shader, other.Shader) &&
+                   EqualityComparer<Dictionary<string, Texture>>.Default.Equals(_textures, other._textures) &&
+                   EqualityComparer<Texture?[]>.Default.Equals(_textureSlots, other._textureSlots);
+        }
+
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Shader, _textures, _textureSlots);
         }
     }
 }
