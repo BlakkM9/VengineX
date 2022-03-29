@@ -22,16 +22,7 @@ namespace VengineX.UI.Elements.Basic
 
 
         /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        public override IEnumerable<QuadVertex> EnumerateQuads()
-        {
-            yield break;
-        }
-
-
-        /// <summary>
-        /// Initializes all the children (recursive) of this element. This method is filled by the<br/>
+        /// Initializes all the children (recursive) of this element. This method is overwritten and filled by the<br/>
         /// source generators when created from xml.
         /// </summary>
         protected virtual void InitializeChildren() { }

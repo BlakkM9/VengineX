@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VengineX.ECS;
+using VengineX.Graphics.Rendering.Cameras;
+using VengineX.Graphics.Rendering.Renderers;
 
 namespace VengineX.UI
 {
+    // TODO get rid of this and make canvas a component instead somehow (canvas is currently inheriting from UI.Element).
     public class CanvasComponent : Component
     {
         private readonly Canvas _canvas;
@@ -17,53 +20,10 @@ namespace VengineX.UI
 
         public void UpdateLayout() => _canvas.UpdateLayout();
 
-        public void Render() => _canvas.Render();
+        public Camera Camera => _canvas.Camera;
+
+        public IEnumerable<QuadVertex> EnumerateQuads() => _canvas.EnumerateQuads();
 
         public static implicit operator Canvas(CanvasComponent c) => c._canvas;
-
-
-        #region IDisposable
-
-        private bool _disposedValue;
-
-        /// <summary>
-        /// Disposable pattern
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposedValue)
-            {
-                if (disposing)
-                {
-                    // Dispose managed state (managed objects)
-                    _canvas.Dispose();
-                }
-
-                // Free unmanaged resources (unmanaged objects) and override finalizer
-                // Set large fields to null
-                _disposedValue = true;
-            }
-        }
-
-
-        // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~CanvasComponent()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
-
-
-        /// <summary>
-        /// Disposable pattern
-        /// </summary>
-        public override void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
     }
 }

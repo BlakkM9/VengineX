@@ -86,10 +86,26 @@ namespace VengineX.UI.Elements.Basic
         /// </summary>
         public override IEnumerable<QuadVertex> EnumerateQuads()
         {
-            return _font.CreateQuads(
+            // Self
+            QuadVertex[] fontQuads = _font.CreateQuads(
                 Text,
                 new Vector2(AbsolutePosition.X, Canvas.Height - AbsolutePosition.Y - Height),
                 TextSize, Color);
+
+            foreach (QuadVertex quad in fontQuads)
+            {
+                yield return quad;
+            }
+
+
+            // Children
+            foreach (Element child in EnumerateChildren())
+            {
+                foreach (QuadVertex quadVertex in child.EnumerateQuads())
+                {
+                    yield return quadVertex;
+                }
+            }
         }
     }
 }

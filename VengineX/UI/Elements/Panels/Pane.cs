@@ -9,10 +9,5 @@ namespace VengineX.UI.Elements.Panels
     public class Pane : Element
     {
         public Pane(Element parent) : base(parent) { }
-
-        public override IEnumerable<QuadVertex> EnumerateQuads()
-        {
-            yield break;
-        }
     }
 }

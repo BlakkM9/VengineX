@@ -327,9 +327,17 @@ namespace VengineX.UI.Elements.Basic
 
 
         /// <summary>
-        /// Generates and returns the <see cref="QuadVertex"/>s for this element.
+        /// Generates and returns the <see cref="QuadVertex"/>s for this element and all its children.
         /// </summary>
-        /// <returns></returns>
-        public abstract IEnumerable<QuadVertex> EnumerateQuads();
+        public virtual IEnumerable<QuadVertex> EnumerateQuads()
+        {
+            foreach (Element child in EnumerateChildren())
+            {
+                foreach (QuadVertex quadVertex in child.EnumerateQuads())
+                {
+                    yield return quadVertex;
+                }
+            }
+        }
     }
 }
