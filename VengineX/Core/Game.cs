@@ -21,7 +21,7 @@ namespace VengineX.Core
     /// <summary>
     /// Abstract class to derive your game from.
     /// </summary>
-    public abstract class Game<T> : IScreen where T : GameSettings, new()
+    public abstract class Game<T> where T : GameSettings, new()
     {
         /// <summary>
         /// The OpenGL window of the game.
@@ -43,10 +43,6 @@ namespace VengineX.Core
         /// </summary>
         public static ScreenManager ScreenManager { get; private set; }
 
-        /// <summary>
-        /// Registry that handles all the entities and components in the game.
-        /// </summary>
-        public static Registry Registry { get; private set; }
 
         /// <summary>
         /// Default constructor, intialising game's window with settings file and default logger configuration.<br/>
@@ -127,9 +123,6 @@ namespace VengineX.Core
 
             // Create screen manager
             ScreenManager = new ScreenManager();
-
-            // Create registry
-            Registry = new Registry();
 
             // Create input manager
             Input = new InputManager(Window);
