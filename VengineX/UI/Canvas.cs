@@ -1,6 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using VengineX.Graphics.Rendering;
-using VengineX.Graphics.Rendering.Batching;
+using VengineX.Graphics.Rendering.Cameras;
+using VengineX.Graphics.Rendering.Renderers;
 using VengineX.Input;
 using VengineX.UI.Elements.Basic;
 using VengineX.UI.Layouts;
@@ -25,16 +26,9 @@ namespace VengineX.UI
         public BatchRenderer2D BatchRenderer { get; private set; }
 
         /// <summary>
-        /// The projection matrix of this canvas
+        /// Camera that is used to render this canvas.
         /// </summary>
-        public ref Matrix4 ProjectionMatrix { get => ref _projectionMatrix; }
-        private Matrix4 _projectionMatrix;
-
-        /// <summary>
-        /// The view matrix of this canvas. I don't think this is actually needed.
-        /// </summary>
-        public ref Matrix4 ViewMatrix { get => ref _viewMatrix; }
-        private Matrix4 _viewMatrix = Matrix4.Identity;
+        private OrthographicCamera _camera;
 
         /// <summary>
         /// The <see cref="UI.EventSystem"/> that handles (and indirectly invokes) all the<br/>
@@ -52,8 +46,9 @@ namespace VengineX.UI
             EventSystem = new EventSystem(input, this);
             Size = new Vector2(width, height);
 
-            _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, 0, Height, -1, 1);
-            BatchRenderer.SetMatrices(ref ProjectionMatrix, ref ViewMatrix);
+            _camera = new OrthographicCamera(Width, Height, -1, 1);
+            //_projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, 0, Height, -1, 1);
+            //BatchRenderer.SetMatrices(ref ProjectionMatrix, ref ViewMatrix);
             Layout = new AlignLayout(HorizontalAlignment.Stretch, VerticalAlignment.Stretch);
         }
 
@@ -73,7 +68,7 @@ namespace VengineX.UI
         /// </summary>
         public void Render()
         {
-            BatchRenderer.Begin();
+            BatchRenderer.Begin(_camera);
 
             foreach (Element child in AllChildren())
             {
@@ -97,8 +92,7 @@ namespace VengineX.UI
         public void Resize(float newWidth, float newHeight)
         {
             Size = new Vector2(newWidth, newHeight);
-            _projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, 0, Height, -1, 1);
-            BatchRenderer.SetMatrices(ref ProjectionMatrix, ref ViewMatrix);
+            _camera = new OrthographicCamera(newWidth, newHeight, -1, 1);
         }
 
 
