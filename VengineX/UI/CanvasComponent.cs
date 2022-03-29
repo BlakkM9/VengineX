@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VengineX.ECS;
 
-namespace VengineX.UI.Elements
+namespace VengineX.UI
 {
     public class CanvasComponent : Component
     {

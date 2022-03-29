@@ -1,5 +1,5 @@
 ﻿using OpenTK.Mathematics;
-using VengineX.Graphics.Rendering.Batching;
+using VengineX.Graphics.Rendering.Renderers;
 using VengineX.Graphics.Rendering.Textures;
 
 namespace VengineX.UI.Elements.Basic
@@ -68,7 +68,7 @@ namespace VengineX.UI.Elements.Basic
         public override IEnumerable<QuadVertex> EnumerateQuads()
         {
             QuadVertex q = new QuadVertex();
-            q.positon = new Vector2(AbsolutePosition.X, Canvas.Height - AbsolutePosition.Y - Height);
+            q.position = new Vector2(AbsolutePosition.X, Canvas.Height - AbsolutePosition.Y - Height);
             q.size = Size;
             q.texture = Texture;
             q.color = Texture == null ? Color : Tint;
