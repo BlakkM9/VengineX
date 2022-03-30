@@ -39,9 +39,6 @@ namespace VengineX.Graphics.Rendering.Cameras
         private Vector3 _position;
 
 
-        //protected float _viewportWidth;
-        //protected float _viewportHeight;
-
         /// <summary>
         /// The frustum of this camera.
         /// </summary>
