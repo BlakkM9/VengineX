@@ -7,6 +7,9 @@ namespace VengineX.Graphics.Rendering.Shaders
     /// </summary>
     public struct ShaderLoadingParameters : ILoadingParameters
     {
+        /// <summary>
+        /// The first token of automaticall generated resource strings.
+        /// </summary>
         private const string RESOURCE_TYPE = "shader";
 
         /// <summary>
