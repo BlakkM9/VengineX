@@ -10,11 +10,11 @@ namespace VengineX.Graphics.Rendering.Meshes
 {
     public class MeshComponent : Component
     {
-        private BaseMesh _mesh { get; }
+        private MeshBase _mesh { get; }
         public Material Material { get; }
         public Transform Transform { get; }
 
-        public MeshComponent(BaseMesh mesh, Material material)
+        public MeshComponent(MeshBase mesh, Material material)
         {
             _mesh = mesh;
             Material = material;
@@ -23,6 +23,6 @@ namespace VengineX.Graphics.Rendering.Meshes
 
         public void Render() => _mesh.Render();
 
-        public static implicit operator BaseMesh(MeshComponent m) => m._mesh;
+        public static implicit operator MeshBase(MeshComponent m) => m._mesh;
     }
 }

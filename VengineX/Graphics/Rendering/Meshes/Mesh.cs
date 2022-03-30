@@ -16,7 +16,7 @@ namespace VengineX.Graphics.Rendering.Meshes
     /// VertexAttribPointers are determined automatically via reflection.<br/>
     /// Vertex is a struct holding <see cref="float"/>, <see cref="Vector2"/>, <see cref="Vector3"/>, or <see cref="Vector4"/> <b>fields</b>.
     /// </typeparam>
-    public class Mesh<T> : BaseMesh where T : unmanaged
+    public class Mesh<T> : MeshBase where T : unmanaged
     {
         /// <summary>
         /// Array holding all currently allowed types for vertex attributes within the provided vertex struct typeparam/>
