@@ -29,36 +29,12 @@
         public static double CurrentUPS { get; private set; } = 0;
 
         /// <summary>
-        /// Averaged ups over <see cref="UPSSampleCount"/> frames
+        /// UPS averaged over one second
         /// </summary>
         public static double AverageUPS { get; private set; }
 
-
-        /// <summary>
-        /// Amount of frames to sample for average fps.
-        /// </summary>
-        public static int UPSSampleCount
-        {
-            get { return _upsSampleCount; }
-            set
-            {
-                _upsSampleCount = value;
-                _upsSamples = new double[_upsSampleCount];
-            }
-        }
-        private static int _upsSampleCount = 100;
-
-
-        /// <summary>
-        /// Current sampled fps
-        /// </summary>
-        private static double[] _upsSamples = new double[_upsSampleCount];
-
-
-        /// <summary>
-        /// Total render frames
-        /// </summary>
-        private static int _updateFrameCount = 0;
+        private static double _currentUPSTime = 0;
+        private static double _currentUpdates = 0;
 
 
         /// <summary>
@@ -74,37 +50,13 @@
 
 
         /// <summary>
-        /// Averaged fps over <see cref="FPSSampleCount"/> frames
+        /// FPS averaged over one second.
         /// </summary>
         public static double AverageFPS { get; private set; }
 
+        private static double _currentFPSTime = 0;
+        private static double _currentFrames = 0;
 
-        /// <summary>
-        /// Amount of frames to sample for average fps.
-        /// </summary>
-        public static int FPSSampleCount
-        {
-            get { return _fpsSampleCount; }
-            set
-            {
-                _fpsSampleCount = value;
-                _fpsSamples = new double[_fpsSampleCount];
-            }
-        }
-        private static int _fpsSampleCount = 100;
-
-
-        /// <summary>
-        /// Current sampled fps
-        /// </summary>
-        private static double[] _fpsSamples = new double[_fpsSampleCount];
-
-
-
-        /// <summary>
-        /// Total render frames
-        /// </summary>
-        private static int _renderFrameCount = 0;
 
         /// <summary>
         /// Updates all the update time properties.<br/>
@@ -117,9 +69,17 @@
             DeltaUpdate = delta;
             CurrentUPS = 1.0 / DeltaUpdate;
 
-            _updateFrameCount++;
-            _upsSamples[_updateFrameCount % UPSSampleCount] = CurrentUPS;
-            AverageUPS = (double)_upsSamples.Sum() / UPSSampleCount;
+
+            _currentUpdates++;
+            _currentUPSTime += delta;
+
+            if (_currentUPSTime >= 1)
+            {
+                AverageUPS = _currentUpdates / _currentUPSTime;
+
+                _currentUpdates = 0;
+                _currentUPSTime = 0;
+            }
         }
 
 
@@ -132,9 +92,21 @@
             DeltaRender = delta;
             CurrentFPS = 1.0 / DeltaRender;
 
-            _renderFrameCount++;
-            _fpsSamples[_renderFrameCount % FPSSampleCount] = CurrentFPS;
-            AverageFPS = (double)_fpsSamples.Sum() / FPSSampleCount;
+
+            _currentFrames++;
+            _currentFPSTime += delta;
+
+            if (_currentFPSTime >= 1)
+            {
+                AverageFPS = _currentFrames / _currentFPSTime;
+
+                _currentFrames = 0;
+                _currentFPSTime = 0;
+            }
+
+            //_renderFrameCount++;
+            //_fpsSamples[_renderFrameCount % FPSSampleCount] = CurrentFPS;
+            //AverageFPS = (double)_fpsSamples.Sum() / FPSSampleCount;
         }
     }
 }
