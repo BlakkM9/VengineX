@@ -11,7 +11,7 @@ namespace VengineX.Graphics.Rendering.Meshes
     /// <summary>
     /// Base class for mesh.
     /// </summary>
-    public abstract class BaseMesh : IDisposable
+    public abstract class MeshBase : IDisposable
     {
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace VengineX.Graphics.Rendering.Meshes
         public BufferUsageHint IndexBufferUsage { get; }
 
 
-        public BaseMesh(BufferUsageHint vertexBufferUsage, BufferUsageHint indexBufferUsage)
+        public MeshBase(BufferUsageHint vertexBufferUsage, BufferUsageHint indexBufferUsage)
         {
             VertexBufferUsage = vertexBufferUsage;
             IndexBufferUsage = indexBufferUsage;
