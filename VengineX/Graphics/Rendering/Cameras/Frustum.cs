@@ -26,7 +26,7 @@ namespace VengineX.Graphics.Rendering.Cameras
 
         private void NormalizePlane(float[,] frustum, int side)
         {
-            float magnitude = (float)Math.Sqrt(frustum[side, 0] * frustum[side, 0] + frustum[side, 1] * frustum[side, 1]
+            float magnitude = (float)MathHelper.Sqrt(frustum[side, 0] * frustum[side, 0] + frustum[side, 1] * frustum[side, 1]
                                                 + frustum[side, 2] * frustum[side, 2]);
             frustum[side, 0] /= magnitude;
             frustum[side, 1] /= magnitude;
