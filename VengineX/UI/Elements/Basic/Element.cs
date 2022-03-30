@@ -159,6 +159,8 @@ namespace VengineX.UI.Elements.Basic
         {
             set
             {
+                Visible = value;
+
                 foreach (Element child in Children)
                 {
                     child.VisibleRecursive = value;
@@ -333,6 +335,8 @@ namespace VengineX.UI.Elements.Basic
         {
             foreach (Element child in EnumerateChildren())
             {
+                if (!child.Visible) { continue; }
+
                 foreach (QuadVertex quad in child.EnumerateQuads())
                 {
                     yield return quad;

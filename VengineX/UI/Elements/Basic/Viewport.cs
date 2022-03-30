@@ -19,11 +19,13 @@ namespace VengineX.UI.Elements.Basic
 
             foreach (Element child in EnumerateChildren())
             {
+                if (!child.Visible) { continue; }
+
                 foreach (QuadVertex quad in child.EnumerateQuads())
                 {
                     RectangleF childRect = new RectangleF(quad.position.X, quad.position.Y, quad.size.X, quad.size.Y);
 
-                    
+
                     if (viewportRect.Contains(childRect))
                     {
                         // Child is completely contained in viewport
@@ -34,45 +36,16 @@ namespace VengineX.UI.Elements.Basic
                         // Child is partly in viewport, adjust quad
                         RectangleF intersection = RectangleF.Intersect(viewportRect, childRect);
 
-                        bool cutLeft = intersection.X > quad.position.X;
-                        bool cutRight = intersection.X + intersection.Width < quad.position.X + quad.size.X;
-                        bool cutTop = !(intersection.Y > quad.position.Y);
-                        bool cutBottom = !(intersection.Y + intersection.Height < quad.position.Y + quad.size.Y);
-
-                        float dW = intersection.Width / childRect.Width;
-                        float dH = intersection.Height / childRect.Height;
-
-                        float uvX1 = quad.uv0.X;
-                        float uvX2 = quad.uv2.X;
-                        float uvY1 = quad.uv0.Y;
-                        float uvY2 = quad.uv1.Y;
-
-                        if (cutLeft)
-                        {
-                            uvX1 = MathHelper.Lerp(quad.uv2.X, quad.uv0.X, dW);
-                        }
-                        else if (cutRight)
-                        {
-                            uvX2 = MathHelper.Lerp(quad.uv0.X, quad.uv2.X, dW);
-                        }
-
-                        if (cutTop)
-                        {
-                            uvY1 = MathHelper.Lerp(quad.uv1.Y, quad.uv0.Y, dH);
-                        }
-                        else if (cutBottom)
-                        {
-                            uvY2 = MathHelper.Lerp(quad.uv0.Y, quad.uv1.Y, dH);
-                        }
+                        Vector2[] remappedUVs = RemapUVs(quad.uv0, quad.uv1, quad.uv2, childRect, intersection);
 
                         yield return new QuadVertex()
                         {
                             position = new Vector2(intersection.X, intersection.Y),
                             size = new Vector2(intersection.Width, intersection.Height),
-                            uv0 = new Vector2(uvX1, uvY1),
-                            uv1 = new Vector2(uvX1, uvY2),
-                            uv2 = new Vector2(uvX2, uvY1),
-                            uv3 = new Vector2(uvX2, uvY2),
+                            uv0 = remappedUVs[0],
+                            uv1 = remappedUVs[1],
+                            uv2 = remappedUVs[2],
+                            uv3 = remappedUVs[3],
                             color = quad.color,
                             texture = quad.texture,
                         };
@@ -82,6 +55,50 @@ namespace VengineX.UI.Elements.Basic
                     // Child is not in viewport, skip quad
                 }
             }
+        }
+
+
+        private static Vector2[] RemapUVs(Vector2 uv0, Vector2 uv1, Vector2 uv2, RectangleF original, RectangleF cropped)
+        {
+            bool cutLeft = cropped.X > original.X;
+            bool cutRight = cropped.X + cropped.Width < original.X + original.Width;
+            bool cutTop = !(cropped.Y > original.Y);
+            bool cutBottom = !(cropped.Y + cropped.Height < original.Y + original.Height);
+
+            float dW = cropped.Width / original.Width;
+            float dH = cropped.Height / original.Height;
+
+            float uvX1 = uv0.X;
+            float uvX2 = uv2.X;
+            float uvY1 = uv0.Y;
+            float uvY2 = uv1.Y;
+
+            if (cutLeft)
+            {
+                uvX1 = MathHelper.Lerp(uv2.X, uv0.X, dW);
+            }
+            else if (cutRight)
+            {
+                uvX2 = MathHelper.Lerp(uv0.X, uv2.X, dW);
+            }
+
+            if (cutTop)
+            {
+                uvY1 = MathHelper.Lerp(uv1.Y, uv0.Y, dH);
+            }
+            else if (cutBottom)
+            {
+                uvY2 = MathHelper.Lerp(uv0.Y, uv1.Y, dH);
+            }
+
+
+            return new Vector2[]
+            {
+                new Vector2(uvX1, uvY1),
+                new Vector2(uvX1, uvY2),
+                new Vector2(uvX2, uvY1),
+                new Vector2(uvX2, uvY2),
+            };
         }
     }
 }

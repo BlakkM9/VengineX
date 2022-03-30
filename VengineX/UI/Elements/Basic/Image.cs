@@ -68,17 +68,22 @@ namespace VengineX.UI.Elements.Basic
         public override IEnumerable<QuadVertex> EnumerateQuads()
         {
             // Self
-            QuadVertex q = new QuadVertex();
-            q.position = new Vector2(AbsolutePosition.X, Canvas.Height - AbsolutePosition.Y - Height);
-            q.size = Size;
-            q.texture = Texture;
-            q.color = Texture == null ? Color : Tint;
-            yield return q;
+            if (Visible)
+            {
+                QuadVertex q = new QuadVertex();
+                q.position = new Vector2(AbsolutePosition.X, Canvas.Height - AbsolutePosition.Y - Height);
+                q.size = Size;
+                q.texture = Texture;
+                q.color = Texture == null ? Color : Tint;
+                yield return q;
+            }
 
 
             // Children
             foreach (Element child in EnumerateChildren())
             {
+                if (!child.Visible) { continue; }
+
                 foreach (QuadVertex quadVertex in child.EnumerateQuads())
                 {
                     yield return quadVertex;
