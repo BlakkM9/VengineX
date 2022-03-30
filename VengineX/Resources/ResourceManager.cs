@@ -81,6 +81,14 @@ namespace VengineX.Resources
 
 
         /// <summary>
+        /// Loads a resource with automatically generated resource path.
+        /// </summary>
+        public static T LoadResource<T>(ILoadingParameters loadingParameters)
+            where T : ILoadableResource, IDisposable, IResource, new()
+            => LoadResource<T>(loadingParameters.ProvideResourcePath(), loadingParameters);
+
+
+        /// <summary>
         /// Gets the resource at given resource path.
         /// </summary>
         /// <typeparam name="T">Type of the requested resource.</typeparam>

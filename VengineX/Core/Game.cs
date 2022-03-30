@@ -251,7 +251,7 @@ namespace VengineX.Core
 
             // Shaders
             // Bitmap fonts shader
-            ResourceManager.LoadResource<Shader>("shader.ui.bmpfont", new ShaderLoadingParameters()
+            ResourceManager.LoadResource<Shader>(new ShaderLoadingParameters()
             {
                 VertexPath = "res/shader/ui/ui.vs.glsl",
                 FragmentPath = "res/shader/ui/bmpfont.fs.glsl"
@@ -259,7 +259,7 @@ namespace VengineX.Core
 
 
             // Shader for batch ui rendering
-            ResourceManager.LoadResource<Shader>("shader.ui.batch", new ShaderLoadingParameters()
+            ResourceManager.LoadResource<Shader>(new ShaderLoadingParameters()
             {
                 VertexPath = "res/shader/ui/ui.vs.glsl",
                 FragmentPath = "res/shader/ui/batch.fs.glsl"
@@ -268,7 +268,7 @@ namespace VengineX.Core
 
             // Fonts
             // OpenSans
-            ResourceManager.LoadResource<BitmapFont>("font.opensans", new BitmapFontLoadingParameters()
+            ResourceManager.LoadResource<BitmapFont>(new BitmapFontLoadingParameters()
             {
                 FontPath = "res/font/OpenSans.ttf",
                 Size = 50,
