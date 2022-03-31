@@ -10,16 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="gui\Button.xml" />
-    <None Remove="gui\defs.xml" />
-    <None Remove="gui\Test.xml" />
-    <None Remove="_res\font\OpenSans.ttf" />
-    <None Remove="_res\gui\Button.xml" />
-    <None Remove="_res\gui\defs.xml" />
-    <None Remove="_res\shader\ui\batch.fs.glsl" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="_lib\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -54,10 +44,6 @@
   
   <ItemGroup>
   	<AdditionalFiles Include="_res\gui\**"></AdditionalFiles>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Content Remove="_res\gui\defs.xml" />
   </ItemGroup>
 	
 </Project>
