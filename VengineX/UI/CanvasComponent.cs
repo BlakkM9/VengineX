@@ -14,7 +14,7 @@ namespace VengineX.UI
     {
         private readonly Canvas _canvas;
 
-        public CanvasComponent(Canvas canvas) => _canvas = canvas;
+        public CanvasComponent(Canvas canvas) : base(typeof(CanvasComponent)) => _canvas = canvas;
 
         public void UpdateEvents() => _canvas.UpdateEvents();
 
@@ -23,6 +23,7 @@ namespace VengineX.UI
         public Camera Camera => _canvas.Camera;
 
         public IEnumerable<QuadVertex> EnumerateQuads() => _canvas.EnumerateQuads();
+
 
         public static implicit operator Canvas(CanvasComponent c) => c._canvas;
     }
