@@ -8,6 +8,7 @@ using VengineX.Debugging.Logging;
 using VengineX.ECS;
 using VengineX.Graphics.Rendering.Shaders;
 using VengineX.Graphics.Rendering.Textures;
+using VengineX.Graphics.Rendering.UnitModels;
 using VengineX.Input;
 using VengineX.Resources;
 using VengineX.Tweening;
@@ -156,6 +157,8 @@ namespace VengineX.Core
             // Initialize systems.
             Logger.Initialize();
             FreeTypeWrapper.InitFreeType();
+            UnitQuad.Initialize();
+
 
             // Load base resources.
             LoadBaseResources();
@@ -207,6 +210,7 @@ namespace VengineX.Core
 
             // Unload systems.
             FreeTypeWrapper.DoneFreeType();
+            UnitQuad.Dispose();
 
             // Unload all resources.
             ResourceManager.UnloadAllResources();
@@ -257,12 +261,18 @@ namespace VengineX.Core
                 FragmentPath = "res/shader/ui/bmpfont.fs.glsl"
             });
 
-
             // Shader for batch ui rendering
             ResourceManager.LoadResource<Shader>(new ShaderLoadingParameters()
             {
                 VertexPath = "res/shader/ui/ui.vs.glsl",
                 FragmentPath = "res/shader/ui/batch.fs.glsl"
+            });
+
+            // Shader for postprocessing (render texture to screen)
+            ResourceManager.LoadResource<Shader>(new ShaderLoadingParameters()
+            {
+                VertexPath = "res/shader/postprocessing/postprocessing.vs.glsl",
+                FragmentPath = "res/shader/postprocessing/postprocessing.fs.glsl"
             });
 
 
