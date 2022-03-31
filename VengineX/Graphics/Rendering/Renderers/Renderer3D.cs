@@ -23,7 +23,6 @@ namespace VengineX.Graphics.Rendering.Renderers
 
         public void Begin(Camera camera)
         {
-            //_meshes.Clear();
             foreach (List<MeshComponent> meshList in _meshes.Values)
             {
                 meshList.Clear();
