@@ -100,11 +100,8 @@ namespace VengineX.ECS
         {
             component.EntityID = entity.ID;
 
-            // We store behavior component all in the same list
-            if (typeof(BehaviorComponent).IsAssignableFrom(componentType))
-            {
-                componentType = typeof(BehaviorComponent);
-            }
+            // We store as the type defined as registry type.
+            componentType = component.RegistryType;
 
 
             // Create list if new component type
@@ -114,6 +111,7 @@ namespace VengineX.ECS
             }
 
             _components[componentType].Add(component);
+            component.Registered();
             return component;
         }
 
@@ -135,19 +133,18 @@ namespace VengineX.ECS
         {
             Component? component = entity.GetComponent(componentType);
 
-            // Components inheriting from behavior component are stored in a single list
-            if (typeof(BehaviorComponent).IsAssignableFrom(componentType))
-            {
-                componentType = typeof(BehaviorComponent);
-            }
 
             // Remove from registry list.
             if (component != null)
             {
+                // We delete from the list of the registry type of the component
+                componentType = component.RegistryType;
+
                 if (_components.TryGetValue(componentType, out List<Component>? comps))
                 {
                     if (comps.Remove(component))
                     {
+                        component.Unregistered();
                         return;
                     }
                 }

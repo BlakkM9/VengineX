@@ -44,6 +44,8 @@ namespace VengineX.ECS
 
             // Add to self.
             _components.Add(typeof(C), component);
+            component.Entity = this;
+            component.Attached();
         }
 
 
@@ -102,7 +104,11 @@ namespace VengineX.ECS
             Registry?.RemoveComponent<C>(this);
 
             // Remove from self
+            Component comp = GetComponent<C>();
             _components.Remove(typeof(C));
+            comp.Entity = null;
+            comp.Detached();
+
         }
 
 

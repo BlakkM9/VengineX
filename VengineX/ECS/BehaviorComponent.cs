@@ -8,6 +8,8 @@ namespace VengineX.ECS
 {
     public abstract class BehaviorComponent : Component {
 
+        protected BehaviorComponent() : base(typeof(BehaviorComponent)) { }
+
         /// <summary>
         /// Called when the frame is updated.
         /// </summary>
