@@ -12,7 +12,7 @@ namespace VengineX.Graphics.Rendering.Pipelines
         /// <summary>
         /// The main camera for this pipeline.
         /// </summary>
-        public virtual Camera Camera { get; protected set; }
+        public virtual Camera MainCamera { get; protected set; }
 
         /// <summary>
         /// The clear color for this pipeline.
