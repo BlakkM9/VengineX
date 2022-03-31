@@ -1,8 +1,0 @@
-﻿<Definitions>
-	<Image>VengineX.UI.Elements.Basic</Image>
-	<Label>VengineX.UI.Elements.Basic</Label>
-	<AlignPane>VengineX.UI.Elements.Basic</AlignPane>
-	<HorizontalAlignment>VengineX.UI.Layouts</HorizontalAlignment>
-	<VerticalAlignment>VengineX.UI.Layouts</VerticalAlignment>
-	<AlignLayout>VengineX.UI.Layouts</AlignLayout>
-</Definitions>
