@@ -1,5 +1,5 @@
 ﻿using OpenTK.Mathematics;
-using VengineX.Graphics.Rendering.Renderers;
+using VengineX.Graphics.Renderers;
 using VengineX.UI.Layouts;
 
 namespace VengineX.UI.Elements.Basic
@@ -153,13 +153,16 @@ namespace VengineX.UI.Elements.Basic
         public bool Visible { get; set; } = true;
 
         /// <summary>
-        /// Sets the visibility of self and all children.<br/>
+        /// Sets the visibility of self and all children.
+        /// Chilren are added with the visibility of parent.<br/>
         /// </summary>
         public bool VisibleRecursive
         {
+            get => _visibleRecursive;
             set
             {
                 Visible = value;
+                _visibleRecursive = value;
 
                 foreach (Element child in Children)
                 {
@@ -167,6 +170,7 @@ namespace VengineX.UI.Elements.Basic
                 }
             }
         }
+        private bool _visibleRecursive = true;
 
         /// <summary>
         /// Number of child elements.
@@ -187,7 +191,27 @@ namespace VengineX.UI.Elements.Basic
         /// <summary>
         /// If this is set to true, this element will not receive ui events.
         /// </summary>
-        public bool IgnoreInputEvents { get; set; } = false;
+        public bool IgnoreEvents { get; set; } = false;
+
+        /// <summary>
+        /// Sets <see cref="IgnoreEvents"/> of self and all children.
+        /// Chilren are added with <see cref="IgnoreEventsRecursive"/> of parent.<br/>
+        /// </summary>
+        public bool IgnoreEventsRecursive
+        {
+            get => _ignoreEventsRecursive;
+            set
+            {
+                IgnoreEvents = value;
+                _ignoreEventsRecursive = value;
+
+                foreach (Element child in Children)
+                {
+                    child.IgnoreEventsRecursive = value;
+                }
+            }
+        }
+        private bool _ignoreEventsRecursive = false;
 
 
         /// <summary>
@@ -261,6 +285,8 @@ namespace VengineX.UI.Elements.Basic
         {
             Children.Insert(index, element);
             element.Parent = this;
+            element.VisibleRecursive = VisibleRecursive;
+            element.IgnoreEventsRecursive = IgnoreEventsRecursive;
         }
 
 
@@ -271,6 +297,8 @@ namespace VengineX.UI.Elements.Basic
         {
             Children.Add(element);
             element.Parent = this;
+            element.VisibleRecursive = VisibleRecursive;
+            element.IgnoreEventsRecursive = IgnoreEventsRecursive;
         }
 
 
