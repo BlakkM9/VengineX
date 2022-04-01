@@ -25,6 +25,11 @@ namespace VengineX.Graphics.Meshes
         public Material Material { get; }
 
         /// <summary>
+        /// Gets or sets if this mesh component should be rendered or not.
+        /// </summary>
+        public bool Visible { get; set; }
+
+        /// <summary>
         /// The transform that determines the world position of the mesh.<br/>
         /// This is the transform of the parent entity.
         /// </summary>
@@ -39,6 +44,7 @@ namespace VengineX.Graphics.Meshes
         {
             Mesh = mesh;
             Material = material;
+            Visible = true;
         }
 
 
