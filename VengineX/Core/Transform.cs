@@ -14,6 +14,11 @@ namespace VengineX.Core
     public class Transform : Component
     {
         /// <summary>
+        /// Occurs when the transform changed.
+        /// </summary>
+        public event Action<Transform>? TransformChanged;
+
+        /// <summary>
         /// ModelMatrix of this transform, calculated from position, rotation and scale.
         /// </summary>
         public ref Matrix4 ModelMatrix => ref _modelMatrix;
@@ -34,7 +39,7 @@ namespace VengineX.Core
         private Vector3 _position;
 
         /// <summary>
-        /// Gets and sets the rotation of this transform (euler angels)
+        /// Gets and sets the rotation of this transform in radians (euler angles)
         /// </summary>
         public Vector3 Rotation
         {
@@ -63,10 +68,17 @@ namespace VengineX.Core
 
 
         /// <summary>
+        /// The vector of that transform that points forwards.
+        /// </summary>
+        public Vector3 Forward { get; private set; }
+
+
+
+        /// <summary>
         /// Creates a new transform with given position, rotatio and scale.
         /// </summary>
         /// <param name="position">Position of the transform.</param>
-        /// <param name="rotation">Rotation (euler angels) of this transform.</param>
+        /// <param name="rotation">Rotation (euler angles) of this transform.</param>
         /// <param name="scale">Scale of the transform.</param>
         public Transform(Vector3 position, Vector3 rotation, Vector3 scale) : base(typeof(Transform))
         {
@@ -81,7 +93,10 @@ namespace VengineX.Core
         /// Creates a new transfrom with the matrix set to identity<br/>
         /// (Position 0, 0, 0; Rotation 0, 0, 0 and Scale 1, 1, 1).
         /// </summary>
-        public Transform() : this(Vector3.Zero, Vector3.Zero, Vector3.One) { }
+        public Transform() : this(Vector3.Zero, Vector3.Zero, Vector3.One)
+        {
+            UpdateMatrix();
+        }
 
 
         /// <summary>
@@ -93,6 +108,33 @@ namespace VengineX.Core
             Matrix4 scale = Matrix4.CreateScale(Scale);
             Matrix4 translation = Matrix4.CreateTranslation(Position);
             _modelMatrix = scale * rotation * translation;
+
+
+            Vector3 front = Vector3.Zero;
+            front.X = (float)(MathHelper.Cos(Rotation.Y) * MathHelper.Cos(Rotation.X));
+            front.Y = (float)(MathHelper.Cos(Rotation.Y) * MathHelper.Sin(Rotation.X));
+            front.Z = (float)(MathHelper.Sin(Rotation.Y));
+            Forward = front.Normalized();
+
+            TransformChanged?.Invoke(this);
+        }
+
+
+        /// <summary>
+        /// Rotates this transform by the given vector (euler angles, radiant, relative rotation).
+        /// </summary>
+        public void Rotate(Vector3 rotation)
+        {
+            Rotation += rotation;
+        }
+
+
+        /// <summary>
+        /// Moves the transform by the given vector (relative).
+        /// </summary>
+        public void Move(Vector3 moveAmount)
+        {
+            Position += moveAmount;
         }
     }
 }
