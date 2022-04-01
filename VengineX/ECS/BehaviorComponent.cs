@@ -13,6 +13,6 @@ namespace VengineX.ECS
         /// <summary>
         /// Called when the frame is updated.
         /// </summary>
-        public abstract void Update(double delta);
+        public virtual void Update(double delta) { }
     }
 }
