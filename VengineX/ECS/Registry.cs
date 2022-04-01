@@ -59,6 +59,7 @@ namespace VengineX.ECS
                 AttachComponent(entity, kvp.Value, kvp.Key);
             }
 
+            entity.Registered();
             return entity;
         }
 
@@ -80,6 +81,8 @@ namespace VengineX.ECS
                 kvp.Value.EntityID = 0;
                 _components[kvp.Key].Remove(kvp.Value);
             }
+
+            entity.Unregistered();
         }
 
 
