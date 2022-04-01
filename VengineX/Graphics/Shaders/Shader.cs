@@ -103,6 +103,9 @@ namespace VengineX.Graphics.Shaders
         }
 
 
+        /// <summary>
+        /// Returns the uniform location for given uniform name.
+        /// </summary>
         public int GetUniformLocation(string uniformName)
         {
             if (!_uniformLocations.TryGetValue(uniformName, out int uniformLocation))
@@ -114,6 +117,9 @@ namespace VengineX.Graphics.Shaders
         }
 
 
+        /// <summary>
+        /// Returns the <see cref="Uniform"/> with given name.
+        /// </summary>
         public Uniform GetUniform(string uniformName)
         {
             return _uniforms[GetUniformLocation(uniformName)];
