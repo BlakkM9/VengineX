@@ -33,7 +33,7 @@ namespace VengineX.Graphics.Cameras
         /// <summary>
         /// Transform of the camera, received from parent entity.
         /// </summary>
-        public Transform? Transform { get; private set; }
+        public Transform Transform { get; private set; }
 
         /// <summary>
         /// The frustum of this camera.
