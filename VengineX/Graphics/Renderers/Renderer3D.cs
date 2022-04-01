@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -50,22 +52,27 @@ namespace VengineX.Graphics.Renderers
         /// </summary>
         public void Submit(MeshComponent mesh)
         {
-            if (_meshes.ContainsKey(mesh.Material))
-            {
-                _meshes[mesh.Material].Add(mesh);
-            }
-            else
+            if (!_meshes.ContainsKey(mesh.Material))
             {
                 _meshes.Add(mesh.Material, new List<MeshComponent>());
-                _meshes[mesh.Material].Add(mesh);
             }
+
+            _meshes[mesh.Material].Add(mesh);
         }
 
 
         /// <summary>
         /// Ends the submitting.
         /// </summary>
-        public void End() { }
+        public void End() {
+
+            // TODO TEMP
+            foreach (Material mat in _meshes.Keys)
+            {
+                Vector3 camPos = _camera.Transform.Position;
+                mat.Shader.GetUniform("uCameraPositionWS").Set3(ref camPos);
+            }
+        }
 
 
         /// <summary>
