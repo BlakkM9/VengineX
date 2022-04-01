@@ -16,7 +16,7 @@ namespace VengineX.Graphics.UnitModels
     /// Do not use this for creating larger structures like chunks from this.<br/>
     /// Do not forget to dispose after usage.
     /// </summary>
-    public class TestCube : Entity, IDisposable
+    public class UnitCube : Entity, IDisposable
     {
         /// <summary>
         /// Vertices for the unit cube (<see cref="PBRVertex"/>)
@@ -272,7 +272,7 @@ namespace VengineX.Graphics.UnitModels
         /// <summary>
         /// Creates a new unit cube entity with the given material.
         /// </summary>
-        public TestCube(Material material)
+        public UnitCube(Material material)
         {
             // Create transform
             Transform = new Transform();
