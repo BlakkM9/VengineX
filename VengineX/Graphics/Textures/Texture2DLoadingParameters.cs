@@ -1,7 +1,7 @@
 ﻿using VengineX.Resources;
 using VengineX.Wrappers.Stbi;
 
-namespace VengineX.Graphics.Rendering.Textures
+namespace VengineX.Graphics.Textures
 {
     /// <summary>
     /// Parameters for loading a <see cref="Texture2D"/>.

@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using VengineX.Resources;
 
-namespace VengineX.Graphics.Rendering.Textures
+namespace VengineX.Graphics.Textures
 {
     public class Texture2DArray : Texture
     {

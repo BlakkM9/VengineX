@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 
-namespace VengineX.Graphics.Rendering.Textures
+namespace VengineX.Graphics.Textures
 {
     public struct Texture2DArrayParameters
     {

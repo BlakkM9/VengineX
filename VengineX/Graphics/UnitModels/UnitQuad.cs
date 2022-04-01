@@ -1,9 +1,9 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using VengineX.Graphics.Rendering.Meshes;
-using VengineX.Graphics.Rendering.Vertices;
+using VengineX.Graphics.Meshes;
+using VengineX.Graphics.Vertices;
 
-namespace VengineX.Graphics.Rendering.UnitModels
+namespace VengineX.Graphics.UnitModels
 {
     /// <summary>
     /// A simple quad from -1 to 1.<br/>

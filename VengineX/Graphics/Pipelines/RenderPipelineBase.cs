@@ -1,8 +1,8 @@
 ﻿using OpenTK.Mathematics;
-using VengineX.Graphics.Rendering.Cameras;
+using VengineX.Graphics.Cameras;
 using VengineX.UI;
 
-namespace VengineX.Graphics.Rendering.Pipelines
+namespace VengineX.Graphics.Pipelines
 {
     /// <summary>
     /// Base class for rendering pipelines.

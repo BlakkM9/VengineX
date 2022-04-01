@@ -4,7 +4,7 @@ using VengineX.Resources;
 using VengineX.Utils.Extensions;
 using VengineX.Wrappers.Stbi;
 
-namespace VengineX.Graphics.Rendering.Textures
+namespace VengineX.Graphics.Textures
 {
     /// <summary>
     /// A single texture to use in shaders.

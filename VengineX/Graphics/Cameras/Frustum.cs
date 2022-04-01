@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace VengineX.Graphics.Rendering.Cameras
+namespace VengineX.Graphics.Cameras
 {
 
     // TODO write documentation

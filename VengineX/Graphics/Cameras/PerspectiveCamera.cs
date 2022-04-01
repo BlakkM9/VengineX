@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace VengineX.Graphics.Rendering.Cameras
+namespace VengineX.Graphics.Cameras
 {
     /// <summary>
     /// Camera with perspective view matrix

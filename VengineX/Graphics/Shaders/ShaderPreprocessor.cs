@@ -2,7 +2,7 @@
 using VengineX.Debugging.Logging;
 
 
-namespace VengineX.Graphics.Rendering.Shaders
+namespace VengineX.Graphics.Shaders
 {
 
     // TODO implement variables that can be set on compilation that will be replaced in the shader source

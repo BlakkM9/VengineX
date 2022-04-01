@@ -78,7 +78,7 @@ namespace VengineX.UI
 
             foreach (Element child in Canvas.EnumerateChildren(true))
             {
-                if (child.IgnoreInputEvents) { continue; }
+                if (child.IgnoreEvents) { continue; }
 
                 // Mouse entered / left
                 if (child.ContainsAbsolute(position) && !child.Events.MouseOver)
@@ -115,7 +115,7 @@ namespace VengineX.UI
                     FocusedElement.Events.Focused = false;
                 }
 
-                if (CurrentElement.IgnoreInputEvents) { return; }
+                if (CurrentElement.IgnoreEvents) { return; }
 
                 CurrentElement.Events.ClickInitiated = true;
                 CurrentElement.Events.InvokeMouseButtonPressed(args);
@@ -149,7 +149,7 @@ namespace VengineX.UI
 
             if (CurrentElement != null)
             {
-                if (CurrentElement.IgnoreInputEvents) { return; }
+                if (CurrentElement.IgnoreEvents) { return; }
 
                 CurrentElement.Events.InvokeMouseButtonReleased(args);
                 CurrentElement.Events.MouseDown = false;
@@ -204,7 +204,7 @@ namespace VengineX.UI
         {
             foreach (Element child in Canvas.EnumerateChildren(true).Reverse())
             {
-                if (child.ContainsAbsolute(point) && !child.IgnoreInputEvents) { return child; }
+                if (child.ContainsAbsolute(point) && !child.IgnoreEvents) { return child; }
             }
 
             return null;

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VengineX.Core;
-using VengineX.Graphics.Rendering.Cameras;
-using VengineX.Graphics.Rendering.Meshes;
+using VengineX.Graphics.Cameras;
+using VengineX.Graphics.Meshes;
 
-namespace VengineX.Graphics.Rendering.Renderers
+namespace VengineX.Graphics.Renderers
 {
     /// <summary>
     /// Class that handles rendering of mesh components.<br/>

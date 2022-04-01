@@ -1,15 +1,17 @@
 ﻿<Definitions>
-	
+
 	<Types>
 		<VengineX.UI.Elements.Basic>
 			<Image></Image>
 			<Label></Label>
+			<Viewport></Viewport>
 		</VengineX.UI.Elements.Basic>
-		
+
 		<VengineX.UI.Elements.Panels>
 			<AlignPane></AlignPane>
+			<StackPane></StackPane>
 		</VengineX.UI.Elements.Panels>
-		
+
 		<VengineX.UI.Layouts>
 			<HorizontalAlignment></HorizontalAlignment>
 			<VerticalAlignment></VerticalAlignment>
@@ -22,10 +24,10 @@
 			<Button></Button>
 		</VengineX.UI.Elements.Composite>
 	</Types>
-	
+
 	<Resources>
 		<VengineX.UI.Fonts.BitmapFont>font</VengineX.UI.Fonts.BitmapFont>
-		<VengineX.Graphics.Rendering.Textures.Texture2D>texture2d</VengineX.Graphics.Rendering.Textures.Texture2D>
+		<VengineX.Graphics.Textures.Texture2D>texture2d</VengineX.Graphics.Textures.Texture2D>
 	</Resources>
 	
 </Definitions>

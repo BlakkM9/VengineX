@@ -1,8 +1,8 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using VengineX.Debugging.Logging;
-using VengineX.Graphics.Rendering.Textures;
+using VengineX.Graphics.Textures;
 
-namespace VengineX.Graphics.Rendering.Buffers
+namespace VengineX.Graphics.Buffers
 {
     public class Framebuffer2DArray : Framebuffer<Texture2DArray>, IDisposable, IBindable
     {

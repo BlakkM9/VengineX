@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace VengineX.Graphics.Rendering.Shaders
+namespace VengineX.Graphics.Shaders
 {
     /// <summary>
     /// Class that represents a uniform of a shader.

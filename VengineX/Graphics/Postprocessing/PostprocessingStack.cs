@@ -5,14 +5,14 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VengineX.Graphics.Rendering.Buffers;
-using VengineX.Graphics.Rendering.Shaders;
-using VengineX.Graphics.Rendering.UnitModels;
+using VengineX.Graphics.Buffers;
+using VengineX.Graphics.Shaders;
+using VengineX.Graphics.UnitModels;
 using VengineX.Resources;
 
-namespace VengineX.Graphics.Rendering.Postprocessing
+namespace VengineX.Graphics.Postprocessing
 {
-    
+
     public class PostprocessingStack
     {
         /// <summary>

@@ -7,7 +7,7 @@ using VengineX.Core;
 using VengineX.Debugging.Logging;
 using VengineX.ECS;
 
-namespace VengineX.Graphics.Rendering.Meshes
+namespace VengineX.Graphics.Meshes
 {
     /// <summary>
     /// The component for meshes that are rendered in the screen.

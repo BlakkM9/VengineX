@@ -1,9 +1,9 @@
 ﻿using OpenTK.Mathematics;
 using VengineX.Debugging.Logging;
-using VengineX.Graphics.Rendering.Shaders;
-using VengineX.Graphics.Rendering.Textures;
+using VengineX.Graphics.Shaders;
+using VengineX.Graphics.Textures;
 
-namespace VengineX.Graphics.Rendering
+namespace VengineX.Graphics
 {
     /// <summary>
     /// A material groups a shader and materials together.

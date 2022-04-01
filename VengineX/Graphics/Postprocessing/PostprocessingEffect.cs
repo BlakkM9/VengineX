@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VengineX.Graphics.Rendering.Buffers;
-using VengineX.Graphics.Rendering.Shaders;
-using VengineX.Graphics.Rendering.Textures;
-using VengineX.Graphics.Rendering.UnitModels;
+using VengineX.Graphics.Buffers;
+using VengineX.Graphics.Textures;
+using VengineX.Graphics.Shaders;
+using VengineX.Graphics.UnitModels;
 
-namespace VengineX.Graphics.Rendering.Postprocessing
+namespace VengineX.Graphics.Postprocessing
 {
     /// <summary>
     /// This class represents a single (one pass) postprocessing effect that is applied by adding and applying<br/>

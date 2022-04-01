@@ -1,11 +1,11 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using VengineX.Debugging.Logging;
-using VengineX.Graphics.Rendering.Buffers;
-using VengineX.Graphics.Rendering.Cameras;
-using VengineX.Graphics.Rendering.Renderers;
-using VengineX.Graphics.Rendering.Shaders;
-using VengineX.Graphics.Rendering.Textures;
+using VengineX.Graphics.Buffers;
+using VengineX.Graphics.Cameras;
+using VengineX.Graphics.Renderers;
+using VengineX.Graphics.Shaders;
+using VengineX.Graphics.Textures;
 using VengineX.Resources;
 using VengineX.Utils;
 using VengineX.Wrappers.FreeType;

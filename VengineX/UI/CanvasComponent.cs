@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VengineX.ECS;
-using VengineX.Graphics.Rendering.Cameras;
-using VengineX.Graphics.Rendering.Renderers;
+using VengineX.Graphics.Cameras;
+using VengineX.Graphics.Renderers;
 
 namespace VengineX.UI
 {

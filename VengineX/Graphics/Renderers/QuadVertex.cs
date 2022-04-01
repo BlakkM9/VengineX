@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
-using VengineX.Graphics.Rendering.Textures;
+using VengineX.Graphics.Textures;
 
-namespace VengineX.Graphics.Rendering.Renderers
+namespace VengineX.Graphics.Renderers
 {
     public struct QuadVertex
     {

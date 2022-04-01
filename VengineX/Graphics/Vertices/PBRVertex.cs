@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using System.Runtime.InteropServices;
 
-namespace VengineX.Graphics.Rendering.Vertices
+namespace VengineX.Graphics.Vertices
 {
     /// <summary>
     /// Basic vertex for meshes that use a pbr or comparable shader.

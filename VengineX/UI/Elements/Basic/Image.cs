@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
-using VengineX.Graphics.Rendering.Renderers;
-using VengineX.Graphics.Rendering.Textures;
+using VengineX.Graphics.Renderers;
+using VengineX.Graphics.Textures;
 
 namespace VengineX.UI.Elements.Basic
 {

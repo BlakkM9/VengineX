@@ -1,6 +1,6 @@
-﻿using VengineX.Graphics.Rendering.Textures;
+﻿using VengineX.Graphics.Textures;
 
-namespace VengineX.Graphics.Rendering.Buffers
+namespace VengineX.Graphics.Buffers
 {
     public abstract class Framebuffer<T> where T : Texture
     {

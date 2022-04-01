@@ -1,8 +1,8 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using VengineX.Debugging.Logging;
-using VengineX.Graphics.Rendering.Textures;
+using VengineX.Graphics.Textures;
 
-namespace VengineX.Graphics.Rendering.Buffers
+namespace VengineX.Graphics.Buffers
 {
     /// <summary>
     /// Class representing a framebuffer with a 2D output texture.<br/>

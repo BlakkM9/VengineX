@@ -1,6 +1,6 @@
 ﻿using VengineX.Resources;
 
-namespace VengineX.Graphics.Rendering.Shaders
+namespace VengineX.Graphics.Shaders
 {
     /// <summary>
     /// Parameters for loading a <see cref="Shader"/> as <see cref="ILoadableResource"/>

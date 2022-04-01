@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using VengineX.Debugging.Logging;
 using VengineX.Utils;
 
-namespace VengineX.Graphics.Rendering.Meshes
+namespace VengineX.Graphics.Meshes
 {
 
     /// <summary>

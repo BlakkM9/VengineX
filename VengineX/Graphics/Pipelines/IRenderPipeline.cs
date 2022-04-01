@@ -1,4 +1,4 @@
-﻿namespace VengineX.Graphics.Rendering.Pipelines
+﻿namespace VengineX.Graphics.Pipelines
 {
     /// <summary>
     /// Interface for render pipelines.

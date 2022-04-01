@@ -1,4 +1,4 @@
-﻿using VengineX.Graphics.Rendering.Pipelines;
+﻿using VengineX.Graphics.Pipelines;
 
 namespace VengineX.ECS
 {

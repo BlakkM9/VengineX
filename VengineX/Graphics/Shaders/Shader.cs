@@ -2,7 +2,7 @@
 using VengineX.Debugging.Logging;
 using VengineX.Resources;
 
-namespace VengineX.Graphics.Rendering.Shaders
+namespace VengineX.Graphics.Shaders
 {
     public class Shader : IBindable, IDisposable, ILoadableResource, IResource
     {

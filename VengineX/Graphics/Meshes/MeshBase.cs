@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VengineX.Graphics.Rendering.Meshes
+namespace VengineX.Graphics.Meshes
 {
     // TODO save indices and vertices in a single buffer (but how to get offset in c#?)
     /// <summary>

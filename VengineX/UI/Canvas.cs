@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
-using VengineX.Graphics.Rendering;
-using VengineX.Graphics.Rendering.Cameras;
-using VengineX.Graphics.Rendering.Renderers;
+using VengineX.Graphics.Cameras;
+using VengineX.Graphics;
+using VengineX.Graphics.Renderers;
 using VengineX.Input;
 using VengineX.UI.Elements.Basic;
 using VengineX.UI.Layouts;

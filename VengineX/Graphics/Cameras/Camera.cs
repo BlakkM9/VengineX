@@ -3,7 +3,7 @@ using VengineX.Core;
 using VengineX.Debugging.Logging;
 using VengineX.ECS;
 
-namespace VengineX.Graphics.Rendering.Cameras
+namespace VengineX.Graphics.Cameras
 {
     /// <summary>
     /// Base class for camera. Provides all required matrices and basic function aswell as a frustum that<br/>

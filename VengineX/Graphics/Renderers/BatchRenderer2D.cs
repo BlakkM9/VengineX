@@ -1,14 +1,14 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using System.Runtime.InteropServices;
-using VengineX.Graphics.Rendering.Cameras;
-using VengineX.Graphics.Rendering.Meshes;
-using VengineX.Graphics.Rendering.Shaders;
-using VengineX.Graphics.Rendering.Textures;
-using VengineX.Graphics.Rendering.Vertices;
+using VengineX.Graphics.Cameras;
+using VengineX.Graphics.Meshes;
+using VengineX.Graphics.Shaders;
+using VengineX.Graphics.Textures;
+using VengineX.Graphics.Vertices;
 using VengineX.Resources;
 
-namespace VengineX.Graphics.Rendering.Renderers
+namespace VengineX.Graphics.Renderers
 {
     public class BatchRenderer2D : IDisposable
     {

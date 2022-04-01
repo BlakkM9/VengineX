@@ -7,7 +7,7 @@
 	
 	<AlignPane HorizontalAlignment="HorizontalAlignment.Center" VerticalAlignment="VerticalAlignment.Center">
 		<Label Name="label"
-               IgnoreInputEvents="true">
+               IgnoreEvents="true">
 		</Label>
 	</AlignPane>
 </Button>

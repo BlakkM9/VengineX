@@ -1,4 +1,4 @@
-﻿using VengineX.Graphics.Rendering.Renderers;
+﻿using VengineX.Graphics.Renderers;
 using VengineX.UI.Elements.Basic;
 
 namespace VengineX.UI.Elements.Panels
