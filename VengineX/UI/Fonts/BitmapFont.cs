@@ -136,7 +136,7 @@ namespace VengineX.UI.Fonts
             BatchRenderer2D br = new BatchRenderer2D(1000, bmpFontShader);
             fb.Clear(ClearBuffer.Color, new float[] { 0, 0, 0, 0 });
 
-            OrthographicCamera camera = new OrthographicCamera(textureSize, textureSize, -1, 1);
+            OrthographicCamera camera = new OrthographicCamera(textureSize, textureSize, -1, 1, true);
 
             int rowSpaceUsed = 0;
             int x = 0;

@@ -1,4 +1,7 @@
 ﻿using OpenTK.Mathematics;
+using VengineX.Core;
+using VengineX.Debugging.Logging;
+using VengineX.ECS;
 
 namespace VengineX.Graphics.Rendering.Cameras
 {
@@ -6,9 +9,8 @@ namespace VengineX.Graphics.Rendering.Cameras
     /// Base class for camera. Provides all required matrices and basic function aswell as a frustum that<br/>
     /// might be used for frustum culling.
     /// </summary>
-    public abstract class Camera
+    public abstract class Camera : Component
     {
-
         /// <summary>
         /// View matrix of this camera (Transforms from world to camera space)
         /// </summary>
@@ -28,16 +30,10 @@ namespace VengineX.Graphics.Rendering.Cameras
         }
         private Matrix4 _projectionMatrix;
 
-
         /// <summary>
-        /// World space position of this camera
+        /// Transform of the camera, received from parent entity.
         /// </summary>
-        public ref Vector3 Position
-        {
-            get { return ref _position; }
-        }
-        private Vector3 _position;
-
+        public Transform? Transform { get; private set; }
 
         /// <summary>
         /// The frustum of this camera.
@@ -48,30 +44,40 @@ namespace VengineX.Graphics.Rendering.Cameras
         /// <summary>
         /// Creates a new camera at given position.
         /// </summary>
-        public Camera(Vector3 position)
+        public Camera() : base(typeof(Camera))
         {
-            Position = position;
             _viewMatrix = Matrix4.Identity;
             Frustum = new Frustum();
+        }
+
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public override void Attached()
+        {
+            Transform = Entity?.GetComponent<Transform>();
+
+            if (Transform == null)
+            {
+                Logger.Log(Severity.Fatal, "A mesh can only be attached to components that have a Transform component attached already!");
+            }
 
             Update();
+            Transform.TransformChanged += (_) => Update();
         }
 
+
         /// <summary>
-        /// Needs to be called after translation/positon change or rotation so view matrix is updated
+        /// Recalculates the view matrix based on the transform of the parent entity.<br/>
+        /// Automatically called when the transform changed.
         /// </summary>
-        public virtual void Update()
+        private void Update()
         {
-            _viewMatrix *= Matrix4.CreateTranslation(Position);
+            Matrix4 rotation = Matrix4.CreateFromQuaternion(new Quaternion(Transform.Rotation));
+            Matrix4 translation = Matrix4.CreateTranslation(-Transform.Position);
+            _viewMatrix = translation * rotation;
             Frustum.CalculateFrustum(_projectionMatrix, _viewMatrix);
-        }
-
-        /// <summary>
-        /// Moves the camera by given translation
-        /// </summary>
-        public void Translate(Vector3 translation)
-        {
-            _position += translation;
         }
     }
 }

@@ -35,7 +35,7 @@ namespace VengineX.UI
             EventSystem = new EventSystem(input, this);
             Size = new Vector2(width, height);
 
-            Camera = new OrthographicCamera(Width, Height, -1, 1);
+            Camera = new OrthographicCamera(Width, Height, -1, 1, true);
             Layout = new AlignLayout(HorizontalAlignment.Stretch, VerticalAlignment.Stretch);
         }
 
@@ -56,7 +56,7 @@ namespace VengineX.UI
         public void Resize(float newWidth, float newHeight)
         {
             Size = new Vector2(newWidth, newHeight);
-            Camera = new OrthographicCamera(newWidth, newHeight, -1, 1);
+            Camera = new OrthographicCamera(newWidth, newHeight, -1, 1, true);
         }
     }
 }
