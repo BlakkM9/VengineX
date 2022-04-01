@@ -119,5 +119,16 @@ namespace VengineX.ECS
         {
             return _components.AsEnumerable();
         }
+
+
+        /// <summary>
+        /// Called when this entity is attached to the registry.
+        /// </summary>
+        public virtual void Registered() { }
+
+        /// <summary>
+        /// Called when this entity is detachted from the registry.
+        /// </summary>
+        public virtual void Unregistered() { }
     }
 }
