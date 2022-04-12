@@ -36,6 +36,11 @@ namespace VengineX.Graphics.Meshes
         public Transform? Transform { get; private set; }
 
         /// <summary>
+        /// Size of this meshs bounds (cube). Set for frustum culling
+        /// </summary>
+        public int Size { get; set; }
+
+        /// <summary>
         /// Creates a new mesh component. 
         /// </summary>
         /// <param name="mesh">The internal mesh to use for the component.</param>
