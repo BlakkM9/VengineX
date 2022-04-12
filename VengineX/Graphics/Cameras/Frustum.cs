@@ -250,5 +250,10 @@ namespace VengineX.Graphics.Cameras
             _frustum[(int)ClippingPlane.Front, 3] = _clipMatrix[15] + _clipMatrix[14];
             NormalizePlane(_frustum, (int)ClippingPlane.Front);
         }
+
+        public void CalculateFrustum(Matrix4d projectionMatrix, Matrix4d viewMatrix)
+        {
+            CalculateFrustum(projectionMatrix.ToMatrix4(), viewMatrix.ToMatrix4());
+        }
     }
 }

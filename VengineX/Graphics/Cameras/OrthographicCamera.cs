@@ -42,11 +42,11 @@ namespace VengineX.Graphics.Cameras
 
             if (offCenter)
             {
-                ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(0, width, 0, height, nearPlane, farPlane);
+                ProjectionMatrix = Matrix4d.CreateOrthographicOffCenter(0, width, 0, height, nearPlane, farPlane);
             }
             else
             {
-                ProjectionMatrix = Matrix4.CreateOrthographic(width, height, nearPlane, farPlane);
+                ProjectionMatrix = Matrix4d.CreateOrthographic(width, height, nearPlane, farPlane);
             }
         }
 
@@ -58,11 +58,11 @@ namespace VengineX.Graphics.Cameras
         {
             if (OffCenter)
             {
-                ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(0, Width, 0, Height, nearPlane, farPlane);
+                ProjectionMatrix = Matrix4d.CreateOrthographicOffCenter(0, Width, 0, Height, nearPlane, farPlane);
             }
             else
             {
-                ProjectionMatrix = Matrix4.CreateOrthographic(Width, Height, nearPlane, farPlane);
+                ProjectionMatrix = Matrix4d.CreateOrthographic(Width, Height, nearPlane, farPlane);
             }
         }
     }

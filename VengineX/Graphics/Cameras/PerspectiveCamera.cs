@@ -38,7 +38,7 @@ namespace VengineX.Graphics.Cameras
             Width = width;
             Height = height;
 
-            ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(fov / 2.0f, width / height, nearPlane, farPlane);
+            ProjectionMatrix = Matrix4d.CreatePerspectiveFieldOfView(fov / 2.0f, width / height, nearPlane, farPlane);
         }
 
 
@@ -47,7 +47,7 @@ namespace VengineX.Graphics.Cameras
         /// </summary>
         public override void SetClippingPlanes(float nearPlane, float farPlane)
         {
-            ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(FieldOfView / 2.0f, Width / Height, nearPlane, farPlane);
+            ProjectionMatrix = Matrix4d.CreatePerspectiveFieldOfView(FieldOfView / 2.0f, Width / Height, nearPlane, farPlane);
             Update();
         }
     }

@@ -14,15 +14,15 @@ namespace VengineX.Graphics.Cameras
         /// <summary>
         /// View matrix of this camera (Transforms from world to camera space)
         /// </summary>
-        public ref Matrix4 ViewMatrix => ref _viewMatrix;
-        private Matrix4 _viewMatrix;
+        public ref Matrix4d ViewMatrix => ref _viewMatrix;
+        private Matrix4d _viewMatrix;
 
 
         /// <summary>
         /// Projection matrix of this camera (Transforms from camera space to clip space)
         /// </summary>
-        public ref Matrix4 ProjectionMatrix => ref _projectionMatrix;
-        private Matrix4 _projectionMatrix;
+        public ref Matrix4d ProjectionMatrix => ref _projectionMatrix;
+        private Matrix4d _projectionMatrix;
 
         /// <summary>
         /// Transform of the camera, received from parent entity.
@@ -40,7 +40,7 @@ namespace VengineX.Graphics.Cameras
         /// </summary>
         public Camera() : base(typeof(Camera))
         {
-            _viewMatrix = Matrix4.Identity;
+            _viewMatrix = Matrix4d.Identity;
             Frustum = new Frustum();
         }
 
@@ -68,8 +68,8 @@ namespace VengineX.Graphics.Cameras
         /// </summary>
         protected void Update()
         {
-            Matrix4 rotation = Matrix4.CreateFromQuaternion(new Quaternion(Transform.Rotation));
-            Matrix4 translation = Matrix4.CreateTranslation((Vector3)(-Transform.Position));
+            Matrix4d rotation = Matrix4d.CreateFromQuaternion(new Quaterniond(Transform.Rotation));
+            Matrix4d translation = Matrix4d.CreateTranslation(-Transform.Position);
             _viewMatrix = translation * rotation;
             Frustum.CalculateFrustum(_projectionMatrix, _viewMatrix);
         }
