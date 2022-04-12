@@ -76,12 +76,12 @@ namespace VengineX.Graphics.Renderers
         /// </summary>
         public void End() {
 
-            // TODO TEMP
-            foreach (Material mat in _meshes.Keys)
-            {
-                Vector3 camPos = (Vector3)_camera.Transform.Position;
-                mat.Shader.GetUniform("uCameraPositionWS").Set3(ref camPos);
-            }
+            //// TODO TEMP
+            //foreach (Material mat in _meshes.Keys)
+            //{
+                //Vector3 camPos = (Vector3)_camera.Transform.Position;
+                //mat.Shader.GetUniform("uCameraPositionWS").Set3(ref camPos);
+            //}
         }
 
 
@@ -97,13 +97,20 @@ namespace VengineX.Graphics.Renderers
             foreach (KeyValuePair<Material, List<MeshComponent>> kvp in _meshes)
             {
                 kvp.Key.Bind();
-                kvp.Key.Shader.GetUniform("V").SetMat4(ref _camera.ViewMatrix);
-                kvp.Key.Shader.GetUniform("P").SetMat4(ref _camera.ProjectionMatrix);
+                Matrix4 view = _camera.ViewMatrix.ToMatrix4();
+                Matrix4 proj = _camera.ProjectionMatrix.ToMatrix4();
+                kvp.Key.Shader.GetUniform("V").SetMat4(ref view);
+                kvp.Key.Shader.GetUniform("P").SetMat4(ref proj);
 
                 foreach (MeshComponent mesh in kvp.Value)
                 {
-                    Matrix4 model = mesh.Transform.ModelMatrix.ToMatrix4();
-                    mesh.Material.Shader.GetUniform("M").SetMat4(ref model);
+                    //Matrix4 model = mesh.Transform.ModelMatrix.ToMatrix4();
+                    Matrix4 viewModel = (mesh.Transform.ModelMatrix * _camera.ViewMatrix).ToMatrix4();
+                    //Matrix4 pvm = (mesh.Transform.ModelMatrix * _camera.ViewMatrix * _camera.ProjectionMatrix).ToMatrix4();
+
+                    mesh.Material.Shader.GetUniform("VM").SetMat4(ref viewModel);
+                    //mesh.Material.Shader.GetUniform("PVM").SetMat4(ref pvm);
+                    //mesh.Material.Shader.GetUniform("M").SetMat4(ref model);
                     mesh.Render();
                     DrawCalls++;
                 }

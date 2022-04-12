@@ -45,5 +45,13 @@
   <ItemGroup>
   	<AdditionalFiles Include="_res\gui\**"></AdditionalFiles>
   </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="_res\shader\atmosphere.fs.glsl" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Math\" />
+  </ItemGroup>
 	
 </Project>

@@ -116,8 +116,10 @@ namespace VengineX.Graphics.Renderers
             DrawCalls = 0;
 
             _vertexIndex = 0;
-            _viewMatrixUniform.SetMat4(ref camera.ViewMatrix);
-            _projMatrixUniform.SetMat4(ref camera.ProjectionMatrix);
+            Matrix4 view = camera.ViewMatrix.ToMatrix4();
+            Matrix4 proj = camera.ProjectionMatrix.ToMatrix4();
+            _viewMatrixUniform.SetMat4(ref view);
+            _projMatrixUniform.SetMat4(ref proj);
         }
 
 
