@@ -14,20 +14,14 @@ namespace VengineX.Graphics.Cameras
         /// <summary>
         /// View matrix of this camera (Transforms from world to camera space)
         /// </summary>
-        public ref Matrix4 ViewMatrix
-        {
-            get { return ref _viewMatrix; }
-        }
+        public ref Matrix4 ViewMatrix => ref _viewMatrix;
         private Matrix4 _viewMatrix;
 
 
         /// <summary>
         /// Projection matrix of this camera (Transforms from camera space to clip space)
         /// </summary>
-        public ref Matrix4 ProjectionMatrix
-        {
-            get { return ref _projectionMatrix; }
-        }
+        public ref Matrix4 ProjectionMatrix => ref _projectionMatrix;
         private Matrix4 _projectionMatrix;
 
         /// <summary>
@@ -72,12 +66,18 @@ namespace VengineX.Graphics.Cameras
         /// Recalculates the view matrix based on the transform of the parent entity.<br/>
         /// Automatically called when the transform changed.
         /// </summary>
-        private void Update()
+        protected void Update()
         {
             Matrix4 rotation = Matrix4.CreateFromQuaternion(new Quaternion(Transform.Rotation));
-            Matrix4 translation = Matrix4.CreateTranslation(-Transform.Position);
+            Matrix4 translation = Matrix4.CreateTranslation((Vector3)(-Transform.Position));
             _viewMatrix = translation * rotation;
             Frustum.CalculateFrustum(_projectionMatrix, _viewMatrix);
         }
+
+
+        /// <summary>
+        /// Changes the clipping planes for this camera.
+        /// </summary>
+        public abstract void SetClippingPlanes(float farPlane, float nearPlane);
     }
 }

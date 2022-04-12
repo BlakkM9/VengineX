@@ -1,4 +1,5 @@
 ﻿using OpenTK.Mathematics;
+using VengineX.Utils.Extensions;
 
 namespace VengineX.Graphics.Cameras
 {
