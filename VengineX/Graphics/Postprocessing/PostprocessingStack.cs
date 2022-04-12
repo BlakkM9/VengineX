@@ -91,6 +91,15 @@ namespace VengineX.Graphics.Postprocessing
 
 
         /// <summary>
+        /// Returns the <see cref="PostprocessingEffect"/> with the given name.
+        /// </summary>
+        public PostprocessingEffect GetEffect(string name)
+        {
+            return _effects[_effectMap[name]];
+        }
+
+
+        /// <summary>
         /// Renders the current framebuffers texture to the screen.
         /// </summary>
         private void RenderToScreen()
