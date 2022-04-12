@@ -1,4 +1,6 @@
-﻿namespace VengineX.Core
+﻿using OpenTK.Mathematics;
+
+namespace VengineX.Core
 {
     /// <summary>
     /// Static class, providing properties for timing.
@@ -65,7 +67,7 @@
         internal static void Update(double delta)
         {
             Total += delta;
-            SinTotal = Math.Sin(Total);
+            SinTotal = MathHelper.Sin(Total);
             DeltaUpdate = delta;
             CurrentUPS = 1.0 / DeltaUpdate;
 
@@ -103,10 +105,6 @@
                 _currentFrames = 0;
                 _currentFPSTime = 0;
             }
-
-            //_renderFrameCount++;
-            //_fpsSamples[_renderFrameCount % FPSSampleCount] = CurrentFPS;
-            //AverageFPS = (double)_fpsSamples.Sum() / FPSSampleCount;
         }
     }
 }
