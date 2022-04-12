@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VengineX.ECS;
+using VengineX.Utils.Extensions;
 
 namespace VengineX.Core
 {
@@ -21,13 +22,13 @@ namespace VengineX.Core
         /// <summary>
         /// ModelMatrix of this transform, calculated from position, rotation and scale.
         /// </summary>
-        public ref Matrix4 ModelMatrix => ref _modelMatrix;
-        private Matrix4 _modelMatrix;
+        public ref Matrix4d ModelMatrix => ref _modelMatrix;
+        private Matrix4d _modelMatrix;
 
         /// <summary>
         /// Position of this transform
         /// </summary>
-        public Vector3 Position
+        public Vector3d Position
         {
             get => _position;
             set
@@ -36,12 +37,12 @@ namespace VengineX.Core
                 UpdateMatrix();
             } 
         }
-        private Vector3 _position;
+        private Vector3d _position;
 
         /// <summary>
         /// Gets and sets the rotation of this transform in radians (euler angles)
         /// </summary>
-        public Vector3 Rotation
+        public Vector3d Rotation
         {
             get => _rotation;
             set
@@ -50,12 +51,12 @@ namespace VengineX.Core
                 UpdateMatrix();
             }
         }
-        private Vector3 _rotation;
+        private Vector3d _rotation;
 
         /// <summary>
         /// Sets and gets the scale of this transform.
         /// </summary>
-        public Vector3 Scale
+        public Vector3d Scale
         {
             get => _scale;
             set
@@ -64,7 +65,7 @@ namespace VengineX.Core
                 UpdateMatrix();
             }
         }
-        private Vector3 _scale;
+        private Vector3d _scale;
 
 
         /// <summary>
@@ -80,7 +81,7 @@ namespace VengineX.Core
         /// <param name="position">Position of the transform.</param>
         /// <param name="rotation">Rotation (euler angles) of this transform.</param>
         /// <param name="scale">Scale of the transform.</param>
-        public Transform(Vector3 position, Vector3 rotation, Vector3 scale) : base(typeof(Transform))
+        public Transform(Vector3d position, Vector3d rotation, Vector3d scale) : base(typeof(Transform))
         {
             _position = position;
             _rotation = rotation;
@@ -93,7 +94,7 @@ namespace VengineX.Core
         /// Creates a new transfrom with the matrix set to identity<br/>
         /// (Position 0, 0, 0; Rotation 0, 0, 0 and Scale 1, 1, 1).
         /// </summary>
-        public Transform() : this(Vector3.Zero, Vector3.Zero, Vector3.One)
+        public Transform() : this(Vector3d.Zero, Vector3d.Zero, Vector3d.One)
         {
             UpdateMatrix();
         }
@@ -104,9 +105,9 @@ namespace VengineX.Core
         /// </summary>
         private void UpdateMatrix()
         {
-            Matrix4 rotation = Matrix4.CreateFromQuaternion(new Quaternion(Rotation));
-            Matrix4 scale = Matrix4.CreateScale(Scale);
-            Matrix4 translation = Matrix4.CreateTranslation(Position);
+            Matrix4d rotation = Matrix4d.CreateFromQuaternion(new Quaterniond(Rotation));
+            Matrix4d scale = Matrix4d.Identity.CreateScale(Scale);
+            Matrix4d translation = Matrix4d.CreateTranslation(Position);
             _modelMatrix = scale * rotation * translation;
 
 
