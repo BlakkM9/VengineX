@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using VengineX.Core;
 using VengineX.Graphics.Cameras;
 using VengineX.Graphics.Meshes;
+using VengineX.Utils.Extensions;
 
 namespace VengineX.Graphics.Renderers
 {
@@ -17,6 +18,11 @@ namespace VengineX.Graphics.Renderers
     /// </summary>
     public class Renderer3D
     {
+        public int Triangles { get; protected set; }
+
+        public int DrawCalls { get; protected set; }
+
+
         private readonly Dictionary<Material, List<MeshComponent>> _meshes;
         private Camera? _camera;
 
@@ -38,6 +44,8 @@ namespace VengineX.Graphics.Renderers
         /// <param name="camera">Camera that provides view and projection matrix for the meshes.</param>
         public void Begin(Camera camera)
         {
+            Triangles = 0;
+
             foreach (List<MeshComponent> meshList in _meshes.Values)
             {
                 meshList.Clear();
@@ -52,6 +60,8 @@ namespace VengineX.Graphics.Renderers
         /// </summary>
         public void Submit(MeshComponent mesh)
         {
+            Triangles += mesh.Mesh.IndexCount / 3;
+
             if (!_meshes.ContainsKey(mesh.Material))
             {
                 _meshes.Add(mesh.Material, new List<MeshComponent>());
@@ -69,7 +79,7 @@ namespace VengineX.Graphics.Renderers
             // TODO TEMP
             foreach (Material mat in _meshes.Keys)
             {
-                Vector3 camPos = _camera.Transform.Position;
+                Vector3 camPos = (Vector3)_camera.Transform.Position;
                 mat.Shader.GetUniform("uCameraPositionWS").Set3(ref camPos);
             }
         }
@@ -82,6 +92,8 @@ namespace VengineX.Graphics.Renderers
         {
             if (_camera == null) { return; }
 
+            DrawCalls = 0;
+
             foreach (KeyValuePair<Material, List<MeshComponent>> kvp in _meshes)
             {
                 kvp.Key.Bind();
@@ -90,8 +102,10 @@ namespace VengineX.Graphics.Renderers
 
                 foreach (MeshComponent mesh in kvp.Value)
                 {
-                    mesh.Material.Shader.GetUniform("M").SetMat4(ref mesh.Transform.ModelMatrix);
+                    Matrix4 model = mesh.Transform.ModelMatrix.ToMatrix4();
+                    mesh.Material.Shader.GetUniform("M").SetMat4(ref model);
                     mesh.Render();
+                    DrawCalls++;
                 }
             }
         }

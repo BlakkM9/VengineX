@@ -7,11 +7,14 @@ using VengineX.Graphics.Shaders;
 using VengineX.Graphics.Textures;
 using VengineX.Graphics.Vertices;
 using VengineX.Resources;
+using VengineX.Utils.Extensions;
 
 namespace VengineX.Graphics.Renderers
 {
     public class BatchRenderer2D : IDisposable
     {
+        public int DrawCalls { get; protected set; }
+        public int Triangles { get; protected set; }
 
         private Shader _batchShader;
         private Uniform _viewMatrixUniform;
@@ -109,6 +112,9 @@ namespace VengineX.Graphics.Renderers
         /// <param name="camera">Camera that provides view and proj matrices for this batch.</param>
         public void Begin(Camera camera)
         {
+            Triangles = 0;
+            DrawCalls = 0;
+
             _vertexIndex = 0;
             _viewMatrixUniform.SetMat4(ref camera.ViewMatrix);
             _projMatrixUniform.SetMat4(ref camera.ProjectionMatrix);
@@ -134,6 +140,8 @@ namespace VengineX.Graphics.Renderers
         /// <param name="texture">Texture of this quad. Might be null if no texture.</param>
         public void Submit(Vector2 size, Vector2 position, Vector2[] uvs, Vector4 color, Texture2D? texture)
         {
+            Triangles += 2;
+
             if (texture == null) { _nextTexture = _whiteTexture; }
             else { _nextTexture = texture; }
 
@@ -205,6 +213,8 @@ namespace VengineX.Graphics.Renderers
         /// </summary>
         public void Flush()
         {
+            DrawCalls++;
+
             _currentTexture.Bind();
             _batchShader.Bind();
 

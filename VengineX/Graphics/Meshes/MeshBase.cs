@@ -17,7 +17,7 @@ namespace VengineX.Graphics.Meshes
         /// <summary>
         /// Amount of indices in this mesh.
         /// </summary>
-        protected int IndexCount { get; set; }
+        public int IndexCount { get; protected set; }
 
         /// <summary>
         /// Vertex Buffer Object
