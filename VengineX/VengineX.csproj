@@ -49,9 +49,5 @@
   <ItemGroup>
     <None Remove="_res\shader\atmosphere.fs.glsl" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Math\" />
-  </ItemGroup>
 	
 </Project>
