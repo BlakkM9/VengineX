@@ -40,7 +40,10 @@ namespace VengineX.ECS
             // because behavior components are removed from registry when screen is unloaded, therefor we enumerate over a copy
             foreach (BehaviorComponent bhc in Registry.EnumerateComponents<BehaviorComponent>().ToArray())
             {
-                bhc.Update(delta);
+                if (bhc.Enabled)
+                {
+                    bhc.Update(delta);
+                }
             }
         }
 

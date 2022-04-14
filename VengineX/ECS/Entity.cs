@@ -18,6 +18,29 @@ namespace VengineX.ECS
         public Registry? Registry { get; internal set; }
 
         /// <summary>
+        /// Gets or sets if all the components attached to this entity are enabled or not.
+        /// </summary>
+        public bool Enabled
+        {
+            get => _enabled;
+            set
+            {
+                if (_enabled != value)
+                {
+                    _enabled = value;
+
+                    foreach (Component comp in _components.Values)
+                    {
+                        comp.Enabled = value;
+                    }
+                }
+            }
+        }
+
+        private bool _enabled = true;
+
+
+        /// <summary>
         /// Components currently attached to this entity.<br/>
         /// The components type is the key.
         /// </summary>
@@ -45,6 +68,7 @@ namespace VengineX.ECS
             // Add to self.
             _components.Add(typeof(C), component);
             component.Entity = this;
+            component.Enabled = Enabled;
             component.Attached();
         }
 

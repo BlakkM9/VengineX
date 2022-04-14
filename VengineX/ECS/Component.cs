@@ -23,6 +23,12 @@
         public Entity? Entity { get; internal set; }
 
         /// <summary>
+        /// Sets or gets wether the component is currently enabled or not.
+        /// </summary>
+        public bool Enabled { get; set; } = true;
+
+
+        /// <summary>
         /// Creates a new component that is registered as the given <paramref name="registryType"/><br/>
         /// When attached to a <see cref="Registry"/>.
         /// </summary>

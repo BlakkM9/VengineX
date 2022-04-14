@@ -24,10 +24,10 @@ namespace VengineX.Graphics.Meshes
         /// </summary>
         public Material Material { get; }
 
-        /// <summary>
-        /// Gets or sets if this mesh component should be rendered or not.
-        /// </summary>
-        public bool Visible { get; set; }
+        ///// <summary>
+        ///// Gets or sets if this mesh component should be rendered or not.
+        ///// </summary>
+        //public bool Visible { get; set; }
 
         /// <summary>
         /// The transform that determines the world position of the mesh.<br/>
@@ -49,7 +49,7 @@ namespace VengineX.Graphics.Meshes
         {
             Mesh = mesh;
             Material = material;
-            Visible = true;
+            //Visible = true;
         }
 
 
