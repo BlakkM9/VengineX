@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace VengineX.Input
 {
+    // TODO make action bindings work for mousebuttons aswell
+    // TODO make axis bindings work for mouse movement aswell
     /// <summary>
     /// Interface for input bindings.
     /// </summary>
